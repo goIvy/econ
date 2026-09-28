@@ -33,7 +33,7 @@ export function MethodologyDialog({ ids, label = "How this is calculated", class
                 <motion.div variants={pop} initial="hidden" animate="visible" exit="exit" className="grid max-h-[88dvh] w-full grid-rows-[auto_1fr_auto] overflow-hidden rounded-t-lg border border-rule bg-surface shadow-3 sm:max-w-[42rem] sm:rounded-lg">
                   <div className="flex items-start justify-between gap-4 border-b border-rule px-6 py-5">
                     <div>
-                      <Dialog.Title className="font-display text-h3 font-semibold">How this is calculated</Dialog.Title>
+                      <Dialog.Title className="font-display text-h3 font-[650]">How this is calculated</Dialog.Title>
                       <Dialog.Description className="mt-1 text-small text-muted">Every estimate is built from these steps. All values are in 2024 dollars.</Dialog.Description>
                     </div>
                     <Dialog.Close className="grid size-9 shrink-0 place-items-center rounded-sm text-ink-2 hover:bg-surface-sunk" aria-label="Close">

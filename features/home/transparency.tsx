@@ -36,7 +36,7 @@ export function Transparency({ specimen }: { specimen: { label: string; value: s
       </div>
 
       <div>
-        <p className="mb-4 font-display text-h3 font-semibold">Built on public data</p>
+        <p className="mb-4 font-display text-h3 font-[650]">Built on public data</p>
         <div className="grid border-t border-rule sm:grid-cols-2 lg:grid-cols-3">
           {STRIP.map((s) => {
             const src = SOURCES[s.id];

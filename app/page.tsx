@@ -150,7 +150,7 @@ export default function HomePage() {
         <section aria-labelledby="h-cta" className="relative">
           <div className="mx-auto grid max-w-[1200px] justify-items-start gap-6 px-4 pb-24 md:px-8 md:pb-32 xl:px-12">
             <AxisRule className="mb-10 w-full md:mb-14" />
-            <h2 id="h-cta" className="max-w-[18ch] text-h1 font-bold">
+            <h2 id="h-cta" className="max-w-[18ch] text-h1 font-[720]">
               Run the paths you&apos;re actually choosing between.
             </h2>
             <p className="measure text-lede text-ink-2">Pick up to five colleges, set your aid and where you&apos;ll live, and see the tradeoffs side by side.</p>

@@ -1,0 +1,698 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-28T07:40:00+00:00",
+  "title": "Design System: College Value Lab",
+  "extensions": {
+    "colorMeta": {
+      "paper": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "canonical": "#F8F6F2",
+        "oklch": "oklch(97.4% 0.006 84.6)",
+        "tonalRamp": [
+          "#0C0B09",
+          "#262522",
+          "#43423F",
+          "#63615E",
+          "#84827E",
+          "#A7A5A1",
+          "#CBC9C5",
+          "#F0EEEA"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Clean Surface",
+        "canonical": "#FFFFFF",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      },
+      "surface-sunk": {
+        "role": "neutral",
+        "displayName": "Sunk Well",
+        "canonical": "#F1EEE7",
+        "oklch": "oklch(95.0% 0.010 87.5)",
+        "tonalRamp": [
+          "#0D0B07",
+          "#272520",
+          "#44423C",
+          "#64615B",
+          "#85827C",
+          "#A8A59E",
+          "#CCC9C2",
+          "#F1EEE7"
+        ]
+      },
+      "ink": {
+        "role": "primary",
+        "displayName": "Chart-Room Navy",
+        "canonical": "#10213A",
+        "oklch": "oklch(24.7% 0.053 258.0)",
+        "tonalRamp": [
+          "#000A21",
+          "#14253E",
+          "#30435E",
+          "#4E6280",
+          "#6F84A2",
+          "#91A7C7",
+          "#B4CBEC",
+          "#E5EFFE"
+        ]
+      },
+      "ink-hover": {
+        "role": "primary",
+        "displayName": "Deep Navy Hover",
+        "canonical": "#1B3152",
+        "oklch": "oklch(31.3% 0.066 258.3)",
+        "tonalRamp": [
+          "#000A22",
+          "#0F2544",
+          "#2C4265",
+          "#4A6287",
+          "#6A84AA",
+          "#8CA7CF",
+          "#AFCBF5",
+          "#E5EFFF"
+        ]
+      },
+      "on-ink": {
+        "role": "neutral",
+        "displayName": "On-Ink White",
+        "canonical": "#FFFFFF",
+        "oklch": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Slate Ink",
+        "canonical": "#3E4C63",
+        "oklch": "oklch(41.4% 0.043 260.2)",
+        "tonalRamp": [
+          "#030A1D",
+          "#19253A",
+          "#354259",
+          "#53627A",
+          "#74839C",
+          "#96A6C0",
+          "#B9CAE6",
+          "#E6EFFE"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Instrument Grey",
+        "canonical": "#5B677A",
+        "oklch": "oklch(51.1% 0.034 259.5)",
+        "tonalRamp": [
+          "#040B19",
+          "#1B2535",
+          "#374354",
+          "#566275",
+          "#778397",
+          "#99A6BB",
+          "#BCCAE0",
+          "#E5EFFF"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#DDD8CE",
+        "oklch": "oklch(88.3% 0.015 84.6)",
+        "tonalRamp": [
+          "#0E0B05",
+          "#28251D",
+          "#464139",
+          "#656158",
+          "#868279",
+          "#A9A49B",
+          "#CDC9BF",
+          "#F3EEE4"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "#C9C2B4",
+        "oklch": "oklch(81.6% 0.021 84.6)",
+        "tonalRamp": [
+          "#0F0A03",
+          "#2A2419",
+          "#474136",
+          "#676154",
+          "#888275",
+          "#ABA497",
+          "#CFC8BA",
+          "#F5EEDF"
+        ]
+      },
+      "trace-a": {
+        "role": "secondary",
+        "displayName": "Path Blue",
+        "canonical": "#2456C8",
+        "oklch": "oklch(49.1% 0.186 263.3)",
+        "tonalRamp": [
+          "#00062B",
+          "#001965",
+          "#0432A2",
+          "#2456C9",
+          "#447BF0",
+          "#75A3FF",
+          "#AECAFE",
+          "#E7EFFE"
+        ]
+      },
+      "trace-b": {
+        "role": "secondary",
+        "displayName": "Path Teal",
+        "canonical": "#007F68",
+        "oklch": "oklch(53.2% 0.101 174.1)",
+        "tonalRamp": [
+          "#010F0A",
+          "#012D23",
+          "#024E3F",
+          "#02725D",
+          "#2D967E",
+          "#57BAA0",
+          "#7DDFC4",
+          "#BDFFEB"
+        ]
+      },
+      "trace-c": {
+        "role": "secondary",
+        "displayName": "Path Rust",
+        "canonical": "#B04A1B",
+        "oklch": "oklch(53.7% 0.145 42.2)",
+        "tonalRamp": [
+          "#1A0400",
+          "#431400",
+          "#712701",
+          "#A13D06",
+          "#C86034",
+          "#EF8357",
+          "#FFB598",
+          "#FEE9E2"
+        ]
+      },
+      "trace-d": {
+        "role": "secondary",
+        "displayName": "Path Violet",
+        "canonical": "#7A4FB5",
+        "oklch": "oklch(52.4% 0.157 300.5)",
+        "tonalRamp": [
+          "#120026",
+          "#32015C",
+          "#512286",
+          "#7146AB",
+          "#9368D1",
+          "#B68BF7",
+          "#D3BBFF",
+          "#F1EBFE"
+        ]
+      },
+      "trace-e": {
+        "role": "secondary",
+        "displayName": "Path Olive",
+        "canonical": "#7A6800",
+        "oklch": "oklch(51.9% 0.107 97.2)",
+        "tonalRamp": [
+          "#0F0B00",
+          "#2C2501",
+          "#4E4202",
+          "#716102",
+          "#94822B",
+          "#B8A551",
+          "#DCCA76",
+          "#FFF0AA"
+        ]
+      },
+      "gain": {
+        "role": "tertiary",
+        "displayName": "Ledger Green",
+        "canonical": "#2A7547",
+        "oklch": "oklch(50.3% 0.104 153.3)",
+        "tonalRamp": [
+          "#001004",
+          "#012E15",
+          "#015028",
+          "#267244",
+          "#4B9464",
+          "#6FB886",
+          "#93DDA9",
+          "#C6FFD6"
+        ]
+      },
+      "gain-tint": {
+        "role": "tertiary",
+        "displayName": "Ledger Green Tint",
+        "canonical": "#E4F0E8",
+        "oklch": "oklch(94.4% 0.017 156.9)",
+        "tonalRamp": [
+          "#060D08",
+          "#1F2822",
+          "#3B453E",
+          "#5A645D",
+          "#7B857E",
+          "#9DA8A1",
+          "#C1CDC5",
+          "#E6F2EA"
+        ]
+      },
+      "caution": {
+        "role": "tertiary",
+        "displayName": "Muted Amber",
+        "canonical": "#8A5A0B",
+        "oklch": "oklch(50.8% 0.105 71.9)",
+        "tonalRamp": [
+          "#130900",
+          "#352001",
+          "#5C3A00",
+          "#855602",
+          "#A97732",
+          "#CE9A57",
+          "#F4BE7B",
+          "#FFEBD4"
+        ]
+      },
+      "caution-tint": {
+        "role": "tertiary",
+        "displayName": "Muted Amber Tint",
+        "canonical": "#F6ECD6",
+        "oklch": "oklch(94.5% 0.031 86.5)",
+        "tonalRamp": [
+          "#100A00",
+          "#2C2413",
+          "#49412F",
+          "#69604D",
+          "#8A816E",
+          "#AEA48F",
+          "#D2C8B3",
+          "#F8EED8"
+        ]
+      },
+      "risk": {
+        "role": "tertiary",
+        "displayName": "Soft Brick",
+        "canonical": "#B23B33",
+        "oklch": "oklch(52.3% 0.156 27.6)",
+        "tonalRamp": [
+          "#1F0001",
+          "#4C0103",
+          "#800107",
+          "#A8312A",
+          "#CF564B",
+          "#F77A6D",
+          "#FFB3A9",
+          "#FEE9E6"
+        ]
+      },
+      "risk-tint": {
+        "role": "tertiary",
+        "displayName": "Soft Brick Tint",
+        "canonical": "#F6E1DE",
+        "oklch": "oklch(92.6% 0.024 27.3)",
+        "tonalRamp": [
+          "#140706",
+          "#30211F",
+          "#4E3D3B",
+          "#6E5C5A",
+          "#907D7B",
+          "#B3A09D",
+          "#D8C4C1",
+          "#FEE9E6"
+        ]
+      },
+      "grid": {
+        "role": "neutral",
+        "displayName": "Measured Grid",
+        "canonical": "rgba(16,33,58,0.055)"
+      },
+      "grid-major": {
+        "role": "neutral",
+        "displayName": "Measured Grid Major",
+        "canonical": "rgba(16,33,58,0.09)"
+      },
+      "trace-a-tint": {
+        "role": "secondary",
+        "displayName": "Path A Tint",
+        "canonical": "rgba(36,86,200,0.10)"
+      },
+      "trace-b-tint": {
+        "role": "secondary",
+        "displayName": "Path B Tint",
+        "canonical": "rgba(0,127,104,0.10)"
+      },
+      "trace-c-tint": {
+        "role": "secondary",
+        "displayName": "Path C Tint",
+        "canonical": "rgba(176,74,27,0.10)"
+      },
+      "trace-d-tint": {
+        "role": "secondary",
+        "displayName": "Path D Tint",
+        "canonical": "rgba(122,79,181,0.10)"
+      },
+      "trace-e-tint": {
+        "role": "secondary",
+        "displayName": "Path E Tint",
+        "canonical": "rgba(122,104,0,0.10)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Homepage hero headline only."
+      },
+      "headline": {
+        "displayName": "Headline (h1)",
+        "purpose": "Page titles. MASTER.md specifies weight 720; build ships 700."
+      },
+      "headline-section": {
+        "displayName": "Section headline (h2)",
+        "purpose": "Section headings, max 44rem wide."
+      },
+      "title": {
+        "displayName": "Title (h3)",
+        "purpose": "Panel and card titles. MASTER.md specifies weight 650; build ships 600."
+      },
+      "readout-xl": {
+        "displayName": "Readout XL",
+        "purpose": "Headline metrics; Geist tabular numerals."
+      },
+      "readout": {
+        "displayName": "Readout",
+        "purpose": "Standard instrument readouts; count up over 600ms."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Section introductions in ink-2."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, max 68ch."
+      },
+      "body-small": {
+        "displayName": "Small",
+        "purpose": "Nav links, chart summaries, table cells."
+      },
+      "label": {
+        "displayName": "Label / Caption",
+        "purpose": "Readout and control labels, legends, axis titles, in muted."
+      }
+    },
+    "shadows": [
+      {
+        "name": "shadow-1",
+        "value": "0 1px 2px rgba(16,33,58,0.06)",
+        "purpose": "Inputs, resting cards, buttons, selected segment, scrolled nav."
+      },
+      {
+        "name": "shadow-2",
+        "value": "0 1px 2px rgba(16,33,58,0.05), 0 8px 24px -12px rgba(16,33,58,0.16)",
+        "purpose": "Hovered cards, chart tooltips, slider thumb."
+      },
+      {
+        "name": "shadow-3",
+        "value": "0 2px 4px rgba(16,33,58,0.05), 0 24px 48px -20px rgba(16,33,58,0.24)",
+        "purpose": "The hero instrument, source popovers, dialogs, bottom sheets."
+      }
+    ],
+    "gradients": [
+      {
+        "name": "field-wash",
+        "value": "radial-gradient(60% 50% at 78% 30%, rgba(36,86,200,0.08), transparent 70%), radial-gradient(40% 40% at 90% 70%, rgba(0,127,104,0.07), transparent 70%)",
+        "purpose": "Hero field and closing CTA band only."
+      },
+      {
+        "name": "measured-field",
+        "value": "8px minor grid in --grid, 40px major grid in --grid-major, masked by .field-fade",
+        "purpose": "Behind instruments only (hero demo, college metric header, onboarding)."
+      }
+    ],
+    "focus": {
+      "value": "outline: 2px solid var(--trace-a); outline-offset: 2px; border-radius: 4px",
+      "caret": "var(--trace-a)",
+      "selection": "background var(--trace-a-tint), color var(--ink)"
+    },
+    "motion": [
+      {
+        "name": "enterSpring",
+        "value": "spring, duration 0.45s, bounce 0",
+        "purpose": "Default enter: opacity 0->1, translateY 8->0, blur 4px->0."
+      },
+      {
+        "name": "microSpring",
+        "value": "spring, duration 0.3s, bounce 0",
+        "purpose": "Hover, tap, toggles, segmented indicator, nav underline, popovers."
+      },
+      {
+        "name": "easeOutExpo",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Count-ups, trace draws, value tweens, sheet exit."
+      },
+      {
+        "name": "buttonHover / buttonTap",
+        "value": "y -1px / scale 0.98",
+        "purpose": "Primary and secondary buttons."
+      },
+      {
+        "name": "stagger",
+        "value": "0.06s hero, 0.04s lists capped at 8 items",
+        "purpose": "Staggered entrances."
+      },
+      {
+        "name": "countUp",
+        "value": "600ms easeOutExpo",
+        "purpose": "Readouts count from previous to new value."
+      },
+      {
+        "name": "traceDraw",
+        "value": "pathLength 0->1, 900ms easeOutExpo, +0.12s per path; d morphs 600ms",
+        "purpose": "Chart traces draw once, then morph."
+      },
+      {
+        "name": "markerSettle",
+        "value": "spring 0.5s, bounce 0.15, delay 0.9s",
+        "purpose": "Break-even marker settles in last."
+      },
+      {
+        "name": "sheet",
+        "value": "y 100%->0, spring 0.4s; exit 0.22s easeOutExpo",
+        "purpose": "Mobile bottom sheets."
+      },
+      {
+        "name": "reducedEnter",
+        "value": "opacity-only crossfade 0.15s, final state",
+        "purpose": "Replaces every variant under prefers-reduced-motion."
+      },
+      {
+        "name": "revealViewport",
+        "value": "once, margin 0px 0px -10% 0px",
+        "purpose": "Scroll reveal trigger."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "xl",
+        "value": "1280px"
+      }
+    ],
+    "layout": {
+      "container": "1200px",
+      "measure": "68ch",
+      "gutters": "16px / 32px (>=768) / 48px (>=1280)",
+      "navHeight": "64px",
+      "verifiedWidths": [
+        375,
+        768,
+        1024,
+        1440
+      ]
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink-filled main action, e.g. Calculate My Path or Compare Colleges.",
+      "html": "<button class=\"ds-btn-primary\">Calculate my path</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border:0;border-radius:var(--radius-sm,10px);background:var(--ink,#10213A);color:var(--on-ink,#fff);font-family:var(--font-sans,Geist,ui-sans-serif,system-ui,sans-serif);font-size:0.9375rem;font-weight:600;box-shadow:var(--shadow-1,0 1px 2px rgba(16,33,58,.06));cursor:pointer;transition:background-color .15s,transform .3s cubic-bezier(.16,1,.3,1)}.ds-btn-primary:hover{background:var(--ink-hover,#1B3152);transform:translateY(-1px)}.ds-btn-primary:active{transform:scale(.98)}.ds-btn-primary:focus-visible{outline:2px solid var(--trace-a);outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Surface button with a strong hairline border for the second action.",
+      "html": "<button class=\"ds-btn-secondary\">Explore the simulator</button>",
+      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;justify-content:center;height:44px;padding:0 20px;border:1px solid var(--rule-strong,#C9C2B4);border-radius:var(--radius-sm,10px);background:var(--surface,#fff);color:var(--ink,#10213A);font-family:var(--font-sans,Geist,ui-sans-serif,system-ui,sans-serif);font-size:0.9375rem;font-weight:600;box-shadow:var(--shadow-1,0 1px 2px rgba(16,33,58,.06));cursor:pointer;transition:border-color .15s,transform .3s cubic-bezier(.16,1,.3,1)}.ds-btn-secondary:hover{border-color:rgba(16,33,58,.4);transform:translateY(-1px)}.ds-btn-secondary:active{transform:scale(.98)}.ds-btn-secondary:focus-visible{outline:2px solid var(--trace-a);outline-offset:2px}"
+    },
+    {
+      "name": "Tertiary Link Button",
+      "kind": "button",
+      "refersTo": "button-tertiary",
+      "description": "Ink text action that underlines on hover.",
+      "html": "<button class=\"ds-btn-tertiary\">View as table</button>",
+      "css": ".ds-btn-tertiary{background:none;border:0;padding:0;border-radius:var(--radius-xs,6px);color:var(--ink,#10213A);font-family:var(--font-sans,Geist,ui-sans-serif,system-ui,sans-serif);font-size:0.9375rem;font-weight:600;text-underline-offset:4px;text-decoration-color:var(--rule-strong,#C9C2B4);cursor:pointer}.ds-btn-tertiary:hover{text-decoration-line:underline}.ds-btn-tertiary:active{transform:scale(.98)}.ds-btn-tertiary:focus-visible{outline:2px solid var(--trace-a);outline-offset:2px}"
+    },
+    {
+      "name": "Segmented Toggle",
+      "kind": "input",
+      "refersTo": "segmented-selected",
+      "description": "Radio-group toggle for Resident / Non-resident and living arrangement; the ink segment slides.",
+      "html": "<div class=\"ds-seg\" role=\"radiogroup\" aria-label=\"Residency\"><button class=\"ds-seg-item is-active\" role=\"radio\" aria-checked=\"true\"><span>Resident</span><small>$14,312</small></button><button class=\"ds-seg-item\" role=\"radio\" aria-checked=\"false\"><span>Non-resident</span><small>$48,398</small></button></div>",
+      "css": ".ds-seg{display:flex;padding:4px;border:1px solid var(--rule,#DDD8CE);border-radius:var(--radius-sm,10px);background:var(--surface-sunk,#F1EEE7);font-family:var(--font-sans,Geist,ui-sans-serif,system-ui,sans-serif);max-width:360px}.ds-seg-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:40px;padding:6px 12px;border:0;border-radius:7px;background:transparent;color:var(--ink-2,#3E4C63);cursor:pointer;transition:background-color .3s,color .15s}.ds-seg-item span{font-size:.875rem;font-weight:600;line-height:1.2}.ds-seg-item small{font-size:.75rem;color:var(--muted,#5B677A);font-variant-numeric:tabular-nums}.ds-seg-item:hover{color:var(--ink,#10213A)}.ds-seg-item.is-active{background:var(--ink,#10213A);color:var(--on-ink,#fff);box-shadow:var(--shadow-1,0 1px 2px rgba(16,33,58,.06))}.ds-seg-item.is-active small{color:rgba(255,255,255,.8)}.ds-seg-item:focus-visible{outline:2px solid var(--trace-a);outline-offset:2px}"
+    },
+    {
+      "name": "Graduated Slider",
+      "kind": "input",
+      "refersTo": "slider-track",
+      "description": "Ticked sunk track, trace-ink fill, ink thumb; min and max always visible.",
+      "html": "<div class=\"ds-slider\"><div class=\"ds-slider-head\"><label>Aid per year</label><output>$15,000</output></div><div class=\"ds-slider-track\"><span class=\"ds-slider-fill\"></span><span class=\"ds-slider-thumb\" tabindex=\"0\" role=\"slider\" aria-valuenow=\"15000\" aria-label=\"Aid per year\"></span></div><div class=\"ds-slider-ends\"><span>$0</span><span>$40,000</span></div></div>",
+      "css": ".ds-slider{display:grid;gap:8px;max-width:360px;font-family:var(--font-sans,Geist,ui-sans-serif,system-ui,sans-serif)}.ds-slider-head{display:flex;justify-content:space-between;align-items:baseline}.ds-slider-head label{font-size:.8125rem;font-weight:500;color:var(--muted,#5B677A)}.ds-slider-head output{font-size:.875rem;font-weight:600;color:var(--ink,#10213A);font-variant-numeric:tabular-nums}.ds-slider-track{position:relative;height:8px;margin:12px 0;border-radius:999px;background-color:var(--surface-sunk,#F1EEE7);background-image:repeating-linear-gradient(90deg,var(--rule-strong,#C9C2B4) 0 1px,transparent 1px 10%)}.ds-slider-fill{position:absolute;inset:0 62% 0 0;border-radius:999px;background:var(--trace-a,#2456C8)}.ds-slider-thumb{position:absolute;left:38%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border:2px solid var(--on-ink,#fff);border-radius:999px;background:var(--ink,#10213A);box-shadow:var(--shadow-2,0 1px 2px rgba(16,33,58,.05),0 8px 24px -12px rgba(16,33,58,.16));cursor:pointer;transition:transform .15s}.ds-slider-thumb:hover{transform:scale(1.1)}.ds-slider-thumb:focus-visible{outline:2px solid var(--trace-a);outline-offset:2px}.ds-slider-ends{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted,#5B677A);font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Readout",
+      "kind": "custom",
+      "refersTo": "readout-value",
+      "description": "Caption label, tabular number, muted unit, source footnote marker; counts up on change.",
+      "html": "<dl class=\"ds-readout\"><dt>Net cost, 4 years</dt><dd><span class=\"ds-readout-n\">$78,400</span><span class=\"ds-readout-u\">total</span><button class=\"ds-fn\" aria-label=\"View source for Net cost\">1</button></dd><dd class=\"ds-readout-est\">Estimate</dd></dl>",
+      "css": ".ds-readout{display:grid;gap:4px;margin:0;font-family:var(--font-sans,Geist,ui-sans-serif,system-ui,sans-serif)}.ds-readout dt{font-size:.8125rem;font-weight:500;color:var(--muted,#5B677A)}.ds-readout dd{margin:0;display:flex;align-items:baseline;gap:6px}.ds-readout-n{font-size:1.5rem;line-height:1.1;letter-spacing:-.01em;font-weight:600;color:var(--ink,#10213A);font-variant-numeric:tabular-nums}.ds-readout-u{font-size:.8125rem;font-weight:500;color:var(--muted,#5B677A)}.ds-readout-est{font-size:.75rem;font-weight:500;color:var(--muted,#5B677A)}.ds-fn{display:inline-flex;align-items:center;justify-content:center;height:1.15rem;min-width:1.15rem;padding:0 4px;transform:translateY(-.35em);border:1px solid var(--rule-strong,#C9C2B4);border-radius:4px;background:var(--surface,#fff);color:var(--ink-2,#3E4C63);font-size:.625rem;font-weight:600;line-height:1;cursor:pointer;transition:border-color .15s,color .15s}.ds-fn:hover{border-color:var(--ink,#10213A);color:var(--ink,#10213A)}.ds-fn:focus-visible{outline:2px solid var(--trace-a);outline-offset:2px}"
+    },
+    {
+      "name": "Path Tag",
+      "kind": "chip",
+      "refersTo": "path-tag",
+      "description": "Letter A-E on its trace ink, followed by the path's specimen line.",
+      "html": "<span class=\"ds-path\"><span class=\"ds-path-tag\" style=\"background:var(--trace-a,#2456C8)\">A</span><span>UC Berkeley · Economics · CA resident</span></span> <span class=\"ds-path\"><span class=\"ds-path-tag\" style=\"background:var(--trace-b,#007F68)\">B</span><span>UT Austin · Economics · Non-resident</span></span>",
+      "css": ".ds-path{display:inline-flex;align-items:center;gap:8px;margin:4px 12px 4px 0;font-family:var(--font-sans,Geist,ui-sans-serif,system-ui,sans-serif);font-size:.875rem;color:var(--ink,#10213A)}.ds-path-tag{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:var(--radius-xs,6px);color:var(--on-ink,#fff);font-size:.8125rem;font-weight:700;line-height:1}"
+    },
+    {
+      "name": "Confidence Badge and Sample Chip",
+      "kind": "chip",
+      "refersTo": "badge-confidence-high",
+      "description": "Three-bar gauge plus words; never color alone.",
+      "html": "<span class=\"ds-badge ds-badge-high\"><span class=\"ds-gauge\"><i style=\"height:5px\"></i><i style=\"height:7.5px\"></i><i style=\"height:10px\"></i></span>High confidence</span> <span class=\"ds-badge ds-badge-mod\"><span class=\"ds-gauge\"><i style=\"height:5px\"></i><i style=\"height:7.5px\"></i><i class=\"off\" style=\"height:10px\"></i></span>Moderate confidence</span> <span class=\"ds-badge ds-badge-mod\"><span class=\"ds-dot\"></span>Sample data</span>",
+      "css": ".ds-badge{display:inline-flex;align-items:center;gap:6px;margin:2px;padding:2px 8px;border-radius:999px;font-family:var(--font-sans,Geist,ui-sans-serif,system-ui,sans-serif);font-size:.75rem;font-weight:600}.ds-badge-high{background:var(--gain-tint,#E4F0E8);color:var(--gain,#2A7547)}.ds-badge-mod{background:var(--caution-tint,#F6ECD6);color:var(--caution,#8A5A0B)}.ds-gauge{display:flex;align-items:flex-end;gap:2px}.ds-gauge i{display:block;width:3px;border-radius:1px;background:currentColor}.ds-gauge i.off{opacity:.25}.ds-dot{width:6px;height:6px;border-radius:999px;background:currentColor}"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Surface, 1px hairline, 14px radius, resting shadow; interactive cards shift border and shadow, not position.",
+      "html": "<a class=\"ds-card\" href=\"#\"><strong>University of Michigan</strong><span>Ann Arbor, MI · Public</span></a>",
+      "css": ".ds-card{display:grid;gap:4px;max-width:320px;padding:16px 20px;border:1px solid var(--rule,#DDD8CE);border-radius:var(--radius-md,14px);background:var(--surface,#fff);box-shadow:var(--shadow-1,0 1px 2px rgba(16,33,58,.06));color:var(--ink,#10213A);text-decoration:none;font-family:var(--font-sans,Geist,ui-sans-serif,system-ui,sans-serif);transition:border-color .2s,box-shadow .2s}.ds-card strong{font-family:var(--font-display,'Schibsted Grotesk',ui-sans-serif,system-ui,sans-serif);font-size:1.2rem;font-weight:600;letter-spacing:-.01em}.ds-card span{font-size:.875rem;color:var(--muted,#5B677A)}.ds-card:hover{border-color:var(--rule-strong,#C9C2B4);box-shadow:var(--shadow-2,0 1px 2px rgba(16,33,58,.05),0 8px 24px -12px rgba(16,33,58,.16))}.ds-card:focus-visible{outline:2px solid var(--trace-a);outline-offset:2px}"
+    },
+    {
+      "name": "Navigation",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "64px sticky paper header; ink underline marks the active link.",
+      "html": "<header class=\"ds-nav\"><span class=\"ds-nav-logo\">College Value Lab</span><nav><a href=\"#\">Explore</a><a href=\"#\" aria-current=\"page\">Compare</a><a href=\"#\">Simulator</a><a href=\"#\">Methodology</a></nav><a class=\"ds-nav-cta\" href=\"#\">Get started</a></header>",
+      "css": ".ds-nav{display:flex;align-items:center;gap:24px;height:64px;padding:0 32px;background:rgba(248,246,242,.92);border-bottom:1px solid var(--rule,#DDD8CE);box-shadow:var(--shadow-1,0 1px 2px rgba(16,33,58,.06));font-family:var(--font-sans,Geist,ui-sans-serif,system-ui,sans-serif)}.ds-nav-logo{font-family:var(--font-display,'Schibsted Grotesk',ui-sans-serif,system-ui,sans-serif);font-weight:700;color:var(--ink,#10213A)}.ds-nav nav{display:flex;gap:4px;flex:1}.ds-nav nav a{position:relative;padding:6px 10px;border-radius:var(--radius-xs,6px);font-size:.875rem;font-weight:500;color:var(--ink-2,#3E4C63);text-decoration:none;transition:color .15s}.ds-nav nav a:hover,.ds-nav nav a[aria-current=page]{color:var(--ink,#10213A)}.ds-nav nav a[aria-current=page]::after{content:'';position:absolute;left:10px;right:10px;bottom:-13px;height:2px;border-radius:999px;background:var(--ink,#10213A)}.ds-nav a:focus-visible{outline:2px solid var(--trace-a);outline-offset:2px}.ds-nav-cta{display:inline-flex;align-items:center;height:36px;padding:0 12px;border-radius:var(--radius-sm,10px);background:var(--ink,#10213A);color:var(--on-ink,#fff);font-size:.875rem;font-weight:600;text-decoration:none}.ds-nav-cta:hover{background:var(--ink-hover,#1B3152)}"
+    },
+    {
+      "name": "Axis Rule",
+      "kind": "custom",
+      "refersTo": "",
+      "description": "Section divider: a hairline carrying ticks every 8px and major ticks every 40px.",
+      "html": "<div class=\"ds-axis\" aria-hidden=\"true\"></div>",
+      "css": ".ds-axis{height:9px;width:100%;background-image:linear-gradient(var(--rule-strong,#C9C2B4),var(--rule-strong,#C9C2B4)),repeating-linear-gradient(90deg,var(--rule-strong,#C9C2B4) 0 1px,transparent 1px 40px),repeating-linear-gradient(90deg,var(--rule,#DDD8CE) 0 1px,transparent 1px 8px);background-size:100% 1px,100% 9px,100% 5px;background-repeat:no-repeat}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Calibrated Instrument",
+    "overview": "Each college path is an experiment the visitor runs on a precision instrument. The page is not a brochure that ranks schools: it is a warm off-white bench ruled by a faint measured grid, with navy ink for structure and a small set of \"trace inks\" that identify each path (A through E) the way a plotter identifies its pens. Numbers are read off the instrument as readouts, in tabular Geist numerals with muted units and a footnote marker that answers \"where did this come from?\"\n\nThe density is that of a lab instrument, not a dashboard: a few large, rounded panels hold the controls, readouts and chart for one experiment, and everything around them stays quiet. Headlines in Schibsted Grotesk are confident, tightly set and undecorated. Motion is calibrated rather than decorative: readouts count up from their previous value, traces draw once and then morph, and the break-even marker settles in last.\n\nThe build is light-first and explicitly rejects the fintech default (dark gold and purple, headline plus dashboard screenshot plus three feature cards), gradient text, glassmorphism, and any single \"score\" or verdict for a college.",
+    "keyCharacteristics": [
+      "Warm paper field (#F8F6F2) with an 8px/40px measured grid behind instruments only.",
+      "Navy ink (#10213A) for text, axes and primary fills; blue and teal trace inks for Path A and Path B.",
+      "Every path encoded three ways: letter tag, trace color, and line style.",
+      "Readouts: caption label, tabular number, muted unit, source footnote marker.",
+      "Tick-marked axis rules divide sections.",
+      "Radius encodes hierarchy: instrument (20px) > card (14px) > control (10px) > tag (6px).",
+      "Soft navy-tinted shadows; no grey shadows, no glows."
+    ],
+    "rules": [
+      {
+        "name": "The Three Encodings Rule",
+        "body": "A path is never identified by color alone. It always carries its letter tag, its trace color and its line style (solid, solid, dashed, dotted, dash-dot), plus a direct end label in charts. Series text is set in ink, never in trace color.",
+        "section": "colors"
+      },
+      {
+        "name": "The Signals Are Readouts Rule",
+        "body": "Gain, caution and risk appear only in readout states, badges and chips, always paired with a word or icon (\"High confidence\", \"Sample data\"). They never decorate layout.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Gradients Rule",
+        "body": "Gradients appear in exactly three places: the hero field wash (two radial washes of trace A at 8% and trace B at 7%), chart emphasis under a trace, and the closing CTA band. Nothing else.",
+        "section": "colors"
+      },
+      {
+        "name": "The Sentence Case Rule",
+        "body": "Sentence case everywhere. No all-caps labels, no tracked-out eyebrows, and no headline with a single word set in another color or in italic.",
+        "section": "typography"
+      },
+      {
+        "name": "The Muted Unit Rule",
+        "body": "A unit sits beside its number in `--muted`, smaller and lighter (for example \"$78,400 /yr\"), and the number is always tabular.",
+        "section": "typography"
+      },
+      {
+        "name": "The Earned Shadow Rule",
+        "body": "Shadow grows only on interaction or for the single most important object in a view. Shadows are always navy-tinted, never grey, and never glow.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do take every color, font, radius and shadow from the tokens in `app/globals.css`, which mirror `design-system/MASTER.md`.",
+      "Do give every number units, tabular numerals and a source footnote marker; label projections \"Estimate\" and seeded values \"Sample data\".",
+      "Do identify each path with its letter tag, trace ink and line style together.",
+      "Do keep text contrast at 4.5:1 or higher and use the 2px `--trace-a` focus ring at 2px offset.",
+      "Do divide quantitative sections with the tick-marked axis rule, and put the measured grid only behind instruments.",
+      "Do step radius down as you nest: 20px instrument, 14px card, 10px control, 6px tag.",
+      "Do give every chart a visible text summary, a \"View as table\" fallback and keyboard access.",
+      "Do import motion from `lib/animations.ts` and respect reduced motion."
+    ],
+    "donts": [
+      "Don't use gradient text, glassmorphism or backdrop blur on content, purple or pink gradients, or neon glows.",
+      "Don't use Inter, Roboto, Arial, IBM Plex, DM Sans, Space Grotesk or Plus Jakarta Sans.",
+      "Don't use all-caps labels, tracked-out eyebrows, or a single accented word in a headline.",
+      "Don't build identical card grids, put side-stripe borders on cards, or use one radius everywhere.",
+      "Don't reduce a college to a single score or a \"better/worse\" verdict.",
+      "Don't convey meaning with color alone, or set series text in trace color.",
+      "Don't append arrows to button labels or use emoji as icons (use Lucide).",
+      "Don't run infinite decorative loops; shimmer is only for loading."
+    ]
+  }
+}

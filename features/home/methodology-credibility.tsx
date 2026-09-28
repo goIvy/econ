@@ -46,7 +46,7 @@ export function MethodologyCredibility() {
       </div>
       <div className="lg:col-span-5">
         <div className="rounded-lg bg-ink p-6 text-surface sm:p-8">
-          <p className="font-display text-h3 font-semibold text-surface">What this can&apos;t tell you</p>
+          <p className="font-display text-h3 font-[650] text-surface">What this can&apos;t tell you</p>
           <ul className="mt-5 grid gap-3">
             {LIMITATIONS.map((l) => (
               <li key={l} className="flex gap-3 text-small text-surface/85">

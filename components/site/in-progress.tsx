@@ -18,7 +18,7 @@ export function InProgress({
     <PageShell title={title} lede={lede}>
       <div className="grid gap-12 lg:grid-cols-2">
         <section aria-labelledby="coming-h" className="grid content-start gap-4">
-          <h2 id="coming-h" className="text-h3 font-semibold">What this will include</h2>
+          <h2 id="coming-h" className="text-h3 font-[650]">What this will include</h2>
           <ul className="grid gap-2">
             {coming.map((c) => (
               <li key={c} className="flex gap-3 text-body text-ink-2">
@@ -30,7 +30,7 @@ export function InProgress({
           <p className="text-small text-muted">This area is planned for a later release. Nothing here is live yet.</p>
         </section>
         <section aria-labelledby="now-h" className="grid content-start gap-4">
-          <h2 id="now-h" className="text-h3 font-semibold">You can use now</h2>
+          <h2 id="now-h" className="text-h3 font-[650]">You can use now</h2>
           <ul className="grid gap-3">
             {meanwhile.map((m) => (
               <li key={m.href}>

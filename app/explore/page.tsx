@@ -87,7 +87,7 @@ export default async function ExplorePage(props: PageProps<"/explore">) {
           {cards.length === 0 ? (
             <div className="grid justify-items-start gap-3 rounded-lg border border-dashed border-rule-strong bg-surface p-8">
               <SearchX className="size-6 text-muted" aria-hidden />
-              <p className="font-display text-h3 font-semibold">No colleges match these filters</p>
+              <p className="font-display text-h3 font-[650]">No colleges match these filters</p>
               <p className="measure text-small text-ink-2">Try widening the net price or graduation rate, or search by state instead of city. The demo dataset covers 120 colleges.</p>
               <Link href="/explore" className="text-small font-semibold text-ink underline decoration-rule-strong underline-offset-4 hover:decoration-ink">
                 Clear search and filters

@@ -107,6 +107,8 @@ Rules:
 
 `--space-1: 4px` · `--space-2: 8px` · `--space-3: 12px` · `--space-4: 16px` · `--space-5: 24px` · `--space-6: 32px` · `--space-7: 48px` · `--space-8: 64px` · `--space-9: 96px` · `--space-10: 128px`
 
+These map one-to-one to Tailwind's 4px spacing scale (`--space-2` = `2`, `--space-5` = `6`, `--space-9` = `24`); components use the Tailwind utilities rather than separate CSS variables.
+
 - Section rhythm: `--space-9` desktop / `--space-8` mobile between homepage sections; more space above a heading than below it.
 - Content max width `1200px`; reading width `68ch`; gutters `16px` (mobile) → `32px` (≥768) → `48px` (≥1280).
 - Grid module: the field grid is **8px minor / 40px major**, and layouts snap to it.
@@ -159,9 +161,9 @@ These are the parts that make the world recognizable with the content removed.
 
 ## 5. Data visualization
 
-- Library: Recharts, with custom SVG/D3 only for the salary-percentile strip and the break-even crossing annotation.
+- Library: Recharts for standard charts (debt balance, tuition trend). Custom SVG for the instrument's signature charts: the cumulative-value trace chart (path draw, crosshair, break-even marker, direct end labels), the salary-percentile strip, and the tradeoff strip plot.
 - Series colors: trace inks in path order A–E, plus line style (solid/solid/dashed/dotted/dash-dot) and end-of-line labels. **Never color alone.**
-- Axes in `--muted` at `--text-caption` size, with units always in the axis title ("Cumulative net value, USD"). Gridlines use `--grid-major`.
+- Axes in `--muted`; tick labels at 11px (the one sub-caption size, allowed only inside plots), with units always in the axis title ("Cumulative net value, USD"). Plot gridlines use `--rule`; `--grid-major` belongs to the measured-field background only.
 - Break-even: a vertical hairline in `--ink` at the crossing, with an annotation "≈ 8.2 years after graduation (estimate)".
 - Uncertainty: a 10th–90th percentile band as a trace tint, with the median as a solid line.
 - Every chart has a text summary below it (a visible sentence, not only `aria-label`), a keyboard-focusable data table fallback ("View as table"), a source footnote, and a "Projection" label when values are modeled.

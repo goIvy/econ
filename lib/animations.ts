@@ -63,7 +63,6 @@ export const pop: Variants = {
 /** Micro-interactions. */
 export const buttonHover = { y: -1 };
 export const buttonTap = { scale: 0.98 };
-export const cardHover = { y: -2, boxShadow: "var(--shadow-2)" };
 
 /** SVG trace draw (pathLength 0 → 1). */
 export const traceDraw: Variants = {

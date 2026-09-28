@@ -27,7 +27,7 @@ export function OutcomesPanel({ college, major }: { college: College; major: Maj
     <div className="grid gap-12">
       <section aria-labelledby="grad-h" className="grid gap-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 id="grad-h" className="flex items-center gap-1.5 text-h3 font-semibold">
+          <h3 id="grad-h" className="flex items-center gap-1.5 text-h3 font-[650]">
             Graduation probability
             <InfoTip label="graduation probability">{GRAD_DISCLAIMER}</InfoTip>
           </h3>
@@ -44,7 +44,7 @@ export function OutcomesPanel({ college, major }: { college: College; major: Maj
 
       <section aria-labelledby="emp-h" className="grid gap-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h3 id="emp-h" className="text-h3 font-semibold">Employment after graduating in {major.name}</h3>
+          <h3 id="emp-h" className="text-h3 font-[650]">Employment after graduating in {major.name}</h3>
           <SourceFootnote metric={`${major.name} employment outcomes`} lineage={major.unemploymentRate.lineage} n={3} />
         </div>
         <Waffle

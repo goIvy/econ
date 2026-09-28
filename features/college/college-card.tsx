@@ -37,7 +37,7 @@ export function CollegeCard({ c }: { c: CollegeCardData }) {
     >
       <div className="grid min-w-0 gap-3">
         <div className="min-w-0">
-          <h3 className="text-h3 font-semibold">
+          <h3 className="text-h3 font-[650]">
             <Link href={`/college/${c.id}`} className="rounded-xs hover:underline hover:decoration-rule-strong">
               {c.name}
             </Link>

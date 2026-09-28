@@ -178,7 +178,7 @@ function Overview({ college, result, bundle, residency }: { college: College; re
       {result && bundle && (
         <motion.section variants={motionSafe(enter, reduce)} initial="hidden" animate="visible" aria-labelledby="yp-h" className="rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
-            <h2 id="yp-h" className="text-h3 font-semibold">
+            <h2 id="yp-h" className="text-h3 font-[650]">
               Your path: {bundle.major.name}, {residency === "resident" ? (college.control === "public" ? `${college.state} resident` : "on campus") : "non-resident"}
             </h2>
             <SampleChip />
@@ -210,7 +210,7 @@ function Overview({ college, result, bundle, residency }: { college: College; re
         </motion.section>
       )}
       <section aria-labelledby="trend-h" className="grid gap-4">
-        <h2 id="trend-h" className="text-h3 font-semibold">
+        <h2 id="trend-h" className="text-h3 font-[650]">
           Price over time
           <SourceFootnote metric="Tuition and net price trend" lineage={college.costs.tuitionInState.lineage} n={5} className="ml-1" />
         </h2>
@@ -263,7 +263,7 @@ function Earnings({ college, bundle }: { college: College; bundle?: MajorBundle 
     <div className="grid gap-10">
       <section className="grid gap-4 rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-h3 font-semibold">{bundle.major.name} graduates: the full range</h2>
+          <h2 className="text-h3 font-[650]">{bundle.major.name} graduates: the full range</h2>
           <SampleChip />
         </div>
         <PercentileStrip p={p} compare={bundle.major.earlyCareer.value} compareLabel={`All ${bundle.major.name} graduates nationally`} label="Salary distribution" />
@@ -272,7 +272,7 @@ function Earnings({ college, bundle }: { college: College; bundle?: MajorBundle 
         </p>
       </section>
       <section className="grid gap-4">
-        <h2 className="text-h3 font-semibold">Institution-wide earnings</h2>
+        <h2 className="text-h3 font-[650]">Institution-wide earnings</h2>
         <dl className="grid grid-cols-2 gap-5 sm:grid-cols-3">
           <Readout label="Median earnings, 10 years after entry" value={college.medianEarnings.value} format={money} lineage={college.medianEarnings.lineage} footnote={1} unit="/yr" />
           <Readout label="Same major, national median" value={bundle.major.earlyCareer.value!.p50} format={money} lineage={bundle.major.earlyCareer.lineage} footnote={2} unit="/yr" />
@@ -306,7 +306,7 @@ function Research({ college }: { college: College }) {
   return (
     <section className="grid gap-4" aria-labelledby="research-h">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 id="research-h" className="text-h3 font-semibold">Raw metrics and where they come from</h2>
+        <h2 id="research-h" className="text-h3 font-[650]">Raw metrics and where they come from</h2>
         <SampleChip />
       </div>
       <div className="overflow-x-auto rounded-md border border-rule bg-surface">

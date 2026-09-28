@@ -67,7 +67,7 @@ export function Simulator({ colleges, majors, tuition }: { colleges: CollegeMeta
 
       <div className="grid gap-10 lg:grid-cols-12">
         <section aria-labelledby="inputs-h" className="lg:col-span-4">
-          <h2 id="inputs-h" className="mb-5 text-h3 font-semibold">Your assumptions</h2>
+          <h2 id="inputs-h" className="mb-5 text-h3 font-[650]">Your assumptions</h2>
           <CostControls
             control={college.control}
             state={college.state}

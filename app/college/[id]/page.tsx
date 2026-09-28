@@ -73,7 +73,7 @@ export default async function CollegePage(props: PageProps<"/college/[id]">) {
             </Link>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="grid gap-2">
-                <h1 className="text-h1 font-bold">{college.name}</h1>
+                <h1 className="text-h1 font-[720]">{college.name}</h1>
                 <p className="text-lede text-ink-2">
                   {college.city}, {college.state} · {college.control === "public" ? "Public" : "Private nonprofit"} · {number(college.undergradEnrollment.value)} undergraduates
                 </p>

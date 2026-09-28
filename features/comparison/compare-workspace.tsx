@@ -275,7 +275,7 @@ export function CompareWorkspace({
       <AnimatePresence>
       {paths.length > 0 && (
         <motion.section key="chart" variants={enter} initial="hidden" animate="visible" exit="exit" aria-labelledby="cum-h" className="rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
-          <h2 id="cum-h" className="mb-4 text-h3 font-semibold">Cumulative net value</h2>
+          <h2 id="cum-h" className="mb-4 text-h3 font-[650]">Cumulative net value</h2>
           <TraceChart title="Cumulative net value by path" series={series} marker={marker} band={{ from: 18, to: 22, label: "College" }} summary={summary} height={340} />
           <p className="mt-3 text-caption text-muted">
             Assumes {money(FUNDING.familyPerYear)}/yr family contribution{FUNDING.savings > 0 ? `, ${money(FUNDING.savings)} in savings` : ""} and {money(FUNDING.workPerYear)}/yr from work for every path. Debt is repaid over 10 years at the federal rate.

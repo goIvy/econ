@@ -26,7 +26,7 @@ export function PageShell({
           <div className={cn("mx-auto grid gap-4 px-4 pb-10 pt-10 md:px-8 md:pb-12 md:pt-14 xl:px-12", wide ? "max-w-[1320px]" : "max-w-[1200px]")}>
             <div className="flex flex-wrap items-end justify-between gap-6">
               <div className="grid max-w-[46rem] gap-3">
-                <h1 className="text-h1 font-bold">{title}</h1>
+                <h1 className="text-h1 font-[720]">{title}</h1>
                 {lede && <div className="text-lede text-ink-2">{lede}</div>}
               </div>
               {actions}
