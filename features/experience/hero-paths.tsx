@@ -105,6 +105,8 @@ export function HeroPaths({ pub, priv }: { pub: PathPreset; priv: PathPreset }) 
 
   const clipW = useTransform(head, (h) => Math.max(0, x(h) - M.l + 1));
   const headX = useTransform(head, (h) => x(h));
+  // The age tag follows the head but never leaves the chart.
+  const tagX = useTransform(head, (h) => clamp(x(h), M.l + 26, W - 27));
   const parallax = usePointerParallax<HTMLElement>(sectionRef);
   const fieldX = useTransform(parallax.x, [-1, 1], [-8, 8]);
   const fieldY = useTransform(parallax.y, [-1, 1], [-6, 6]);
@@ -203,7 +205,7 @@ export function HeroPaths({ pub, priv }: { pub: PathPreset; priv: PathPreset }) 
               ))}
 
               <motion.line style={{ x: headX }} x1={0} x2={0} y1={M.t - 6} y2={H - M.b} stroke="var(--ink)" strokeOpacity={0.5} />
-              <motion.g style={{ x: headX }}>
+              <motion.g style={{ x: tagX }}>
                 <rect x={-26} y={4} width={52} height={20} rx={10} fill="var(--ink)" />
                 <text x={0} y={18} textAnchor="middle" className="tabular fill-on-ink text-[11px] font-semibold">
                   <MotionTspan value={head} format={(v) => `Age ${Math.floor(v)}`} />
@@ -217,7 +219,7 @@ export function HeroPaths({ pub, priv }: { pub: PathPreset; priv: PathPreset }) 
 
           <HeadScrubber head={head} onChange={(v) => { pointerActive.current = true; setIntroDone(true); target.set(v); }} />
 
-          <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-md border border-rule bg-rule">
+          <div className="grid grid-cols-3 gap-px overflow-hidden rounded-md border border-rule bg-rule">
             {readouts.map((r) => (
               <div key={r.key} className="grid content-start gap-2 bg-surface p-3 sm:p-4">
                 <div className="flex items-start gap-2">
@@ -232,17 +234,19 @@ export function HeroPaths({ pub, priv }: { pub: PathPreset; priv: PathPreset }) 
                     <p className="hidden truncate text-caption text-muted sm:block">{r.sub}</p>
                   </div>
                 </div>
-                {r.rows.map(([label, v]) => (
-                  <div key={label} className="grid gap-0.5">
-                    <dt className="text-[0.75rem] text-muted">{label}</dt>
-                    <dd className={label === "Net position" ? "text-small font-semibold text-ink sm:text-base" : "text-small text-ink-2"}>
-                      <AnimatedNumber value={v} format={moneyCompact} />
-                    </dd>
-                  </div>
-                ))}
+                <dl className="grid gap-2">
+                  {r.rows.map(([label, v]) => (
+                    <div key={label} className="grid gap-0.5">
+                      <dt className="text-[0.75rem] text-muted">{label}</dt>
+                      <dd className={label === "Net position" ? "text-small font-semibold text-ink sm:text-base" : "text-small text-ink-2"}>
+                        <AnimatedNumber value={v} format={moneyCompact} />
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
               </div>
             ))}
-          </dl>
+          </div>
           <p className="text-caption text-muted" aria-live="polite">
             At age {shownAge}. College paid excludes loans, which appear as debt and are repaid from salary. Salaries before tax; net position after tax.
           </p>

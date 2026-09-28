@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { motion } from "framer-motion";
 import { Check, Plus } from "lucide-react";
 import { useCompareList } from "@/hooks/use-compare-list";
@@ -38,15 +39,19 @@ export function CollegeCard({ c }: { c: CollegeCardData }) {
       <div className="grid min-w-0 gap-3">
         <div className="min-w-0">
           <h3 className="text-h3 font-[650]">
-            <Link href={`/college/${c.id}`} className="rounded-xs hover:underline hover:decoration-rule-strong">
-              {c.name}
-            </Link>
+            {/* Shares its name with the detail page title, so the title glides into place on navigation. */}
+            <ViewTransition name={`college-name-${c.id}`}>
+              <Link href={`/college/${c.id}`} className="inline-block rounded-xs hover:underline hover:decoration-rule-strong">
+                {c.name}
+              </Link>
+            </ViewTransition>
           </h3>
           <p className="text-small text-muted">
             {c.city}, {c.state} · {c.control === "public" ? "Public" : "Private nonprofit"}
             {c.enrollment != null && ` · ${number(c.enrollment)} undergraduates`}
           </p>
         </div>
+        <ViewTransition name={`college-stats-${c.id}`}>
         <dl className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-[repeat(5,auto)] sm:justify-start sm:gap-x-8">
           <Stat label={c.control === "public" ? "Tuition (in / out)" : "Tuition"} value={c.control === "public" ? `${compactK(c.tuitionIn)} / ${compactK(c.tuitionOut)}` : money(c.tuitionIn)} />
           <Stat label="Avg. net price" value={money(c.netPrice)} />
@@ -54,6 +59,7 @@ export function CollegeCard({ c }: { c: CollegeCardData }) {
           <Stat label="Median earnings" value={money(c.medianEarnings)} />
           <Stat label="Typical debt" value={money(c.medianDebt)} />
         </dl>
+        </ViewTransition>
       </div>
       <div className="flex items-center gap-2 md:flex-col md:items-stretch">
         <motion.button

@@ -80,7 +80,7 @@ export default async function ComparePage(props: PageProps<"/compare">) {
       wide
     >
       <Suspense>
-        <CompareWorkspace colleges={colleges} majors={majors} initial={initial} funding={funding} />
+        <CompareWorkspace colleges={colleges} majors={majors} initial={initial} funding={funding} intro={sp.intro === "1"} />
       </Suspense>
     </PageShell>
   );

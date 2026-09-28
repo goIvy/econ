@@ -85,7 +85,7 @@ export function Onboarding({ colleges, majors, states, cities }: { colleges: Col
     });
     const f = [a.money.family, a.money.work, a.money.savings, a.money.loan].map((v) => Number(v) || 0);
     const fParam = f.some((v) => v > 0) ? `&f=${f.join(".")}` : "";
-    return picks.length ? `/compare?p=${picks.join(",")}${fParam}` : "/explore";
+    return picks.length ? `/compare?p=${picks.join(",")}${fParam}&intro=1` : "/explore";
   }, [a, colleges]);
 
   const variants = motionSafe(stepSlide, reduce);

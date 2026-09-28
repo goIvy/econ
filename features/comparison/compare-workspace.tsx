@@ -3,7 +3,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDown, ArrowUp, Check, Link2, Pencil, Plus, Trash2 } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { FuturesIntro } from "./futures-intro";
 import { TraceChart, type TraceSeries } from "@/components/charts/trace-chart";
 import { Button } from "@/components/ui/button";
 import { Combobox, type ComboOption } from "@/components/ui/combobox";
@@ -57,13 +58,18 @@ export function CompareWorkspace({
   majors,
   initial,
   funding: FUNDING,
+  intro = false,
 }: {
   colleges: CollegeMeta[];
   majors: Array<{ id: string; name: string; category: string }>;
   initial: PathSpec[];
   funding: CompareFunding;
+  /** Arrived from onboarding: play the personalized intro first. */
+  intro?: boolean;
 }) {
   const pathname = usePathname();
+  const [showIntro, setShowIntro] = useState(intro && initial.length > 0);
+  const endIntro = useCallback(() => setShowIntro(false), []);
   const [paths, setPaths] = useState<PathSpec[]>(initial);
   const [editing, setEditing] = useState<number | "new" | null>(initial.length === 0 ? "new" : null);
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "order", dir: 1 });
@@ -152,6 +158,34 @@ export function CompareWorkspace({
 
   return (
     <div className="grid min-w-0 grid-cols-1 gap-8">
+      <AnimatePresence initial={false}>
+        {showIntro && (
+          <FuturesIntro
+            key="intro"
+            onDone={endIntro}
+            paths={paths.map((p) => ({ college: byId.get(p.collegeId)?.shortName ?? p.collegeId, major: majors.find((m) => m.id === p.majorId)?.name ?? p.majorId }))}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence initial={false}>
+        {paths.length === 0 && (
+          <motion.section key="empty" variants={enter} initial="hidden" animate="visible" exit="exit" aria-labelledby="empty-h" className="measured-field grid gap-4 rounded-lg border border-dashed border-rule-strong p-5 sm:p-8">
+            <h2 id="empty-h" className="text-h3 font-[650]">Add your first college</h2>
+            <p className="max-w-[56ch] text-small text-ink-2">Build a path below, or start from a sample comparison and change it to fit you.</p>
+            <ul className="flex flex-wrap gap-2">
+              {SAMPLES.map((s) => (
+                <li key={s.label}>
+                  <motion.button type="button" whileHover={{ y: -1 }} whileTap={{ scale: 0.97 }} onClick={() => { setPaths(s.specs); setEditing(null); }} className="min-h-11 rounded-full border border-rule-strong bg-surface px-4 text-small font-semibold text-ink shadow-1 hover:border-ink">
+                    {s.label}
+                  </motion.button>
+                </li>
+              ))}
+            </ul>
+          </motion.section>
+        )}
+      </AnimatePresence>
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <Segmented
@@ -222,10 +256,11 @@ export function CompareWorkspace({
         {rows.length === 0 && paths.length > 0 && <p className="px-4 py-6 text-small text-muted">No paths match this filter.</p>}
       </div>
 
-      {/* phones: cards */}
-      <ul className="grid gap-3 md:grid-cols-2 xl:hidden">
+      {/* phones: swipeable cards; tablets: two columns */}
+      {sorted.length > 1 && <p className="-mb-5 text-caption text-muted md:hidden">Swipe to see each path.</p>}
+      <ul className="-mx-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0 xl:hidden" aria-label="Paths">
         {sorted.map((r) => (
-          <li key={specKey(r.spec) + r.i} className="rounded-md border border-rule bg-surface p-4 shadow-1">
+          <motion.li layout key={specKey(r.spec) + r.i} className="w-[86%] shrink-0 snap-start rounded-md border border-rule bg-surface p-4 shadow-1 md:w-auto">
             <div className="flex items-start justify-between gap-2">
               <span className="flex items-start gap-2.5">
                 <PathTag trace={r.trace} />
@@ -244,7 +279,7 @@ export function CompareWorkspace({
                 </div>
               ))}
             </dl>
-          </li>
+          </motion.li>
         ))}
       </ul>
 
@@ -287,6 +322,13 @@ export function CompareWorkspace({
     </div>
   );
 }
+
+const spec = (collegeId: string, majorId: string, aid: number): PathSpec => ({ collegeId, majorId, residency: "resident", living: "campus", aid });
+const SAMPLES: Array<{ label: string; specs: PathSpec[] }> = [
+  { label: "UC Berkeley vs NYU vs San José State", specs: [spec("uc-berkeley", "economics", 15000), spec("nyu", "finance", 30000), spec("san-jose-state", "economics", 8000)] },
+  { label: "CS: UT Austin vs Georgia Tech", specs: [spec("ut-austin", "computer-science", 10000), spec("georgia-tech", "computer-science", 10000)] },
+  { label: "Nursing: Georgia State vs U of Michigan", specs: [spec("georgia-state", "nursing", 9000), spec("u-michigan", "nursing", 12000)] },
+];
 
 function livingLabel(l: PathSpec["living"]) {
   return l === "campus" ? "On campus" : l === "home" ? "At home" : "Off campus";

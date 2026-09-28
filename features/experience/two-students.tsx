@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useSpring, useTransform, type MotionValue } fr
 import { useMemo, useState } from "react";
 import { AnimatedNumber, ScrollScene, scrollSceneTo, useMeasuredWidth, useScrollScene, useSteppedValue } from "@/components/motion";
 import { GraduatedSlider } from "@/components/ui/graduated-slider";
+import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { SampleChip, SourceFootnote } from "@/components/ui/lineage";
 import { clamp, linear, linePath, ticks, valueAt } from "@/components/charts/scale";
 import { crossingAge, opportunityCostOf, twoStudents } from "@/lib/calc";
@@ -49,6 +50,13 @@ export function TwoStudents(defaults: TwoStudentsProps) {
   const shownAge = reduce ? END : clamp(stepped, START, END);
   const row = rows[shownAge - START];
   const gap = row.a - row.b;
+  const controls = (
+    <>
+      <GraduatedSlider size="sm" label="College cost per year" value={cost} onChange={setCost} min={0} max={80000} step={1000} format={moneyCompact} trace="a" />
+      <GraduatedSlider size="sm" label="Starting salary after college" value={salary} onChange={setSalary} min={30000} max={120000} step={1000} format={moneyCompact} trace="a" />
+      <GraduatedSlider size="sm" label="Graduate's yearly raise" value={growth} onChange={setGrowth} min={0} max={0.07} step={0.0025} format={(v) => pct(v * 100, 1)} trace="a" />
+    </>
+  );
   const phase = shownAge < START + defaults.yearsInCollege ? "college" : cross != null && shownAge >= cross ? "after" : "catching";
 
   return (
@@ -75,14 +83,13 @@ export function TwoStudents(defaults: TwoStudentsProps) {
               )}
             </motion.p>
           </AnimatePresence>
-          <button type="button" onClick={() => setControlsOpen((o) => !o)} aria-expanded={controlsOpen} className="h-11 rounded-sm border border-rule-strong bg-surface px-4 text-small font-semibold text-ink lg:hidden">
-            {controlsOpen ? "Hide assumptions" : "Change cost, salary and raises"}
+          <button type="button" onClick={() => setControlsOpen(true)} className="h-11 rounded-sm border border-rule-strong bg-surface px-4 text-small font-semibold text-ink lg:hidden">
+            Change cost, salary and raises
           </button>
-          <div className={cn("gap-3 rounded-md border border-rule bg-surface p-3 sm:p-4 lg:grid", controlsOpen ? "grid" : "hidden")}>
-            <GraduatedSlider size="sm" label="College cost per year" value={cost} onChange={setCost} min={0} max={80000} step={1000} format={moneyCompact} trace="a" />
-            <GraduatedSlider size="sm" label="Starting salary after college" value={salary} onChange={setSalary} min={30000} max={120000} step={1000} format={moneyCompact} trace="a" />
-            <GraduatedSlider size="sm" label="Graduate's yearly raise" value={growth} onChange={setGrowth} min={0} max={0.07} step={0.0025} format={(v) => pct(v * 100, 1)} trace="a" />
-          </div>
+          <div className="hidden gap-3 rounded-md border border-rule bg-surface p-3 sm:p-4 lg:grid">{controls}</div>
+          <BottomSheet open={controlsOpen} onOpenChange={setControlsOpen} title="Assumptions">
+            <div className="grid gap-4">{controls}</div>
+          </BottomSheet>
         </div>
 
         <div className="order-1 grid min-w-0 content-start gap-3 rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-5 lg:order-2 lg:col-span-8">

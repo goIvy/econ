@@ -64,9 +64,10 @@ function Lesson({ slug, n, title, steps, visual }: { slug: string; n: number; ti
                 refs.current[i] = el;
               }}
               data-step={i}
-              className={cn("grid min-h-[48svh] content-center transition-opacity duration-300 lg:min-h-[62svh]", step === i ? "opacity-100" : "opacity-40")}
+              className="grid min-h-[48svh] content-center lg:min-h-[62svh]"
             >
-              <div className="grid gap-3 text-base text-ink-2 lg:text-lede">{s}</div>
+              {/* Inactive steps recede by color, not opacity, so they keep AA contrast. */}
+              <div className={cn("grid gap-3 text-base transition-colors duration-300 lg:text-lede", step === i ? "text-ink-2" : "text-muted")}>{s}</div>
             </div>
           ))}
         </div>

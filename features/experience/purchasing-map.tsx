@@ -107,16 +107,17 @@ export function PurchasingMap({ cities, lineage }: { cities: MapCity[]; lineage:
               </text>
             ))}
           </svg>
-          {/* hit targets: real buttons so every city works with a tap, a hover or the keyboard */}
+          {/* Pointer shortcuts: hover or tap a city. Dense metros overlap, so the fully accessible
+              equivalent is the "Compare with" picker (WCAG 2.5.8 equivalent-control exception). */}
           {cities.map((c) => (
             <button
               key={c.id}
               type="button"
+              tabIndex={-1}
+              aria-hidden
               onMouseEnter={() => setTargetId(c.id)}
-              onFocus={() => setTargetId(c.id)}
               onClick={() => setTargetId(c.id)}
-              aria-label={`${c.name}, ${c.state}: ${money(eq(c))}`}
-              aria-pressed={c.id === targetId}
+              title={`${c.name}: ${money(eq(c))}`}
               className={cn("absolute size-6 -translate-x-1/2 -translate-y-1/2 rounded-full outline-offset-2 sm:size-7")}
               style={{ left: `${(c.x / US_MAP.width) * 100}%`, top: `${(c.y / US_MAP.height) * 100}%` }}
             />

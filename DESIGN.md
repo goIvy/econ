@@ -357,6 +357,18 @@ All variants live in `lib/animations.ts`, and every one falls back under `prefer
 - **Break-even marker:** settles in last (spring 0.5s, bounce 0.15, 0.9s delay).
 - **Popover:** scale 0.97→1 with a 4px drop and 2px blur. **Sheet:** slides up from 100% on a 0.4s spring.
 
+### Interactive layer (signature)
+
+The site teaches by letting people move things. Each economic idea has one visual metaphor, used everywhere (full table in `design-system/MASTER.md` §6.1): branching paths for opportunity cost, crossing traces for break-even, a $1,000-block stack for debt, a spread of faint futures settling into a band for risk, circles resizing on a map for purchasing power, and a ledger that grows and then loses its aid for net price.
+
+- **Primitives** live in `components/motion` (`AnimatedNumber`, `MotionText`, `Tilt`, `usePointerParallax`, `useScrollScene`/`ScrollScene`, `useSteppedValue`, `useMeasuredWidth`) and springs in `lib/animations.ts` (`scrubSpring`, `numberSpring`, `parallaxSpring`, `tiltSpring`, `slotSpring`, `flipTransition`, `ledgerItem`, `block`).
+- **Separation:** components animate; `lib/calc` computes (`timeline.ts`, `opportunity.ts`, `simulation.ts`, `whatif.ts`).
+- **Scroll scenes** (net cost, two students, lessons) always have a visible control too (step dots, age stops, sliders) and collapse to their final state under reduced motion.
+- **Cursor response** only on fine pointers: hero parallax ≤8px, card tilt ≤2°. Everything that responds to hover also responds to tap, focus or a scrubber.
+- **Page transitions:** React `ViewTransition` morphs an explore card's title and stats into the college page header (380ms, eased; off under reduced motion).
+- **Phones:** swipeable card rows (compare stage, compare page), bottom sheets with drag-to-dismiss for assumptions, touch-draggable charts (salary graduate, hero scrubber).
+- **Path letters** on the homepage: A public university, B private university, C working from 18 (dashed), D second public university.
+
 ## Do's and Don'ts
 
 ### Do:

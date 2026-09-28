@@ -1,3 +1,4 @@
+import { ViewTransition } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -73,13 +74,16 @@ export default async function CollegePage(props: PageProps<"/college/[id]">) {
             </Link>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="grid gap-2">
-                <h1 className="text-h1 font-[720]">{college.name}</h1>
+                <ViewTransition name={`college-name-${college.id}`}>
+                  <h1 className="text-h1 font-[720]">{college.name}</h1>
+                </ViewTransition>
                 <p className="text-lede text-ink-2">
                   {college.city}, {college.state} · {college.control === "public" ? "Public" : "Private nonprofit"} · {number(college.undergradEnrollment.value)} undergraduates
                 </p>
               </div>
               <SampleChip />
             </div>
+            <ViewTransition name={`college-stats-${college.id}`}>
             <dl className="grid grid-cols-2 gap-x-6 gap-y-6 rounded-lg border border-rule bg-surface p-5 shadow-2 sm:grid-cols-3 lg:grid-cols-5">
               {college.control === "public" ? (
                 <>
@@ -100,6 +104,7 @@ export default async function CollegePage(props: PageProps<"/college/[id]">) {
                 <Readout size="sm" label="Average grant" value={college.aid.avgGrant.value} format="money" lineage={college.aid.avgGrant.lineage} footnote={10} />
               )}
             </dl>
+            </ViewTransition>
           </div>
         </header>
         <div className="mx-auto max-w-[1200px] px-4 pb-20 pt-6 md:px-8 xl:px-12">

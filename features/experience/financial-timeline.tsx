@@ -150,12 +150,16 @@ function Rail({ milestones, age, shown, onScrub, onJump, color }: { milestones: 
         <div aria-hidden className="absolute inset-x-0 top-5 h-2" style={{ backgroundImage: "repeating-linear-gradient(90deg, var(--rule-strong) 0 1px, transparent 1px calc(100% / 22))" }} />
         <div aria-hidden className="absolute inset-x-0 top-[26px] h-1 rounded-full bg-surface-sunk" />
         <motion.div aria-hidden className="absolute left-0 top-[26px] h-1 rounded-full" style={{ width: fill, background: color }} />
+        {/* phones: decorative dots (too close to tap); the scrubber and milestone caption carry the meaning */}
+        {milestones.map((m) => (
+          <span key={`dot-${m.label}${m.age}`} aria-hidden className={cn("absolute top-[22px] size-3 -translate-x-1/2 rounded-full border-2 sm:hidden", shown >= m.age ? "border-ink bg-ink" : "border-rule-strong bg-surface")} style={{ left: pos(m.age) }} />
+        ))}
         {milestones.map((m) => (
           <button
             key={m.label + m.age}
             type="button"
             onClick={() => onJump(m.age)}
-            className="group absolute top-[22px] z-10 grid -translate-x-1/2 justify-items-center"
+            className="group absolute top-[16px] z-10 hidden size-6 -translate-x-1/2 place-items-center sm:grid"
             style={{ left: pos(m.age) }}
             aria-label={`Jump to age ${formatAge(m.age)}: ${m.label}`}
           >
@@ -164,7 +168,7 @@ function Rail({ milestones, age, shown, onScrub, onJump, color }: { milestones: 
         ))}
         <Slider.Root value={[shown]} min={START} max={END} step={0.1} onValueChange={([v]) => onScrub(v)} className="absolute inset-x-0 top-[14px] flex h-6 touch-none select-none items-center" aria-label="Age">
           <Slider.Track className="relative h-6 grow" />
-          <Slider.Thumb aria-valuetext={`Age ${shown.toFixed(1)}`} className="relative block size-7 cursor-grab rounded-full border-[3px] border-surface shadow-3 transition-transform hover:scale-105 active:scale-95 active:cursor-grabbing" style={{ background: color }}>
+          <Slider.Thumb aria-label="Age" aria-valuetext={`Age ${shown.toFixed(1)}`} className="relative block size-7 cursor-grab rounded-full border-[3px] border-surface shadow-3 transition-transform hover:scale-105 active:scale-95 active:cursor-grabbing" style={{ background: color }}>
             <span className="tabular absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xs bg-ink px-2 py-0.5 text-caption font-semibold text-on-ink">{Math.floor(shown)}</span>
           </Slider.Thumb>
         </Slider.Root>
