@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { ButtonLink } from "@/components/ui/button";
 import { enter, motionSafe, staggerParent } from "@/lib/animations";
 import type { CollegeOption, MajorOption } from "@/services/data";

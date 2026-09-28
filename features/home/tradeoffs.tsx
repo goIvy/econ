@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useInView } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMemo, useRef, useState } from "react";
 import { PathTag, SampleChip, SourceFootnote, TRACE_VAR } from "@/components/ui/lineage";
 import { Segmented } from "@/components/ui/segmented";

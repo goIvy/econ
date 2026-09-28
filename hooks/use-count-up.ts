@@ -1,6 +1,7 @@
 "use client";
 
-import { animate, useReducedMotion } from "framer-motion";
+import { animate } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useEffect, useRef, useState } from "react";
 import { COUNT_UP_MS, easeOutExpo } from "@/lib/animations";
 

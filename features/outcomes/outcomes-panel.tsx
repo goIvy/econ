@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useRef } from "react";
 import { InfoTip } from "@/components/ui/info-tip";
 import { SampleChip, SourceFootnote } from "@/components/ui/lineage";

@@ -1,6 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useState } from "react";
 import { enterSpring, tip } from "@/lib/animations";
 import { money, moneyCompact } from "@/lib/format";

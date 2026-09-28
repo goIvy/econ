@@ -150,7 +150,15 @@ export const revealViewport = { once: true, margin: "0px 0px -10% 0px" } as cons
 /** Reduced-motion variant: final state, opacity-only crossfade ≤150ms. */
 export const reducedEnter: Variants = {
   hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.15 } },
+  // Reset anything a full-motion variant may already have applied (the server
+  // renders the full "hidden" state before the reduced-motion preference is known).
+  visible: {
+    opacity: 1,
+    translateY: 0,
+    x: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.15, translateY: { duration: 0 }, x: { duration: 0 }, filter: { duration: 0 } },
+  },
   exit: { opacity: 0, transition: { duration: 0.1 } },
 };
 
