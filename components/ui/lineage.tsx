@@ -47,7 +47,7 @@ export function SampleChip({ className }: { className?: string }) {
 
 // ---------------------------------------------------------------- source footnote
 
-function LineageBody({ metric, lineage }: { metric: string; lineage: Lineage }) {
+export function LineageBody({ metric, lineage }: { metric: string; lineage: Lineage }) {
   const source = SOURCES[lineage.sourceId];
   const method = getMethodology(source.methodologyId);
   const rows: Array<[string, React.ReactNode]> = [

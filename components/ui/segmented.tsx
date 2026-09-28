@@ -27,6 +27,7 @@ export function Segmented<T extends string>({
   className,
   size = "md",
   hideLabel,
+  wrap,
 }: {
   label: string;
   value: T;
@@ -35,6 +36,8 @@ export function Segmented<T extends string>({
   className?: string;
   size?: "sm" | "md";
   hideLabel?: boolean;
+  /** Let segments wrap onto a second row on narrow screens. */
+  wrap?: boolean;
 }) {
   const id = useId();
   return (
@@ -47,7 +50,7 @@ export function Segmented<T extends string>({
         value={value}
         onValueChange={(v) => onChange(v as T)}
         orientation="horizontal"
-        className="relative flex rounded-sm border border-rule bg-surface-sunk p-1"
+        className={cn("relative flex rounded-sm border border-rule bg-surface-sunk p-1", wrap && "flex-wrap gap-y-1")}
       >
         {options.map((o) => {
           const active = o.value === value;
@@ -57,7 +60,7 @@ export function Segmented<T extends string>({
               value={o.value}
               disabled={o.disabled}
               className={cn(
-                "relative z-0 flex flex-1 flex-col items-center justify-center rounded-[7px] px-3 text-center outline-offset-1 transition-colors",
+                "relative z-0 flex flex-1 flex-col items-center justify-center rounded-[7px] px-3 text-center outline-offset-1 transition-colors", wrap && "basis-[30%] md:basis-0",
                 size === "md" ? "min-h-10 py-1.5" : "min-h-8 py-1",
                 active ? "text-white" : "text-ink-2 hover:text-ink",
                 o.disabled && "opacity-40",

@@ -215,6 +215,7 @@ export function TraceChart({
             return (
               <motion.path
                 key={p.id}
+                d={p.d}
                 fill="none"
                 stroke={baseline ? "var(--muted)" : TRACE_VAR[p.trace as TraceKey]}
                 strokeWidth={baseline ? 1.5 : 2}
