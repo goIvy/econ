@@ -5,10 +5,8 @@ import { SOURCES } from "@/data/sources";
 import type { Lineage, SourceId } from "@/types";
 
 const STRIP: Array<{ id: SourceId; what: string }> = [
-  { id: "scorecard-inst", what: "Net price, debt and earnings by institution" },
-  { id: "scorecard-fos", what: "Earnings by program (field of study)" },
-  { id: "ipeds-cost", what: "Tuition, fees, room and board" },
-  { id: "ipeds-grad", what: "4- and 6-year graduation rates" },
+  { id: "scorecard-inst", what: "Net price, debt, and earnings by institution and by program" },
+  { id: "ipeds-cost", what: "Tuition, fees, room and board; 4- and 6-year graduation rates" },
   { id: "bls-oews", what: "Wages by occupation" },
   { id: "bls-ep", what: "10-year job growth projections" },
   { id: "acs-major", what: "Earnings by college major" },

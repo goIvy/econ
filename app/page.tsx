@@ -58,7 +58,7 @@ export default function HomePage() {
       <main id="main">
         <Hero colleges={collegeOptions()} majors={majorOptions()} />
 
-        <Section id="compare" labelledBy="h-compare" tone="surface">
+        <Section id="compare" labelledBy="h-compare">
           <SectionHeading id="h-compare" title="Tradeoffs, not rankings">
             Three paths for the same California student. Each measure gets its own scale, so nothing collapses into a single score. Switch where Path C lives and watch what moves.
           </SectionHeading>
@@ -76,7 +76,7 @@ export default function HomePage() {
           </div>
         </Section>
 
-        <Section id="careers" labelledBy="h-careers" tone="surface">
+        <Section id="careers" labelledBy="h-careers">
           <SectionHeading id="h-careers" title="Compare careers and earnings">
             A median hides half the story. Here is the range recent graduates actually earn, alongside how often they&apos;re out of work and how many go on to graduate school.
           </SectionHeading>
@@ -89,11 +89,11 @@ export default function HomePage() {
           <SectionHeading id="h-breakeven" title="When does it pay off?">
             College costs tuition and four years of earnings you could have made. Cumulative value dips, then climbs. Move aid and residency to see where the lines cross.
           </SectionHeading>
-          <AxisRule className="mb-12 mt-10" />
+          <div className="mt-12" />
           <BreakEvenStudy levels={study.levels} out={study.out} label={study.label} state={study.state} />
         </Section>
 
-        <Section id="salaries" labelledBy="h-salaries" tone="surface">
+        <Section id="salaries" labelledBy="h-salaries">
           <SectionHeading id="h-salaries" title="Salaries are a range, not a promise">
             Two graduates with the same degree can earn very different amounts. Hover or use the arrow keys along the curve to see where a salary falls.
           </SectionHeading>
@@ -111,7 +111,7 @@ export default function HomePage() {
           </div>
         </Section>
 
-        <Section id="sources" labelledBy="h-sources" tone="sunk">
+        <Section id="sources" labelledBy="h-sources">
           <SectionHeading id="h-sources" title="Every number has a footnote">
             Source, dataset, year, population, last update and method, one tap away on every figure. Here is one opened up.
           </SectionHeading>
@@ -129,7 +129,7 @@ export default function HomePage() {
           </div>
         </Section>
 
-        <Section id="pricing" labelledBy="h-pricing" tone="surface">
+        <Section id="pricing" labelledBy="h-pricing">
           <SectionHeading id="h-pricing" title="Pricing" />
           <div className="mt-8">
             <Pricing />
@@ -147,9 +147,9 @@ export default function HomePage() {
           </div>
         </Section>
 
-        <section aria-labelledby="h-cta" className="relative isolate overflow-hidden border-t border-rule">
-          <div aria-hidden className="field-wash pointer-events-none absolute inset-0 -z-10" />
-          <div className="mx-auto grid max-w-[1200px] justify-items-start gap-6 px-4 py-24 md:px-8 md:py-32 xl:px-12">
+        <section aria-labelledby="h-cta" className="relative">
+          <div className="mx-auto grid max-w-[1200px] justify-items-start gap-6 px-4 pb-24 md:px-8 md:pb-32 xl:px-12">
+            <AxisRule className="mb-10 w-full md:mb-14" />
             <h2 id="h-cta" className="max-w-[18ch] text-h1 font-bold">
               Run the paths you&apos;re actually choosing between.
             </h2>

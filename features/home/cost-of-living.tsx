@@ -59,7 +59,7 @@ export function CostOfLiving({ cities }: { cities: CityLite[] }) {
                 <span className="flex items-center gap-2">
                   <motion.span
                     className="block h-[18px] rounded-r-[4px]"
-                    style={{ background: isFrom ? "var(--ink)" : "var(--trace-b)" }}
+                    style={{ background: isFrom ? "var(--ink)" : "var(--muted)" }}
                     initial={false}
                     animate={{ width: `${(r.eq / max) * 78}%` }}
                     transition={enterSpring}

@@ -238,9 +238,9 @@ function Overview({ college, result, bundle, residency }: { college: College; re
                 }
               />
               <Legend verticalAlign="top" height={28} iconType="plainline" wrapperStyle={{ fontSize: 12, color: "var(--ink-2)" }} />
-              {college.control === "public" && <Line name="Out-of-state tuition" type="monotone" dataKey="tuitionOutOfState" stroke="var(--trace-c)" strokeWidth={2} strokeDasharray="6 4" dot={false} />}
-              <Line name={college.control === "public" ? "In-state tuition" : "Tuition"} type="monotone" dataKey="tuitionInState" stroke="var(--trace-a)" strokeWidth={2} dot={false} />
-              <Line name="Average net price" type="monotone" dataKey="netPrice" stroke="var(--trace-b)" strokeWidth={2} dot={false} />
+              {college.control === "public" && <Line name="Out-of-state tuition" type="monotone" dataKey="tuitionOutOfState" stroke="var(--ink-2)" strokeWidth={2} strokeDasharray="6 4" dot={false} />}
+              <Line name={college.control === "public" ? "In-state tuition" : "Tuition"} type="monotone" dataKey="tuitionInState" stroke="var(--ink)" strokeWidth={2} dot={false} />
+              <Line name="Average net price" type="monotone" dataKey="netPrice" stroke="var(--muted)" strokeWidth={2} strokeDasharray="2 3" dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>

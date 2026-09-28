@@ -20,14 +20,13 @@ export function Section({
     <section
       id={id}
       aria-labelledby={labelledBy}
-      className={cn(
-        "relative py-20 md:py-28",
-        tone === "surface" && "border-y border-rule bg-surface",
-        tone === "sunk" && "border-y border-rule bg-surface-sunk",
-        className,
-      )}
+      className={cn("relative pb-20 md:pb-28", tone === "sunk" && "bg-surface-sunk", className)}
     >
-      <div className={cn("mx-auto max-w-[1200px] px-4 md:px-8 xl:px-12", inner)}>{children}</div>
+      <div className={cn("mx-auto max-w-[1200px] px-4 md:px-8 xl:px-12", inner)}>
+        {/* Sections are divided by a tick-marked axis rule, the instrument's ruler. */}
+        <AxisRule className="mb-16 md:mb-20" />
+        {children}
+      </div>
     </section>
   );
 }

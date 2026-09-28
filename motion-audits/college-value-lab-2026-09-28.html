@@ -189,7 +189,7 @@
         <div class="finding-row">
           <div><h5><i class="dot imp"></i>Important: motion defined inline in 20 components</h5>
             <p>49 inline <code>initial</code>/<code>animate</code>/<code>exit</code> objects drifted from the system (four different collapse timings).</p>
-            <p><b>Fix applied:</b> all moved to named variants in <code>lib/animations.ts</code> (<code>collapse</code>, <code>overlay</code>, <code>tip</code>, <code>growWidth</code>, <code>cellIn</code>, <code>stepSlide</code>, <code>row</code>, <code>endDot</code>). Zero inline definitions remain.</p>
+            <p><b>Fix applied:</b> all moved to named variants and transitions in <code>lib/animations.ts</code> (<code>collapse</code>, <code>overlay</code>, <code>tip</code>, <code>growWidth</code>, <code>cellIn</code>, <code>stepSlide</code>, <code>row</code>, <code>endDot</code>, <code>valueTween</code>, <code>valueSpring</code>, <code>traceTransition</code>). No inline variant or transition definitions remain; components only compute data-driven targets (a marker&#8217;s position, a bar&#8217;s width).</p>
             <p class="status">FIXED</p></div>
           <div class="demo-card"><div class="demo-stage"><div class="demo-card-2__motion-target"></div></div><div class="demo-cap"><span>one collapse, everywhere</span><span>3s loop</span></div></div>
         </div>

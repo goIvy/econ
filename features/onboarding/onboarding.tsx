@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Combobox, MultiCombobox, type ComboOption } from "@/components/ui/combobox";
-import { easeOutExpo, enter, microSpring, motionSafe, stepSlide } from "@/lib/animations";
+import { enter, microSpring, motionSafe, stepSlide, valueTween } from "@/lib/animations";
 import { money } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { CollegeMeta } from "@/features/comparison/compare-workspace";
@@ -132,7 +132,7 @@ export function Onboarding({ colleges, majors, states, cities }: { colleges: Col
         <div className="relative flex h-2 gap-1">
           {STEPS.map((_, i) => (
             <span key={i} className="relative flex-1 overflow-hidden rounded-full bg-surface-sunk">
-              <motion.span className="absolute inset-y-0 left-0 rounded-full bg-ink" initial={false} animate={{ width: i < step ? "100%" : i === step ? "50%" : "0%" }} transition={{ duration: 0.4, ease: easeOutExpo }} />
+              <motion.span className="absolute inset-y-0 left-0 rounded-full bg-ink" initial={false} animate={{ width: i < step ? "100%" : i === step ? "50%" : "0%" }} transition={valueTween(false)} />
             </span>
           ))}
         </div>

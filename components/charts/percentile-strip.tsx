@@ -53,8 +53,8 @@ export function PercentileStrip({
           </div>
         )}
         <div className="absolute inset-x-0 top-[14px] h-6">
-          <motion.span className="absolute top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-trace-a/40" initial={false} animate={{ left: x(p.p10), width: `calc(${x(p.p90)} - ${x(p.p10)})` }} transition={t} />
-          <motion.span className="absolute inset-y-[3px] rounded-[4px] bg-trace-a/20" initial={false} animate={{ left: x(p.p25), width: `calc(${x(p.p75)} - ${x(p.p25)})` }} transition={t} />
+          <motion.span className="absolute top-1/2 h-[2px] -translate-y-1/2 rounded-full bg-ink/40" initial={false} animate={{ left: x(p.p10), width: `calc(${x(p.p90)} - ${x(p.p10)})` }} transition={t} />
+          <motion.span className="absolute inset-y-[3px] rounded-[4px] bg-ink/10" initial={false} animate={{ left: x(p.p25), width: `calc(${x(p.p75)} - ${x(p.p25)})` }} transition={t} />
           {KEYS.map(([k, name]) => {
             const median = k === "p50";
             return (
@@ -71,7 +71,7 @@ export function PercentileStrip({
                 className="absolute top-1/2 grid size-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full outline-offset-0"
                 aria-label={`${name}: ${money(p[k])} a year`}
               >
-                <span className={cn("block rounded-full border-2 border-surface shadow-1", median ? "size-4 bg-trace-a" : "size-3 bg-surface ring-2 ring-trace-a")} />
+                <span className={cn("block rounded-full border-2 border-surface shadow-1", median ? "size-4 bg-ink" : "size-3 bg-surface ring-2 ring-ink")} />
               </motion.button>
             );
           })}

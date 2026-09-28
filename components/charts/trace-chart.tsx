@@ -3,7 +3,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useEffect, useId, useRef, useState } from "react";
-import { collapse, crossfade, easeOutExpo, endDot, markerSettle, tip } from "@/lib/animations";
+import { useInView } from "framer-motion";
+import { collapse, crossfade, endDot, markerSettle, revealViewport, tip, traceTransition } from "@/lib/animations";
 import { moneyCompact, money } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { LineKey, TRACE_DASH, TRACE_VAR, type TraceKey } from "@/components/ui/lineage";
@@ -74,6 +75,10 @@ export function TraceChart({
 }) {
   const reduce = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
+  const figRef = useRef<HTMLElement>(null);
+  // The draw is the chart's one authored moment: it waits until the chart is on screen.
+  const inView = useInView(figRef, revealViewport);
+  const show = drawn && (inView || reduce);
   const [width, setWidth] = useState(640);
   const [hover, setHover] = useState<number | null>(null);
   const [showTable, setShowTable] = useState(false);
@@ -120,7 +125,7 @@ export function TraceChart({
       return { id: s.id, trace: s.trace, label: s.label, value: last.y, lineY: sy(last.y), y: sy(last.y) };
     });
     items.sort((a, b) => a.lineY - b.lineY);
-    for (let i = 1; i < items.length; i++) if (items[i].y - items[i - 1].y < 30) items[i].y = items[i - 1].y + 30;
+    for (let i = 1; i < items.length; i++) if (items[i].y - items[i - 1].y < 42) items[i].y = items[i - 1].y + 42;
     return items;
   })();
 
@@ -149,7 +154,7 @@ export function TraceChart({
   const tipOnLeft = tipLeft > width * 0.6;
 
   return (
-    <figure className={cn("grid gap-3", className)} aria-labelledby={`${uid}-t`}>
+    <figure ref={figRef} className={cn("grid gap-3", className)} aria-labelledby={`${uid}-t`}>
       <figcaption className="sr-only" id={`${uid}-t`}>
         {title}
       </figcaption>
@@ -221,25 +226,15 @@ export function TraceChart({
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeDasharray={baseline ? "1 4" : TRACE_DASH[p.trace as TraceKey]}
-                initial={reduce ? { d: p.d, opacity: 0 } : { d: p.d, pathLength: 0, opacity: 0 }}
-                animate={
-                  drawn
-                    ? reduce
-                      ? { d: p.d, opacity: 1 }
-                      : { d: p.d, pathLength: 1, opacity: 1 }
-                    : { d: p.d, pathLength: 0, opacity: 0 }
-                }
-                transition={{
-                  d: { duration: reduce ? 0 : 0.6, ease: easeOutExpo },
-                  pathLength: { duration: 0.9, ease: easeOutExpo, delay: i * 0.12 },
-                  opacity: { duration: 0.15, delay: reduce ? 0 : i * 0.12 },
-                }}
+                initial={{ d: p.d, pathLength: 0, opacity: 0 }}
+                animate={show ? { d: p.d, pathLength: 1, opacity: 1 } : { d: p.d, pathLength: 0, opacity: 0 }}
+                transition={traceTransition(reduce, i)}
               />
             );
           })}
 
           {/* end dots */}
-          {drawn &&
+          {show &&
             series.map((s) => {
               const last = s.points[s.points.length - 1];
               if (s.trace === "baseline") return null;
@@ -261,14 +256,18 @@ export function TraceChart({
             })}
 
           {/* direct end labels (desktop) */}
-          {drawn &&
+          {show &&
             endLabels.map((l) => (
               <g key={`${l.id}-lbl`}>
                 {Math.abs(l.y - l.lineY) > 2 && (
                   <line x1={M.left + innerW + 6} y1={l.lineY} x2={M.left + innerW + 14} y2={l.y} stroke="var(--rule-strong)" />
                 )}
-                <text x={M.left + innerW + 16} y={l.y} dy="-0.15em" className="fill-ink text-[12px] font-semibold">
-                  {truncate(l.label, 18)}
+                <text x={M.left + innerW + 16} y={l.y} className="fill-ink text-[12px] font-semibold">
+                  {wrapLabel(l.label, 17).map((line, k, all) => (
+                    <tspan key={k} x={M.left + innerW + 16} dy={k === 0 ? `${-0.15 - (all.length - 1) * 1.15}em` : "1.15em"}>
+                      {line}
+                    </tspan>
+                  ))}
                 </text>
                 <text x={M.left + innerW + 16} y={l.y} dy="1.05em" className="tabular fill-muted text-[11px]">
                   {moneyCompact(l.value)}
@@ -278,7 +277,7 @@ export function TraceChart({
 
           {/* break-even marker */}
           <AnimatePresence>
-            {drawn && marker && (
+            {show && marker && (
               <motion.g key={`${marker.x.toFixed(2)}`} initial="hidden" animate="visible" exit="exit" custom={reduce ? 0 : 0.9} variants={reduce ? crossfade : markerSettle} style={{ originX: `${sx(marker.x)}px`, originY: `${sy(marker.y)}px` }}>
                 <line x1={sx(marker.x)} x2={sx(marker.x)} y1={M.top} y2={M.top + innerH} stroke="var(--ink)" strokeWidth={1} />
                 <circle cx={sx(marker.x)} cy={sy(marker.y)} r={6} fill="var(--surface)" stroke="var(--ink)" strokeWidth={2} />
@@ -399,6 +398,19 @@ export function TraceChart({
       </AnimatePresence>
     </figure>
   );
+}
+
+/** Split a label into at most two lines of ~n characters, on word boundaries. */
+function wrapLabel(label: string, n: number): string[] {
+  if (label.length <= n) return [label];
+  const words = label.split(" ");
+  const lines: string[] = [""];
+  for (const w of words) {
+    const cur = lines[lines.length - 1];
+    if (!cur || (cur + " " + w).length <= n || lines.length === 2) lines[lines.length - 1] = cur ? `${cur} ${w}` : w;
+    else lines.push(w);
+  }
+  return lines.map((l) => truncate(l, n + 4));
 }
 
 function truncate(s: string, n: number) {

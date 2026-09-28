@@ -141,6 +141,21 @@ export const endDot: Variants = {
   visible: (delay: number = 0.8) => ({ opacity: 1, transition: { duration: 0.4, delay } }),
 };
 
+/**
+ * Value-driven motion: components animate to computed targets (a marker's
+ * position, a bar's width) using these named transitions.
+ */
+export const valueTween = (reduce: boolean): Transition => ({ duration: reduce ? 0 : 0.6, ease: easeOutExpo });
+export const valueSpring = (reduce: boolean, index = 0): Transition => (reduce ? { duration: 0 } : { ...enterSpring, delay: index * 0.05 });
+
+/** Trace lines: morph `d` on data change, draw `pathLength` once in view. */
+export const traceTransition = (reduce: boolean, index: number): Transition => ({
+  d: { duration: reduce ? 0 : 0.6, ease: easeOutExpo },
+  // Under reduced motion the line appears at full length instantly (never stuck at 0).
+  pathLength: { duration: reduce ? 0 : 0.9, ease: easeOutExpo, delay: reduce ? 0 : index * 0.12 },
+  opacity: { duration: reduce ? 0 : 0.15, delay: reduce ? 0 : index * 0.12 },
+});
+
 /** Count-up duration for readouts (ms). */
 export const COUNT_UP_MS = 600;
 

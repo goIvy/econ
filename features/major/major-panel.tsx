@@ -102,7 +102,7 @@ export function MajorPanel({ bundle, collegeName }: { bundle: MajorBundle; colle
               <li key={ind.industry} className="grid grid-cols-[9rem_1fr] items-center gap-3">
                 <span className="truncate text-small text-ink-2">{ind.industry}</span>
                 <span className="flex items-center gap-2">
-                  <motion.span className="block h-[14px] rounded-r-[4px] bg-trace-b" variants={growWidth} custom={`${Math.min(80, ind.share * 150)}%`} initial="hidden" animate="visible" />
+                  <motion.span className="block h-[14px] rounded-r-[4px] bg-muted" variants={growWidth} custom={`${Math.min(80, ind.share * 150)}%`} initial="hidden" animate="visible" />
                   <span className="tabular text-caption font-semibold text-ink">{pct(ind.share * 100)}</span>
                 </span>
               </li>

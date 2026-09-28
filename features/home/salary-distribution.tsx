@@ -5,7 +5,7 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SampleChip, SourceFootnote } from "@/components/ui/lineage";
 import { Segmented } from "@/components/ui/segmented";
-import { crossfade, easeOutExpo, revealViewport, tip, traceDraw } from "@/lib/animations";
+import { crossfade, revealViewport, tip, traceDraw, valueTween } from "@/lib/animations";
 import { money, moneyCompact } from "@/lib/format";
 import type { MajorRowData } from "./data";
 
@@ -99,10 +99,10 @@ export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
           <motion.rect
             initial={false}
             animate={{ x: sx(m.early.p25), width: sx(m.early.p75) - sx(m.early.p25) }}
-            transition={{ duration: reduce ? 0 : 0.6, ease: easeOutExpo }}
+            transition={valueTween(reduce)}
             y={PAD.t}
             height={innerH}
-            fill="var(--trace-a-tint)"
+            fill="color-mix(in srgb, var(--ink) 6%, transparent)"
           />
           <motion.path
             key={`area-${id}`}
@@ -110,8 +110,8 @@ export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
             variants={crossfade}
             initial="hidden"
             animate={inView || reduce ? "visible" : "hidden"}
-            fill="var(--trace-a)"
-            fillOpacity={0.1}
+            fill="var(--ink)"
+            fillOpacity={0.06}
           />
           <motion.path
             key={`line-${id}`}
@@ -121,7 +121,7 @@ export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
             initial={reduce ? "visible" : "hidden"}
             animate={inView || reduce ? "visible" : "hidden"}
             fill="none"
-            stroke="var(--trace-a)"
+            stroke="var(--ink)"
             strokeWidth={2}
             strokeLinecap="round"
           />
@@ -138,11 +138,13 @@ export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
           {percentiles.map(([label, v], i) => {
             const median = label === "Median";
             return (
-              <motion.g key={label} initial={false} animate={{ x: sx(v) }} transition={{ duration: reduce ? 0 : 0.6, ease: easeOutExpo }}>
+              <motion.g key={label} initial={false} animate={{ x: sx(v) }} transition={valueTween(reduce)}>
                 <line x1={0} x2={0} y1={PAD.t + (median ? 0 : 30)} y2={PAD.t + innerH} stroke={median ? "var(--ink)" : "var(--ink-2)"} strokeWidth={median ? 1.5 : 1} strokeDasharray={median ? undefined : "2 3"} />
-                <text x={0} y={PAD.t + (median ? -6 : 24) - (i % 2 && !median ? 12 : 0)} textAnchor="middle" className={median ? "fill-ink text-[12px] font-semibold" : "fill-ink-2 text-[11px] font-medium"}>
-                  {label}
-                </text>
+                {(median || width >= 560) && (
+                  <text x={0} y={PAD.t + (median ? -6 : 24) - (i % 2 && !median ? 12 : 0)} textAnchor="middle" className={median ? "fill-ink text-[12px] font-semibold" : "fill-ink-2 text-[11px] font-medium"}>
+                    {label}
+                  </text>
+                )}
               </motion.g>
             );
           })}

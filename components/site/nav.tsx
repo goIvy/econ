@@ -53,7 +53,7 @@ export function Nav() {
       </a>
       <div className="mx-auto flex h-[var(--nav-h)] max-w-[1200px] items-center gap-6 px-4 md:px-8 xl:px-12">
         <Logo />
-        <nav aria-label="Main" className="hidden flex-1 lg:block">
+        <nav aria-label="Main" className="hidden flex-1 xl:block">
           <ul className="flex items-center gap-1">
             {NAV_LINKS.map((l) => (
               <li key={l.href} className="relative">
@@ -74,7 +74,7 @@ export function Nav() {
             ))}
           </ul>
         </nav>
-        <div className="ml-auto flex items-center gap-1.5 lg:ml-0">
+        <div className="ml-auto flex items-center gap-1.5 xl:ml-0">
           <Link href="/explore" className="grid size-10 place-items-center rounded-sm text-ink-2 transition-colors hover:bg-surface-sunk hover:text-ink" aria-label="Search colleges">
             <Search className="size-[18px]" aria-hidden />
           </Link>
@@ -87,7 +87,7 @@ export function Nav() {
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
-            className="grid size-10 place-items-center rounded-sm text-ink hover:bg-surface-sunk lg:hidden"
+            className="grid size-10 place-items-center rounded-sm text-ink hover:bg-surface-sunk xl:hidden"
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? "Close menu" : "Open menu"}
@@ -107,7 +107,7 @@ export function Nav() {
             animate="visible"
             exit="exit"
             style={{ maxHeight: "calc(100dvh - var(--nav-h))" }}
-            className="overflow-y-auto border-t border-rule bg-paper lg:hidden"
+            className="overflow-y-auto border-t border-rule bg-paper xl:hidden"
           >
             <motion.ul variants={staggerParent(0.04, 0.05)} initial="hidden" animate="visible" className="grid gap-1 px-4 py-4">
               {NAV_LINKS.map((l) => (

@@ -151,7 +151,7 @@ export function CompareWorkspace({
   };
 
   return (
-    <div className="grid gap-8">
+    <div className="grid min-w-0 grid-cols-1 gap-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <Segmented
@@ -178,7 +178,7 @@ export function CompareWorkspace({
       </div>
 
       {/* desktop table */}
-      <div className="hidden overflow-x-auto rounded-lg border border-rule bg-surface shadow-2 md:block">
+      <div className="hidden overflow-x-auto rounded-lg border border-rule bg-surface shadow-2 xl:block">
         <table className="w-full min-w-[60rem] text-small">
           <caption className="sr-only">Paths compared side by side. Select a column heading to sort. No path is marked better.</caption>
           <thead className="text-caption">
@@ -223,7 +223,7 @@ export function CompareWorkspace({
       </div>
 
       {/* phones: cards */}
-      <ul className="grid gap-3 md:hidden">
+      <ul className="grid gap-3 md:grid-cols-2 xl:hidden">
         {sorted.map((r) => (
           <li key={specKey(r.spec) + r.i} className="rounded-md border border-rule bg-surface p-4 shadow-1">
             <div className="flex items-start justify-between gap-2">

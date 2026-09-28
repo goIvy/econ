@@ -49,7 +49,7 @@ export function OutcomesPanel({ college, major }: { college: College; major: Maj
         </div>
         <Waffle
           segments={[
-            { label: "Working in a job that typically needs a degree", value: inDegreeJobs, color: "var(--trace-b)" },
+            { label: "Working in a job that typically needs a degree", value: inDegreeJobs, color: "var(--ink)" },
             { label: "Working in a job that typically doesn't (underemployed)", value: inOtherJobs, color: "var(--caution)", hatch: true },
             { label: "Looking for work (unemployed)", value: unemp, color: "var(--risk)" },
           ]}
@@ -80,7 +80,7 @@ function Gauge({ label, value, lineage }: { label: string; value: number | null;
       </p>
       <p className="tabular text-readout font-semibold text-ink">{pct(value)}</p>
       <div className="relative h-3 overflow-hidden rounded-full bg-surface-sunk" role="img" aria-label={`${label}: ${pct(value)}`}>
-        <motion.div className="h-full rounded-full bg-trace-a" variants={growWidth} custom={`${value ?? 0}%`} initial={reduce ? "visible" : "hidden"} animate={inView || reduce ? "visible" : "hidden"} />
+        <motion.div className="h-full rounded-full bg-ink" variants={growWidth} custom={`${value ?? 0}%`} initial={reduce ? "visible" : "hidden"} animate={inView || reduce ? "visible" : "hidden"} />
         {[25, 50, 75].map((t) => (
           <span key={t} aria-hidden className="absolute inset-y-0 w-px bg-surface" style={{ left: `${t}%` }} />
         ))}

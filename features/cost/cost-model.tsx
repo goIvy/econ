@@ -14,10 +14,10 @@ import type { FundingInputs, Lineage, LivingArrangement, Residency } from "@/typ
 export const COST_TONES: Record<CostKey, string> = {
   tuition: "var(--ink)",
   fees: "var(--ink-2)",
-  housing: "var(--trace-a)",
-  food: "color-mix(in srgb, var(--trace-a) 65%, var(--surface))",
+  housing: "color-mix(in srgb, var(--ink) 62%, var(--surface))",
+  food: "color-mix(in srgb, var(--ink) 42%, var(--surface))",
   books: "var(--muted)",
-  transportation: "color-mix(in srgb, var(--muted) 65%, var(--surface))",
+  transportation: "color-mix(in srgb, var(--muted) 60%, var(--surface))",
   misc: "var(--rule-strong)",
 };
 
@@ -75,9 +75,9 @@ export function CostControls({
       />
       <GraduatedSlider label="Grant aid per year" value={funding.aidPerYear} onChange={(v) => set({ aidPerYear: v })} min={0} max={70000} step={500} format={moneyCompact} description="Need-based grants from the college, state or federal government." />
       <GraduatedSlider label="Scholarships per year" value={funding.scholarshipsPerYear} onChange={(v) => set({ scholarshipsPerYear: v })} min={0} max={40000} step={500} format={moneyCompact} />
-      <GraduatedSlider label="Family contribution per year" value={funding.familyPerYear} onChange={(v) => set({ familyPerYear: v })} min={0} max={70000} step={500} format={moneyCompact} trace="b" />
-      <GraduatedSlider label="Work income per year" value={funding.workPerYear} onChange={(v) => set({ workPerYear: v })} min={0} max={15000} step={250} format={moneyCompact} trace="b" description="Work-study and part-time jobs." />
-      <GraduatedSlider label="Savings" value={funding.savings} onChange={(v) => set({ savings: v })} min={0} max={60000} step={500} format={moneyCompact} trace="b" description="One-time amount applied across all years." />
+      <GraduatedSlider label="Family contribution per year" value={funding.familyPerYear} onChange={(v) => set({ familyPerYear: v })} min={0} max={70000} step={500} format={moneyCompact} />
+      <GraduatedSlider label="Work income per year" value={funding.workPerYear} onChange={(v) => set({ workPerYear: v })} min={0} max={15000} step={250} format={moneyCompact} description="Work-study and part-time jobs." />
+      <GraduatedSlider label="Savings" value={funding.savings} onChange={(v) => set({ savings: v })} min={0} max={60000} step={500} format={moneyCompact} description="One-time amount applied across all years." />
     </div>
   );
 }

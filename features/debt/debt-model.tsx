@@ -60,7 +60,7 @@ export function DebtModel({ defaultPrincipal, yearsInSchool = 4 }: { defaultPrin
           </select>
           <span className="text-caption text-muted">{type === "federal-subsidized" ? "Interest doesn't build up while you're enrolled." : "Interest builds up while you're in school and is added to the balance at repayment."}</span>
         </label>
-        <GraduatedSlider label="Interest rate" value={rate} onChange={setRate} min={0} max={15} step={0.05} format={(v) => `${v.toFixed(2)}%`} ticks={15} trace="b" />
+        <GraduatedSlider label="Interest rate" value={rate} onChange={setRate} min={0} max={15} step={0.05} format={(v) => `${v.toFixed(2)}%`} ticks={15} trace="ink" />
         <Segmented
           label="Repayment term"
           value={term}
@@ -90,15 +90,15 @@ export function DebtModel({ defaultPrincipal, yearsInSchool = 4 }: { defaultPrin
         </AnimatePresence>
         <figure className="grid gap-3">
           <figcaption className="flex items-center gap-2 text-caption text-ink-2">
-            <LineKey trace="a" /> Remaining balance by year of repayment
+            <LineKey ink /> Remaining balance by year of repayment
           </figcaption>
           <div className="h-60 w-full" role="img" aria-label={summary}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data} margin={{ top: 8, right: 8, bottom: 4, left: 0 }}>
                 <defs>
                   <linearGradient id="debt-fill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="var(--trace-a)" stopOpacity={0.16} />
-                    <stop offset="100%" stopColor="var(--trace-a)" stopOpacity={0} />
+                    <stop offset="0%" stopColor="var(--ink)" stopOpacity={0.16} />
+                    <stop offset="100%" stopColor="var(--ink)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid vertical={false} stroke="var(--rule)" />
@@ -115,7 +115,7 @@ export function DebtModel({ defaultPrincipal, yearsInSchool = 4 }: { defaultPrin
                     ) : null
                   }
                 />
-                <Area type="monotone" dataKey="balance" stroke="var(--trace-a)" strokeWidth={2} fill="url(#debt-fill)" isAnimationActive animationDuration={700} dot={false} activeDot={{ r: 5, stroke: "var(--surface)", strokeWidth: 2 }} />
+                <Area type="monotone" dataKey="balance" stroke="var(--ink)" strokeWidth={2} fill="url(#debt-fill)" isAnimationActive animationDuration={700} dot={false} activeDot={{ r: 5, stroke: "var(--surface)", strokeWidth: 2 }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>

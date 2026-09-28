@@ -200,12 +200,12 @@ export function PathTag({ trace, className, size = "md" }: { trace: TraceKey; cl
 }
 
 /** Line key used in legends and tooltips: a short stroke in the path's style. */
-export function LineKey({ trace, muted }: { trace?: TraceKey; muted?: boolean }) {
+export function LineKey({ trace, muted, ink }: { trace?: TraceKey; muted?: boolean; ink?: boolean }) {
   return (
     <svg width="22" height="8" aria-hidden className="shrink-0">
       <line
         x1="1" y1="4" x2="21" y2="4"
-        stroke={muted ? "var(--muted)" : TRACE_VAR[trace ?? "a"]}
+        stroke={muted ? "var(--muted)" : ink ? "var(--ink)" : TRACE_VAR[trace ?? "a"]}
         strokeWidth="2"
         strokeLinecap="round"
         strokeDasharray={muted ? "1 3" : trace ? TRACE_DASH[trace] : undefined}

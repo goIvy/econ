@@ -20,7 +20,7 @@ export function GraduatedSlider({
   step,
   format,
   ticks = 10,
-  trace = "a",
+  trace = "ink",
   className,
   description,
 }: {
@@ -32,13 +32,14 @@ export function GraduatedSlider({
   step: number;
   format: (v: number) => string;
   ticks?: number;
-  trace?: "a" | "b" | "c" | "d" | "e";
+  /** Path trace ink when the slider belongs to a path; neutral ink otherwise. */
+  trace?: "a" | "b" | "c" | "d" | "e" | "ink";
   className?: string;
   description?: string;
 }) {
   const id = useId();
   const [dragging, setDragging] = useState(false);
-  const fill = { a: "bg-trace-a", b: "bg-trace-b", c: "bg-trace-c", d: "bg-trace-d", e: "bg-trace-e" }[trace];
+  const fill = { a: "bg-trace-a", b: "bg-trace-b", c: "bg-trace-c", d: "bg-trace-d", e: "bg-trace-e", ink: "bg-ink" }[trace];
   return (
     <div className={cn("grid gap-2", className)}>
       <div className="flex items-baseline justify-between gap-3">

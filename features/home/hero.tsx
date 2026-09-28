@@ -20,7 +20,7 @@ export function Hero({ colleges, majors }: { colleges: CollegeOption[]; majors: 
         variants={staggerParent(0.06)}
         initial="hidden"
         animate="visible"
-        className="mx-auto grid max-w-[1200px] gap-10 px-4 pb-16 pt-10 md:px-8 md:pt-16 lg:grid-cols-12 lg:gap-12 lg:pb-24 xl:px-12"
+        className="mx-auto grid max-w-[1200px] gap-10 px-4 pb-16 pt-8 md:px-8 md:pt-10 lg:grid-cols-12 lg:gap-12 lg:pb-24 xl:px-12"
       >
         <div className="grid content-start gap-6 lg:sticky lg:top-[calc(var(--nav-h)+40px)] lg:col-span-5 lg:self-start lg:pt-6">
           <motion.h1 id="hero-title" variants={item} className="text-display font-[750] tracking-[-0.03em]">

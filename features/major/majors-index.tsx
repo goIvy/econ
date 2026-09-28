@@ -67,8 +67,8 @@ export function MajorsIndex({ bundles }: { bundles: MajorBundle[] }) {
                   </span>
                   <span className="relative hidden h-4 sm:block" aria-hidden>
                     <span className="absolute top-1/2 h-px -translate-y-1/2 bg-rule-strong" style={{ left: `${(p.p10 / 160000) * 100}%`, width: `${((p.p90 - p.p10) / 160000) * 100}%` }} />
-                    <span className="absolute inset-y-[3px] rounded-[3px] bg-trace-a/25" style={{ left: `${(p.p25 / 160000) * 100}%`, width: `${((p.p75 - p.p25) / 160000) * 100}%` }} />
-                    <span className="absolute inset-y-0 w-[2px] bg-trace-a" style={{ left: `${(p.p50 / 160000) * 100}%` }} />
+                    <span className="absolute inset-y-[3px] rounded-[3px] bg-ink/15" style={{ left: `${(p.p25 / 160000) * 100}%`, width: `${((p.p75 - p.p25) / 160000) * 100}%` }} />
+                    <span className="absolute inset-y-0 w-[2px] bg-ink" style={{ left: `${(p.p50 / 160000) * 100}%` }} />
                   </span>
                   <span className="hidden text-right sm:block">
                     <span className="tabular block text-small font-semibold text-ink">{money(p.p50)}</span>

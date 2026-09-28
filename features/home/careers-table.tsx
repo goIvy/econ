@@ -59,8 +59,8 @@ export function CareersTable({ rows }: { rows: MajorRowData[] }) {
           <span className="hidden items-center gap-2 sm:flex" aria-hidden>
             <span className="relative h-2.5 w-12">
               <span className="absolute inset-y-[4px] left-0 right-0 bg-rule-strong" />
-              <span className="absolute inset-y-0 left-2 right-3 rounded-[3px] bg-trace-a/30" />
-              <span className="absolute inset-y-[-2px] left-6 w-[2px] bg-trace-a" />
+              <span className="absolute inset-y-0 left-2 right-3 rounded-[3px] bg-ink/20" />
+              <span className="absolute inset-y-[-2px] left-6 w-[2px] bg-ink" />
             </span>
             10th–90th percentile, middle half, median
           </span>
@@ -68,6 +68,11 @@ export function CareersTable({ rows }: { rows: MajorRowData[] }) {
         </div>
       </div>
       {/* phones: each major becomes a card-row */}
+      <div className="flex justify-between border-b border-rule px-4 py-2 text-[0.75rem] text-muted tabular md:hidden" aria-hidden>
+        <span>$0</span>
+        <span>{moneyCompact(SCALE_MAX / 2)}</span>
+        <span>{moneyCompact(SCALE_MAX)}</span>
+      </div>
       <ul className="divide-y divide-rule md:hidden">
         {sorted.map((r) => (
           <li key={r.id} className="grid gap-2 px-4 py-4">
@@ -77,8 +82,8 @@ export function CareersTable({ rows }: { rows: MajorRowData[] }) {
             </div>
             <div className="relative h-4" role="img" aria-label={`10th percentile ${money(r.early.p10)}, median ${money(r.early.p50)}, 90th ${money(r.early.p90)}`}>
               <span className="absolute top-1/2 h-px -translate-y-1/2 bg-rule-strong" style={{ left: x(r.early.p10), width: `calc(${x(r.early.p90)} - ${x(r.early.p10)})` }} />
-              <span className="absolute inset-y-[3px] rounded-[3px] bg-trace-a/25" style={{ left: x(r.early.p25), width: `calc(${x(r.early.p75)} - ${x(r.early.p25)})` }} />
-              <span className="absolute inset-y-0 w-[2px] rounded-full bg-trace-a" style={{ left: x(r.early.p50) }} />
+              <span className="absolute inset-y-[3px] rounded-[3px] bg-ink/15" style={{ left: x(r.early.p25), width: `calc(${x(r.early.p75)} - ${x(r.early.p25)})` }} />
+              <span className="absolute inset-y-0 w-[2px] rounded-full bg-ink" style={{ left: x(r.early.p50) }} />
             </div>
             <dl className="grid grid-cols-3 gap-2 text-caption">
               <div><dt className="text-muted">Mid-career</dt><dd className="tabular font-semibold text-ink-2">{moneyCompact(r.mid)}</dd></div>
@@ -118,8 +123,8 @@ export function CareersTable({ rows }: { rows: MajorRowData[] }) {
                   <td className="px-3 py-3">
                     <div className="relative h-4" role="img" aria-label={`10th percentile ${money(r.early.p10)}, 25th ${money(r.early.p25)}, median ${money(r.early.p50)}, 75th ${money(r.early.p75)}, 90th ${money(r.early.p90)}`}>
                       <span className="absolute top-1/2 h-px -translate-y-1/2 bg-rule-strong" style={{ left: x(r.early.p10), width: `calc(${x(r.early.p90)} - ${x(r.early.p10)})` }} />
-                      <span className="absolute inset-y-[3px] rounded-[3px] bg-trace-a/25" style={{ left: x(r.early.p25), width: `calc(${x(r.early.p75)} - ${x(r.early.p25)})` }} />
-                      <span className="absolute inset-y-0 w-[2px] rounded-full bg-trace-a" style={{ left: x(r.early.p50) }} />
+                      <span className="absolute inset-y-[3px] rounded-[3px] bg-ink/15" style={{ left: x(r.early.p25), width: `calc(${x(r.early.p75)} - ${x(r.early.p25)})` }} />
+                      <span className="absolute inset-y-0 w-[2px] rounded-full bg-ink" style={{ left: x(r.early.p50) }} />
                     </div>
                   </td>
                   <td className="tabular px-3 py-3 text-right font-semibold text-ink">{money(r.early.p50)}</td>

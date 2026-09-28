@@ -5,7 +5,7 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { useMemo, useRef, useState } from "react";
 import { PathTag, SampleChip, SourceFootnote, TRACE_VAR } from "@/components/ui/lineage";
 import { Segmented } from "@/components/ui/segmented";
-import { crossfade, enterSpring, revealViewport } from "@/lib/animations";
+import { crossfade, revealViewport, valueSpring } from "@/lib/animations";
 import { money, pct } from "@/lib/format";
 import type { Lineage } from "@/types";
 import type { SamplePath } from "./data";
@@ -146,7 +146,7 @@ function StripRow({ metric, paths, n }: { metric: (typeof METRICS)[number]; path
                 className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
                 initial={false}
                 animate={{ left: inView || reduce ? `${pos(v)}%` : "50%", opacity: inView || reduce ? 1 : 0, y: lift[i] * -14 }}
-                transition={{ ...enterSpring, delay: reduce ? 0 : i * 0.05 }}
+                transition={valueSpring(reduce, i)}
                 style={{ zIndex: 3 - i }}
               >
                 <span

@@ -19,10 +19,10 @@ type Residency = "resident" | "nonresident";
 const TONES: Record<CostKey, string> = {
   tuition: "var(--ink)",
   fees: "var(--ink-2)",
-  housing: "var(--trace-a)",
-  food: "color-mix(in srgb, var(--trace-a) 70%, var(--surface))",
+  housing: "color-mix(in srgb, var(--ink) 62%, var(--surface))",
+  food: "color-mix(in srgb, var(--ink) 42%, var(--surface))",
   books: "var(--muted)",
-  transportation: "color-mix(in srgb, var(--muted) 70%, var(--surface))",
+  transportation: "color-mix(in srgb, var(--muted) 60%, var(--surface))",
   misc: "var(--rule-strong)",
 };
 
@@ -66,7 +66,7 @@ export function TrueCost({
           ]}
         />
         <GraduatedSlider label="Grants and scholarships per year" value={aid} onChange={setAid} min={0} max={40000} step={500} format={moneyCompact} description="Money you don't pay back." />
-        <GraduatedSlider label="Family contribution per year" value={family} onChange={setFamily} min={0} max={40000} step={500} format={moneyCompact} trace="b" />
+        <GraduatedSlider label="Family contribution per year" value={family} onChange={setFamily} min={0} max={40000} step={500} format={moneyCompact} />
         <p className="text-caption text-muted">Plus $3,000 a year from part-time work. Off-campus rent uses the {college.city} market.</p>
       </div>
 

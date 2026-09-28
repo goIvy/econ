@@ -128,7 +128,7 @@ export function HeroInstrument({ colleges, majors }: { colleges: CollegeOption[]
   return (
     <div className="relative rounded-lg border border-rule bg-surface shadow-3">
       {/* controls */}
-      <div className="grid gap-5 p-4 sm:p-6">
+      <div className="grid gap-4 p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="font-display text-[1.05rem] font-semibold text-ink">Run a path</p>
           <SampleChip />
@@ -183,20 +183,17 @@ export function HeroInstrument({ colleges, majors }: { colleges: CollegeOption[]
             )}
           </AnimatePresence>
         </div>
-        <p id="demo-assumptions" className="text-caption text-muted">
-          Assumes 4 years on campus, {money(DEMO_FUNDING.familyPerYear)}/yr family contribution and {money(DEMO_FUNDING.workPerYear)}/yr from work. The rest is borrowed at the federal rate. All figures are in 2024 dollars.
-        </p>
       </div>
 
       {/* results */}
-      <div className="border-t border-rule bg-paper/60 p-4 sm:p-6" aria-live="polite" aria-busy={loading}>
+      <div className="border-t border-rule bg-paper/60 p-4 sm:p-5" aria-live="polite" aria-busy={loading}>
         <AnimatePresence mode="wait">
           {runA.status === "error" && !dataA ? (
             <ErrorState key="err" message={runA.error!} onRetry={calculate} />
           ) : !dataA ? (
             <ResultsSkeleton key="sk" />
           ) : (
-            <motion.div key="res" variants={motionSafe(enter, reduce)} initial="hidden" animate="visible" className={cn("grid gap-6 transition-opacity", (loading || stale) && "opacity-60")}>
+            <motion.div key="res" variants={motionSafe(enter, reduce)} initial="hidden" animate="visible" className={cn("grid gap-4 transition-opacity", (loading || stale) && "opacity-60")}>
               <AnimatePresence initial={false}>
                 {(runA.status === "error" || runB.status === "error") && (
                   <motion.p key="err" variants={collapse} initial="hidden" animate="visible" exit="exit" className="flex items-start gap-2 overflow-hidden rounded-sm bg-risk-tint px-3 py-2 text-small text-risk" role="alert">
@@ -212,11 +209,14 @@ export function HeroInstrument({ colleges, majors }: { colleges: CollegeOption[]
                 marker={marker}
                 band={{ from: 18, to: dataA.graduationAge, label: "College" }}
                 summary={summary}
-                height={300}
+                height={250}
               />
             </motion.div>
           )}
         </AnimatePresence>
+        <p id="demo-assumptions" className="mt-4 text-caption text-muted">
+          Assumes 4 years on campus, {money(DEMO_FUNDING.familyPerYear)}/yr family contribution and {money(DEMO_FUNDING.workPerYear)}/yr from work. The rest is borrowed at the federal rate. All figures are in 2024 dollars.
+        </p>
       </div>
     </div>
   );
@@ -282,7 +282,7 @@ function PathControlsRow({
 function Readouts({ a, b }: { a: PathResponse; b: PathResponse | null }) {
   const paths: Array<[TraceKey, PathResponse]> = b ? [["a", a], ["b", b]] : [["a", a]];
   const rows: Array<{ label: string; get: (p: PathResponse) => number | null; fmt: (n: number) => string; unit?: string; lineage: (p: PathResponse) => PathResponse["lineage"][keyof PathResponse["lineage"]] }> = [
-    { label: "Estimated net cost", get: (p) => p.net.netPrice, fmt: money, unit: "4 yrs", lineage: (p) => p.lineage.netCost },
+    { label: "Estimated net cost, 4 years", get: (p) => p.net.netPrice, fmt: money, lineage: (p) => p.lineage.netCost },
     { label: "Estimated debt", get: (p) => p.net.borrowing, fmt: money, lineage: (p) => p.lineage.loanRate },
     { label: "Median early-career earnings", get: (p) => p.startingSalary, fmt: money, unit: "/yr", lineage: (p) => p.lineage.earnings },
     { label: "Estimated break-even age", get: (p) => p.breakEven?.age ?? null, fmt: (n) => n.toFixed(1), lineage: (p) => p.lineage.model },
@@ -291,7 +291,7 @@ function Readouts({ a, b }: { a: PathResponse; b: PathResponse | null }) {
 
   if (!b) {
     return (
-      <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
+      <dl className="grid grid-cols-2 gap-x-5 gap-y-4 sm:grid-cols-3 xl:grid-cols-5">
         {rows.map((r, i) => (
           <HeroReadout key={r.label} label={r.label} value={r.get(a)} fmt={r.fmt} unit={r.unit} lineage={r.lineage(a)} n={i + 1} />
         ))}
@@ -342,15 +342,16 @@ function HeroReadout({ label, value, fmt, unit, lineage, n }: { label: string; v
   const v = useCountUp(value ?? 0, { enabled: value != null });
   return (
     <div className="grid content-start gap-1">
-      <dt className="text-caption font-medium text-muted">{label}</dt>
-      <dd className="flex items-baseline gap-1">
+      <dt className="text-caption font-medium text-muted">
+        {label} <SourceFootnote metric={label} lineage={lineage} n={n} />
+      </dt>
+      <dd className="flex flex-wrap items-baseline gap-x-1">
         {value == null ? (
           <span className="text-small font-medium text-muted">Not by age {HERO_HORIZON}</span>
         ) : (
-          <span className="tabular text-[1.35rem] font-semibold leading-tight text-ink">{fmt(v)}</span>
+          <span className="tabular text-[1.35rem] font-semibold leading-tight text-ink xl:text-[1.15rem]">{fmt(v)}</span>
         )}
         {value != null && unit && <span className="text-[0.75rem] font-medium text-muted">{unit}</span>}
-        <SourceFootnote metric={label} lineage={lineage} n={n} />
       </dd>
     </div>
   );
@@ -367,7 +368,7 @@ function ResultsSkeleton() {
           </div>
         ))}
       </div>
-      <div className="h-[300px] animate-pulse rounded-md bg-surface-sunk" />
+      <div className="h-[250px] animate-pulse rounded-md bg-surface-sunk" />
     </motion.div>
   );
 }
