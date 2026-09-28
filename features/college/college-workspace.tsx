@@ -80,9 +80,9 @@ export function CollegeWorkspace({
   const effectiveResidency = college.control === "private" ? "resident" : residency;
 
   return (
-    <div className="grid gap-8">
+    <div className="grid min-w-0 grid-cols-1 gap-8">
       {/* path bar: the choices every tab shares */}
-      <div className="sticky top-[var(--nav-h)] z-20 -mx-4 border-y border-rule bg-paper/[0.96] px-4 py-3 md:-mx-8 md:px-8 xl:-mx-12 xl:px-12">
+      <div className="sticky top-[calc(var(--nav-h)+8px)] z-20 rounded-md border border-rule bg-paper px-4 py-3 shadow-2">
         <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
           <Combobox label="Major" value={majorId} onChange={setMajorId} options={majorOptions} className="w-full sm:w-72" searchPlaceholder="Search this college's majors" />
           {college.control === "public" && (
@@ -105,7 +105,7 @@ export function CollegeWorkspace({
         </Tabs.List>
 
         <AnimatePresence mode="wait">
-          <motion.div key={tab} variants={motionSafe(crossfade, reduce)} initial="hidden" animate="visible" exit="exit" className="pt-8">
+          <motion.div key={tab} variants={motionSafe(crossfade, reduce)} initial="hidden" animate="visible" exit="exit" className="min-w-0 pt-8">
             <Tabs.Content value={tab} forceMount className="outline-none">
               {tab === "overview" && <Overview college={college} result={result} bundle={bundle} residency={effectiveResidency} />}
               {tab === "costs" && (

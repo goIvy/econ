@@ -43,9 +43,9 @@ export function PercentileStrip({
   return (
     <figure className={cn("grid gap-3", className)}>
       <figcaption className="sr-only">{label}</figcaption>
-      <div className="relative h-16">
+      <div className={cn("relative", compare ? "h-[5.25rem]" : "h-16")}>
         {compare && (
-          <div aria-hidden className="absolute inset-x-0 top-[44px] h-3">
+          <div aria-hidden className="absolute inset-x-0 top-[46px] h-3">
             <span className="absolute top-1/2 h-px -translate-y-1/2 bg-rule-strong" style={{ left: x(compare.p10), width: `calc(${x(compare.p90)} - ${x(compare.p10)})` }} />
             <span className="absolute inset-y-[2px] rounded-[3px] bg-surface-sunk ring-1 ring-rule-strong" style={{ left: x(compare.p25), width: `calc(${x(compare.p75)} - ${x(compare.p25)})` }} />
             <span className="absolute inset-y-0 w-[2px] bg-muted" style={{ left: x(compare.p50) }} />

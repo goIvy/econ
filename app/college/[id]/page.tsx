@@ -9,8 +9,10 @@ import { SampleChip } from "@/components/ui/lineage";
 import { CollegeWorkspace } from "@/features/college/college-workspace";
 import type { MajorBundle } from "@/features/major/major-panel";
 import { getCity, getCollege, getMajor, getOccupation, getOutcome, listColleges } from "@/services/data";
-import { money, number, pct } from "@/lib/format";
+import { number } from "@/lib/format";
 import type { Occupation } from "@/types";
+
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return listColleges().map((c) => ({ id: c.id }));
@@ -81,21 +83,21 @@ export default async function CollegePage(props: PageProps<"/college/[id]">) {
             <dl className="grid grid-cols-2 gap-x-6 gap-y-6 rounded-lg border border-rule bg-surface p-5 shadow-2 sm:grid-cols-3 lg:grid-cols-5">
               {college.control === "public" ? (
                 <>
-                  <Readout size="sm" label="In-state tuition" value={c.tuitionInState.value} format={money} lineage={c.tuitionInState.lineage} footnote={1} />
-                  <Readout size="sm" label="Out-of-state tuition" value={c.tuitionOutOfState.value} format={money} lineage={c.tuitionOutOfState.lineage} footnote={2} />
+                  <Readout size="sm" label="In-state tuition" value={c.tuitionInState.value} format="money" lineage={c.tuitionInState.lineage} footnote={1} />
+                  <Readout size="sm" label="Out-of-state tuition" value={c.tuitionOutOfState.value} format="money" lineage={c.tuitionOutOfState.lineage} footnote={2} />
                 </>
               ) : (
-                <Readout size="sm" label="Tuition" value={c.tuitionInState.value} format={money} lineage={c.tuitionInState.lineage} footnote={1} />
+                <Readout size="sm" label="Tuition" value={c.tuitionInState.value} format="money" lineage={c.tuitionInState.lineage} footnote={1} />
               )}
-              <Readout size="sm" label="Fees" value={c.fees.value} format={money} lineage={c.fees.lineage} footnote={3} />
-              <Readout size="sm" label="Room and board" value={(c.room.value ?? 0) + (c.board.value ?? 0)} format={money} lineage={c.room.lineage} footnote={4} />
-              <Readout size="sm" label="Average net price" value={c.netPrice.value} format={money} lineage={c.netPrice.lineage} footnote={5} explain="What students receiving grant aid paid on average, after grants and scholarships, for one year." />
-              <Readout size="sm" label="6-year graduation rate" value={college.gradRate6.value} format={(n) => pct(n)} lineage={college.gradRate6.lineage} footnote={6} explain="This is based on historical outcomes for students at this institution and does not predict any individual student with certainty." />
-              <Readout size="sm" label="Median debt" value={college.medianDebt.value} format={money} lineage={college.medianDebt.lineage} footnote={7} />
-              <Readout size="sm" label="Median earnings" value={college.medianEarnings.value} format={money} lineage={college.medianEarnings.lineage} footnote={8} unit="/yr" explain="Median earnings of federally aided students 10 years after they started college." />
-              <Readout size="sm" label="Receive grant aid" value={college.aid.pctReceivingGrants.value} format={(n) => pct(n)} lineage={college.aid.pctReceivingGrants.lineage} footnote={9} />
+              <Readout size="sm" label="Fees" value={c.fees.value} format="money" lineage={c.fees.lineage} footnote={3} />
+              <Readout size="sm" label="Room and board" value={(c.room.value ?? 0) + (c.board.value ?? 0)} format="money" lineage={c.room.lineage} footnote={4} />
+              <Readout size="sm" label="Average net price" value={c.netPrice.value} format="money" lineage={c.netPrice.lineage} footnote={5} explain="What students receiving grant aid paid on average, after grants and scholarships, for one year." />
+              <Readout size="sm" label="6-year graduation rate" value={college.gradRate6.value} format="pct" lineage={college.gradRate6.lineage} footnote={6} explain="This is based on historical outcomes for students at this institution and does not predict any individual student with certainty." />
+              <Readout size="sm" label="Median debt" value={college.medianDebt.value} format="money" lineage={college.medianDebt.lineage} footnote={7} />
+              <Readout size="sm" label="Median earnings" value={college.medianEarnings.value} format="money" lineage={college.medianEarnings.lineage} footnote={8} unit="/yr" explain="Median earnings of federally aided students 10 years after they started college." />
+              <Readout size="sm" label="Receive grant aid" value={college.aid.pctReceivingGrants.value} format="pct" lineage={college.aid.pctReceivingGrants.lineage} footnote={9} />
               {college.control === "private" && (
-                <Readout size="sm" label="Average grant" value={college.aid.avgGrant.value} format={money} lineage={college.aid.avgGrant.lineage} footnote={10} />
+                <Readout size="sm" label="Average grant" value={college.aid.avgGrant.value} format="money" lineage={college.aid.avgGrant.lineage} footnote={10} />
               )}
             </dl>
           </div>

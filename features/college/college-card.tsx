@@ -47,7 +47,7 @@ export function CollegeCard({ c }: { c: CollegeCardData }) {
             {c.enrollment != null && ` · ${number(c.enrollment)} undergraduates`}
           </p>
         </div>
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-5">
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-3 sm:grid-cols-[repeat(5,auto)] sm:justify-start sm:gap-x-8">
           <Stat label={c.control === "public" ? "Tuition (in / out)" : "Tuition"} value={c.control === "public" ? `${compactK(c.tuitionIn)} / ${compactK(c.tuitionOut)}` : money(c.tuitionIn)} />
           <Stat label="Avg. net price" value={money(c.netPrice)} />
           <Stat label="Graduation rate" value={pct(c.gradRate6)} />
@@ -83,7 +83,7 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="grid gap-0.5">
       <dt className="text-[0.75rem] text-muted">{label}</dt>
-      <dd className="tabular text-small font-semibold text-ink">{value}</dd>
+      <dd className="tabular whitespace-nowrap text-small font-semibold text-ink">{value}</dd>
     </div>
   );
 }

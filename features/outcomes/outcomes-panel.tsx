@@ -53,7 +53,7 @@ export function OutcomesPanel({ college, major }: { college: College; major: Maj
             { label: "Looking for work (unemployed)", value: unemp, color: "var(--risk)" },
           ]}
         />
-        <dl className="grid grid-cols-2 gap-5 sm:grid-cols-4">
+        <dl className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
           <Stat label="Employment rate" value={pct(employed, 1)} />
           <Stat label="Unemployment rate" value={pct(unemp, 1)} />
           <Stat label="Underemployment rate" value={pct(under)} tip={major.underemploymentRate.lineage.note} />
@@ -99,7 +99,7 @@ function Waffle({ segments }: { segments: Array<{ label: string; value: number; 
   for (let i = 0; i < 100; i++) cells.push(bounds.findIndex((b) => i + 0.5 < b));
   return (
     <div ref={ref} className="grid gap-4 md:grid-cols-[auto_1fr] md:items-center md:gap-8">
-      <div className="grid w-fit grid-cols-20 gap-[3px]" style={{ gridTemplateColumns: "repeat(20, minmax(0, 1fr))" }} role="img" aria-label={segments.map((s) => `${s.label}: about ${Math.round(s.value)} in 100`).join("; ")}>
+      <div className="grid w-fit gap-[3px]" style={{ gridTemplateColumns: "repeat(20, minmax(0, 1fr))" }} role="img" aria-label={segments.map((s) => `${s.label}: about ${Math.round(s.value)} in 100`).join("; ")}>
         {cells.map((seg, i) => {
           const s = segments[seg < 0 ? segments.length - 1 : seg];
           return (

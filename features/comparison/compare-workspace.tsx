@@ -161,7 +161,7 @@ export function CompareWorkspace({
             value={filter}
             onChange={setFilter}
             options={[
-              { value: "all", label: "All paths" },
+              { value: "all", label: "All" },
               { value: "public", label: "Public" },
               { value: "private", label: "Private" },
             ]}

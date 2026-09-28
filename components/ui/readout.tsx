@@ -3,6 +3,7 @@
 import type { Lineage } from "@/types";
 import { useCountUp } from "@/hooks/use-count-up";
 import { cn } from "@/lib/cn";
+import { money, number as formatNumber, pct } from "@/lib/format";
 import { SourceFootnote } from "./lineage";
 import { InfoTip } from "./info-tip";
 
@@ -11,10 +12,20 @@ import { InfoTip } from "./info-tip";
  * footnote marker that opens the source. Numbers use tabular figures because
  * they animate between values (proportional digits would jitter).
  */
+/** Named formats, so server components can pass a format across the client boundary. */
+const FORMATS = {
+  money,
+  pct: (n: number) => pct(n),
+  pct1: (n: number) => pct(n, 1),
+  number: (n: number) => formatNumber(n),
+  decimal: (n: number) => n.toFixed(1),
+} as const;
+export type ReadoutFormat = keyof typeof FORMATS;
+
 export function Readout({
   label,
   value,
-  format,
+  format: formatProp,
   unit,
   lineage,
   footnote,
@@ -26,7 +37,7 @@ export function Readout({
 }: {
   label: string;
   value: number | null;
-  format: (n: number) => string;
+  format: ((n: number) => string) | ReadoutFormat;
   unit?: string;
   lineage?: Lineage;
   footnote?: number;
@@ -38,6 +49,7 @@ export function Readout({
   className?: string;
   emptyText?: string;
 }) {
+  const format = typeof formatProp === "string" ? FORMATS[formatProp] : formatProp;
   const shown = useCountUp(value ?? 0, { enabled: value != null });
   return (
     <div className={cn("grid content-start gap-1", className)}>
