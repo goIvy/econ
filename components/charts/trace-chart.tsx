@@ -26,6 +26,8 @@ export interface TraceMarker {
 }
 
 const M = { top: 20, right: 132, bottom: 40, left: 64 };
+/** End-label line length that fits the right margin at 12px semibold. */
+const LABEL_CHARS = 16;
 const MOBILE_RIGHT = 16;
 
 function niceTicks(min: number, max: number, count = 5): number[] {
@@ -122,10 +124,14 @@ export function TraceChart({
     if (compact) return [];
     const items = series.map((s) => {
       const last = s.points[s.points.length - 1];
-      return { id: s.id, trace: s.trace, label: s.label, value: last.y, lineY: sy(last.y), y: sy(last.y) };
+      return { id: s.id, trace: s.trace, label: s.label, lines: wrapLabel(s.label, LABEL_CHARS), value: last.y, lineY: sy(last.y), y: sy(last.y) };
     });
     items.sort((a, b) => a.lineY - b.lineY);
-    for (let i = 1; i < items.length; i++) if (items[i].y - items[i - 1].y < 42) items[i].y = items[i - 1].y + 42;
+    // Label lines stack upward from y; the value sits one line below. Space by the lower label's height.
+    for (let i = 1; i < items.length; i++) {
+      const gap = 30 + (items[i].lines.length - 1) * 14;
+      if (items[i].y - items[i - 1].y < gap) items[i].y = items[i - 1].y + gap;
+    }
     return items;
   })();
 
@@ -263,7 +269,7 @@ export function TraceChart({
                   <line x1={M.left + innerW + 6} y1={l.lineY} x2={M.left + innerW + 14} y2={l.y} stroke="var(--rule-strong)" />
                 )}
                 <text x={M.left + innerW + 16} y={l.y} className="fill-ink text-[12px] font-semibold">
-                  {wrapLabel(l.label, 17).map((line, k, all) => (
+                  {l.lines.map((line, k, all) => (
                     <tspan key={k} x={M.left + innerW + 16} dy={k === 0 ? `${-0.15 - (all.length - 1) * 1.15}em` : "1.15em"}>
                       {line}
                     </tspan>
@@ -401,16 +407,16 @@ export function TraceChart({
 }
 
 /** Split a label into at most two lines of ~n characters, on word boundaries. */
+/** Word-wrap an end label to at most 3 lines; only a single over-long word is truncated. */
 function wrapLabel(label: string, n: number): string[] {
-  if (label.length <= n) return [label];
-  const words = label.split(" ");
-  const lines: string[] = [""];
-  for (const w of words) {
+  const lines: string[] = [];
+  for (const w of label.split(" ")) {
     const cur = lines[lines.length - 1];
-    if (!cur || (cur + " " + w).length <= n || lines.length === 2) lines[lines.length - 1] = cur ? `${cur} ${w}` : w;
+    if (cur && (cur + " " + w).length <= n) lines[lines.length - 1] = `${cur} ${w}`;
     else lines.push(w);
   }
-  return lines.map((l) => truncate(l, n + 4));
+  if (lines.length > 3) lines.splice(2, lines.length - 2, lines.slice(2).join(" "));
+  return lines.map((l) => truncate(l, n + 1));
 }
 
 function truncate(s: string, n: number) {

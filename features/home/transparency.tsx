@@ -28,7 +28,7 @@ export function Transparency({ specimen }: { specimen: { label: string; value: s
             <span className="text-caption text-muted">/yr</span>
             <SourceFootnote metric={specimen.label} lineage={specimen.lineage} n={1} />
           </p>
-          <p className="text-caption text-muted">Select the marker to open the footnote, or read it opened up on the right.</p>
+          <p className="text-caption text-muted">Select the marker to open the footnote, or read the same footnote opened up here.</p>
         </div>
         <div className="rounded-lg border border-rule bg-surface p-5 shadow-3 lg:col-span-7">
           <LineageBody metric={specimen.label} lineage={specimen.lineage} />
