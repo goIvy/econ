@@ -88,7 +88,7 @@ export function DebtStack({ presets }: { presets: PathPreset[] }) {
       </div>
 
       <div className="grid gap-6 rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6 lg:grid-cols-12 lg:gap-10">
-        <div className="grid content-start gap-6 lg:col-span-4">
+        <div className="order-2 grid content-start gap-6 lg:order-1 lg:col-span-4">
           <GraduatedSlider label="Grant aid per year" value={aid} onChange={(v) => change(() => setAid(v))} min={0} max={50000} step={1000} format={moneyCompact} description="More aid, fewer blocks." />
           <GraduatedSlider label="Interest rate" value={rate} onChange={(v) => change(() => setRate(v))} min={3} max={10} step={0.25} format={(v) => pct(v, 2)} description="Federal undergraduate rate is 6.53% (2024–25)." />
           <div className="flex flex-wrap gap-2">
@@ -105,7 +105,7 @@ export function DebtStack({ presets }: { presets: PathPreset[] }) {
           <Legend />
         </div>
 
-        <div className="grid min-w-0 content-start gap-4 lg:col-span-8">
+        <div className="order-1 grid min-w-0 content-start gap-4 lg:order-2 lg:col-span-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <Big label={year === 0 ? "Owed at graduation" : `Owed after year ${year}`} value={point.balance} strong />
             <Big label="Monthly payment" value={loan.monthlyPayment} />
