@@ -1,7 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowDown, ArrowUp, Check, Link2, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Bookmark, BookmarkCheck, Check, Link2, Pencil, Plus, Trash2 } from "lucide-react";
+import { useSaved } from "@/hooks/use-saved";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { FuturesIntro } from "./futures-intro";
@@ -131,6 +132,15 @@ export function CompareWorkspace({
   };
   const remove = (i: number) => setPaths((ps) => ps.filter((_, j) => j !== i));
 
+  const { save: saveComparison } = useSaved();
+  const [savedNow, setSavedNow] = useState(false);
+  const saveThis = () => {
+    const href = window.location.pathname + window.location.search;
+    saveComparison({ label: paths.map((p) => byId.get(p.collegeId)?.shortName ?? p.collegeId).join(" vs "), href, paths: paths.map((p) => `${byId.get(p.collegeId)?.shortName ?? p.collegeId} ${majors.find((m) => m.id === p.majorId)?.name ?? ""}`.trim()) });
+    setSavedNow(true);
+    setTimeout(() => setSavedNow(false), 1800);
+  };
+
   const share = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -204,6 +214,10 @@ export function CompareWorkspace({
         </div>
         <div className="flex flex-wrap items-center gap-4">
           <MethodologyDialog ids={["net-cost", "loans", "earnings", "graduation", "employment", "break-even"]} />
+          <Button variant="secondary" size="sm" onClick={saveThis} disabled={!paths.length}>
+            {savedNow ? <BookmarkCheck className="size-4" aria-hidden /> : <Bookmark className="size-4" aria-hidden />}
+            {savedNow ? "Saved" : "Save"}
+          </Button>
           <Button variant="secondary" size="sm" onClick={share} disabled={!paths.length}>
             {copied ? <Check className="size-4" aria-hidden /> : <Link2 className="size-4" aria-hidden />}
             {copied ? "Link copied" : "Copy share link"}

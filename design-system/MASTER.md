@@ -24,7 +24,7 @@
 | `--surface-sunk` | `#EEF0F7` | `#0E1426` | Tracks, wells |
 | `--ink` | `#141824` | `#FFFFFF` | Text, primary fills, axes |
 | `--ink-2` | `#3A4152` | `rgba(255,255,255,.82)` | Secondary text |
-| `--muted` | `#667085` | `rgba(255,255,255,.65)` | Labels, captions |
+| `--muted` | `#5D6679` | `rgba(255,255,255,.65)` | Labels, captions (the brief's `#667085` darkened slightly to pass 4.5:1 on `--surface-sunk`) |
 | `--rule` / `--rule-strong` | `#E3E6EF` / `#CBD0DD` | `rgba(255,255,255,.10)` / `.20` | Borders, gridlines |
 | `--on-ink` | `#FFFFFF` | `#0B1020` | Text on an `--ink` fill (primary buttons invert per theme) |
 | `--glass` | `rgba(247,248,252,.72)` | `rgba(11,16,32,.62)` | Frosted nav and hero cards only |
@@ -53,8 +53,8 @@ Validated with the dataviz `validate_palette.js` (a, b, d, e): light on `#F7F8FC
 
 | Token | Light | Dark |
 |---|---|---|
-| `--gain` | `#1F8A5B` | `#42C98A` |
-| `--caution` | `#9A6412` | `#F4B860` |
+| `--gain` | `#17734B` | `#42C98A` |
+| `--caution` | `#7D5208` | `#F4B860` |
 | `--risk` | `#C2414E` | `#EF6A75` |
 
 ### Gradients (sparingly)

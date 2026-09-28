@@ -16,7 +16,7 @@
   --ink-hover: #232a3d;
   --on-ink: #ffffff;
   --ink-2: #3a4152;
-  --muted: #667085;
+  --muted: #5d6679;
   --rule: #e3e6ef;
   --rule-strong: #cbd0dd;
   --grid: rgba(20, 24, 36, 0.045);
@@ -42,9 +42,9 @@
   --trace-e-tint: rgba(168, 106, 18, 0.1);
 
   /* Signals */
-  --gain: #1f8a5b;
+  --gain: #17734b;
   --gain-tint: rgba(66, 201, 138, 0.14);
-  --caution: #9a6412;
+  --caution: #7d5208;
   --caution-tint: rgba(244, 184, 96, 0.2);
   --risk: #c2414e;
   --risk-tint: rgba(239, 106, 117, 0.14);
@@ -286,6 +286,16 @@
 ::view-transition-new(root) {
   animation-duration: 180ms;
 }
+/* College switcher: the old college exits one way, the new one enters from the other. */
+@keyframes cvl-out-left { to { transform: translateX(-60px); opacity: 0; } }
+@keyframes cvl-in-right { from { transform: translateX(60px); opacity: 0; } }
+@keyframes cvl-out-right { to { transform: translateX(60px); opacity: 0; } }
+@keyframes cvl-in-left { from { transform: translateX(-60px); opacity: 0; } }
+::view-transition-old(college-hero) { animation: cvl-out-left 420ms cubic-bezier(0.4, 0, 1, 1) both; }
+::view-transition-new(college-hero) { animation: cvl-in-right 750ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+:root[data-dir="prev"]::view-transition-old(college-hero) { animation-name: cvl-out-right; }
+:root[data-dir="prev"]::view-transition-new(college-hero) { animation-name: cvl-in-left; }
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*),
   ::view-transition-old(*),

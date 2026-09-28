@@ -66,12 +66,17 @@ export interface SimulationResult {
   /** Cumulative net value for every future (runs × ages). */
   runs: Float64Array[];
   /** Percentile bands per age. */
-  bands: { p10: number[]; p50: number[]; p90: number[] };
+  bands: { p10: number[]; p25: number[]; p50: number[]; p75: number[]; p90: number[] };
   /** Final cumulative value for each run, sorted ascending. */
   finals: number[];
   median: number;
+  /** 10th percentile of final values. */
   downside: number;
+  /** 90th percentile of final values. */
   upside: number;
+  /** Middle 50%: 25th and 75th percentiles of final values. */
+  q25: number;
+  q75: number;
   /** Share of futures that pass the no-college path within 10 years of graduating. */
   recoverWithin10: number;
   /** Share that never pass it by the horizon. */
@@ -117,14 +122,18 @@ export function runMonteCarlo(inputs: PathInputs, ctx: PathContext, opts: Simula
   }
 
   const p10: number[] = [];
+  const p25: number[] = [];
   const p50: number[] = [];
+  const p75: number[] = [];
   const p90: number[] = [];
   const col: number[] = new Array(n);
   for (let k = 0; k < ages.length; k++) {
     for (let i = 0; i < n; i++) col[i] = runs[i][k] ?? runs[i][runs[i].length - 1];
     const sorted = [...col].sort((x, y) => x - y);
     p10.push(quantile(sorted, 0.1));
+    p25.push(quantile(sorted, 0.25));
     p50.push(quantile(sorted, 0.5));
+    p75.push(quantile(sorted, 0.75));
     p90.push(quantile(sorted, 0.9));
   }
   const finals = runs.map((s) => s[s.length - 1]).sort((x, y) => x - y);
@@ -132,11 +141,13 @@ export function runMonteCarlo(inputs: PathInputs, ctx: PathContext, opts: Simula
   return {
     ages,
     runs,
-    bands: { p10, p50, p90 },
+    bands: { p10, p25, p50, p75, p90 },
     finals,
     median: quantile(finals, 0.5),
     downside: quantile(finals, 0.1),
     upside: quantile(finals, 0.9),
+    q25: quantile(finals, 0.25),
+    q75: quantile(finals, 0.75),
     recoverWithin10: recovered / n,
     neverRecover: never / n,
     baseline: baselineRows.map((r) => r.cumulative),

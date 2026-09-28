@@ -1,24 +1,25 @@
 import type { Metadata } from "next";
-import { InProgress } from "@/components/site/in-progress";
+import { PageShell } from "@/components/site/page-shell";
+import { BreakEvenBars, PriceEarningsScatter } from "@/features/research/research-charts";
+import { breakEvenByMajor, priceVsEarnings } from "@/features/research/data";
 
-export const metadata: Metadata = { title: "Research lab", description: "Research questions on ROI by major, geography, net price and earnings distributions. In progress." };
+export const metadata: Metadata = { title: "Research", description: "Patterns across 120 colleges and 50 majors: price versus earnings, and how quickly each major recovers its cost. Correlation, clearly labeled." };
 
 export default function ResearchPage() {
+  const scatter = priceVsEarnings();
+  const be = breakEvenByMajor();
   return (
-    <InProgress
-      title="Research lab"
-      lede="Questions about college value, answered with charts you can inspect, and labeled clearly where correlation isn't causation."
-      coming={[
-        "How does ROI vary by major?",
-        "How does geographic cost of living change college value?",
-        "How does net price affect break-even time?",
-        "How different are earnings distributions across majors?",
-        "Scatter plots of net price, debt, graduation rate and earnings",
-      ]}
-      meanwhile={[
-        { href: "/methodology", label: "Methodology", note: "Every formula, its limits, and how data confidence is scored." },
-        { href: "/compare", label: "Compare paths", note: "Put up to five college paths side by side." },
-      ]}
-    />
+    <PageShell title="Research" lede="Patterns across every college and major in the data. Each chart is labeled with what kind of number it shows, and where a relationship is correlation, it says so." wide>
+      <div className="grid gap-16">
+        <section aria-labelledby="r1" className="grid gap-5">
+          <h2 id="r1" className="text-h2 font-extrabold">Does paying more mean earning more?</h2>
+          <PriceEarningsScatter {...scatter} />
+        </section>
+        <section aria-labelledby="r2" className="grid gap-5">
+          <h2 id="r2" className="text-h2 font-extrabold">Which majors recover their cost fastest?</h2>
+          <BreakEvenBars rows={be.rows} cost={be.cost} />
+        </section>
+      </div>
+    </PageShell>
   );
 }

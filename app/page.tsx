@@ -10,7 +10,11 @@ import { CompareStage } from "@/features/chapters/compare-stage";
 import { BreakEvenExplorer } from "@/features/chapters/break-even-explorer";
 import { WhatIfLab } from "@/features/chapters/what-if-lab";
 import { Lessons } from "@/features/chapters/lessons";
-import { lessonInputs, trayCards } from "@/features/chapters/data";
+import { cityData, employmentMajors, lessonInputs, trayCards } from "@/features/chapters/data";
+import { EmploymentParticles } from "@/features/chapters/employment-particles";
+import { FuturesSim } from "@/features/chapters/futures-sim";
+import { CityExplorer } from "@/features/chapters/city-explorer";
+import { Pipeline } from "@/features/chapters/pipeline";
 import { TwoStudents } from "@/features/experience/two-students";
 import { twoStudentsDefaults } from "@/features/experience/data";
 import { SalaryDistribution } from "@/features/home/salary-distribution";
@@ -22,9 +26,13 @@ const SECTIONS: SpySection[] = [
   { id: "compare", label: "Compare" },
   { id: "opportunity", label: "Opportunity cost" },
   { id: "salaries", label: "Salaries" },
+  { id: "employment", label: "Employment" },
   { id: "break-even", label: "Break-even" },
   { id: "what-if", label: "What-if lab" },
+  { id: "futures", label: "1,000 futures" },
+  { id: "cost-of-living", label: "Cost of living" },
   { id: "learn", label: "Learn" },
+  { id: "research", label: "Methodology" },
 ];
 
 export default function HomePage() {
@@ -51,16 +59,40 @@ export default function HomePage() {
             <SalaryDistribution majors={majorsTable()} />
           </Chapter>
 
-          <Chapter id="break-even" theme="dark-2" eyebrow="05 · WHEN COULD IT PAY OFF?" title="When does the investment catch up?" lede="Paths 01 and 02 against working from 18. Drag through time, or press play and watch debt fall, salary rise and each break-even land.">
+          <Chapter id="employment" theme="dark" eyebrow="05 · WHAT HAPPENS AFTER GRADUATION?" title="What happens after graduation?" lede="Start with 100 graduates. A year later, where are they? Pick a major and watch them sort themselves out.">
+            <EmploymentParticles majors={employmentMajors()} />
+          </Chapter>
+
+          <Chapter id="break-even" theme="dark-2" eyebrow="06 · WHEN COULD IT PAY OFF?" title="When does the investment catch up?" lede="Paths 01 and 02 against working from 18. Drag through time, or press play and watch debt fall, salary rise and each break-even land.">
             <BreakEvenExplorer />
           </Chapter>
 
-          <Chapter id="what-if" eyebrow="06 · WHAT IF?" title="Change one assumption. Watch the future change." lede="Every control re-runs the model for your active path. Let go of a slider and see exactly what moved.">
+          <Chapter id="what-if" eyebrow="07 · WHAT IF?" title="Change one assumption. Watch the future change." lede="Every control re-runs the model for your active path. Let go of a slider and see exactly what moved.">
             <WhatIfLab />
           </Chapter>
 
-          <Chapter id="learn" eyebrow="07 · LEARN THE ECONOMICS" title="The ideas behind every number." lede="Eight short experiments. Open one and play with it.">
+          <Chapter id="futures" theme="dark" glow eyebrow="08 · HOW UNCERTAIN IS IT?" title="Your future is a range, not a single number." lede="Run your active path a thousand times, each with its own salary, job search, graduation time and costs. Watch the futures spread out, then settle into what's likely.">
+            <FuturesSim />
+          </Chapter>
+
+          <Chapter id="cost-of-living" eyebrow="09 · WHERE WILL YOU LIVE?" title="Where you live changes what your salary means." lede="The same paycheck splits very differently in different cities. Pick a salary, then hover or tap a city.">
+            <CityExplorer {...cityData()} />
+          </Chapter>
+
+          <Chapter id="learn" theme="dark-2" eyebrow="10 · LEARN THE ECONOMICS" title="The ideas behind every number." lede="Eight short experiments. Open one and play with it.">
             <Lessons data={lessonInputs()} />
+          </Chapter>
+
+          <Chapter id="research" eyebrow="11 · RESEARCH & METHODOLOGY" title="How every number is made." lede="The whole model as one path. Click any step to see its formula, its sources, what kind of number it is, and its value for your active path.">
+            <Pipeline />
+            <div className="mt-10 flex flex-wrap gap-3">
+              <ButtonLink href="/methodology" variant="secondary">
+                Full methodology and limits
+              </ButtonLink>
+              <ButtonLink href="/research" variant="secondary">
+                Research: patterns across colleges
+              </ButtonLink>
+            </div>
           </Chapter>
 
           <section className="theme-dark relative isolate overflow-hidden bg-paper" aria-labelledby="cta-h">

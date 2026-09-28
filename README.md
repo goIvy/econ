@@ -4,29 +4,26 @@ Compare the real financial value of a specific college path: one college, one ma
 
 > **Demo data.** This release runs on seeded sample data shaped like the federal datasets it will use (College Scorecard, IPEDS, BLS, ACS, BEA, FRED, Federal Student Aid). Every figure is labeled "Sample data" in the UI and tagged `demo: true` in code until live ingestion is connected.
 
-## What's in this release (spec sections 1–16)
+## What's in this release
 
 | Area | Where |
 |---|---|
-| Interactive homepage: branching-paths hero (A public, B private, C work from 18), scroll-driven net-price story, two-students opportunity cost, Your Financial Timeline, What-If Lab, debt you can see, drag-to-compare stage with flip cards, salary distribution explorer, 1,000 Possible Futures (Monte Carlo), purchasing-power map, lessons, sources, methodology, placeholder pricing, FAQ | `app/page.tsx`, `features/experience/`, `features/home/` |
-| Learn the Economics: five scroll-told interactive lessons, plus concept tooltips with working examples | `/learn`, `features/learn/`, `components/concepts/` |
-| Onboarding (6 skippable steps) | `/get-started`, `features/onboarding/` |
-| College search with filters and compare tray (up to 5) | `/explore`, `features/college/` |
-| College detail: metrics + Overview, Costs, Majors, Earnings, Debt, Outcomes, Research tabs | `/college/[id]` |
-| Major selector, residency toggle, total cost model, living arrangement, debt model, graduation probability, employment model | `features/major`, `features/cost`, `features/debt`, `features/outcomes` |
-| Compare paths (sortable, filterable, shareable URL) | `/compare`, `features/comparison/` |
-| Cost and debt simulator | `/simulator` |
-| Methodology page + methodology modal | `/methodology`, `components/ui/methodology-dialog.tsx` |
+| Homepage: Three Futures hero (build up to three paths, staggered timeline markers, floating cards, cursor-reactive background), True Cost scroll story, drag-to-compare stage (up to 4 paths across Cost, Career, Risk, Long term), opportunity cost with sliders, salary distribution explorer, employment outcomes (100 graduates regrouping), break-even explorer with scrubber and PLAY MY FUTURE, What-If Lab with change indicators, 1,000 Possible Futures simulation (canvas), cost-of-living map, 8 lessons that expand into micro-experiences, methodology pipeline | `app/page.tsx`, `features/hero/`, `features/chapters/`, `features/home/` |
+| Shared scenario state: the paths you build in the hero drive every chapter below it; `/api/context` loads any college + major | `features/scenario/`, `app/api/context/` |
+| College detail: big-metric hero with a scrubbable timeline and a college switcher (arrows, ← → keys, swipe; View Transitions), plus Overview, Costs, Majors, Earnings, Debt, Outcomes, Research tabs | `/college/[id]`, `features/college/` |
+| Saved comparisons (stored in the browser) | `/saved`, `features/saved/`, `hooks/use-saved.ts` |
+| Research: net price vs. earnings across colleges, and break-even age by major | `/research`, `features/research/` |
+| Learn the Economics, onboarding, college search, compare workspace, simulator, methodology | `/learn`, `/get-started`, `/explore`, `/compare`, `/simulator`, `/methodology` |
 | FastAPI + PostgreSQL service, 29-table schema | `backend/` |
 
-Careers, Research lab and accounts are later-release areas. Their pages say so honestly.
+Every number carries a data kind (Observed, Estimated, Projected, Simulated) and an ⓘ source card. Careers and accounts are later-release areas; their pages say so.
 
 ## Run it
 
 ```bash
 npm install
 npm run dev          # http://localhost:3000
-npm test             # 56 calculation + data tests (vitest)
+npm test             # 61 calculation + data tests (vitest)
 npm run typecheck
 npm run lint
 npm run build
@@ -37,7 +34,7 @@ Backend: see [backend/README.md](backend/README.md).
 ## How it's built
 
 - **Next.js 16** App Router, React 19, TypeScript, **Tailwind v4**, Radix primitives (shadcn-style components written in-repo), **Recharts** for standard charts, custom SVG for the signature trace chart, **Framer Motion** for all motion.
-- **Design system:** `design-system/MASTER.md` is the single source of truth. Tokens live in `app/globals.css`, motion variants in `lib/animations.ts`. Direction: *Calibrated Instrument*: a measured field, navy ink, blue/teal trace inks, tabular readouts, a footnote on every figure.
+- **Design system:** `design-system/MASTER.md` is the single source of truth. Tokens live in `app/globals.css`, motion variants in `lib/animations.ts`. Direction (v2): dark-to-light hybrid, Geist, navy grounds with #6C7CFF / #36D1B4 / #A78BFA accents; paths as the core metaphor. Summary in `DESIGN.md`.
 - **Calculation engine:** `lib/calc/` (TypeScript), mirrored in `backend/app/calc.py` with a parity test. It covers net cost, loan amortization, in-school interest, 2024 taxes, salary projection, purchasing power, cumulative value, break-even and opportunity cost, plus timeline snapshots, teaching models, marginal (what-if) analysis and a seeded Monte Carlo simulation. All values are in 2024 dollars. No animation code lives here.
 - **Interaction layer:** reusable motion primitives in `components/motion`, springs and variants in `lib/animations.ts`, rules in `design-system/MASTER.md` §6.1. Every animation respects `prefers-reduced-motion`; cursor effects run only on fine pointers.
 - **Map:** `npm run build:map` regenerates `data/geo/us-map.ts` (simplified Albers USA outline from us-atlas); no mapping library ships to the browser.
@@ -48,7 +45,7 @@ Backend: see [backend/README.md](backend/README.md).
 ```
 app/          routes
 components/   ui primitives, charts, site chrome
-features/     home, college, comparison, cost, debt, major, outcomes, onboarding, simulator
+features/     hero, chapters, scenario, home, college, comparison, saved, research, cost, debt, major, outcomes, onboarding, simulator
 lib/          calc engine, animations, formatting, api schemas
 data/         seed rows, sources, methodologies
 services/     data access seam
@@ -60,12 +57,11 @@ backend/      FastAPI + SQLAlchemy + pytest
 
 ## Quality checks run
 
-- axe-core: 0 violations on 11 routes at 375px and 1440px
-- Production homepage: LCP ≈ 0.45s locally, no long tasks while scrolling the full page
-- No horizontal overflow at 375 / 768 / 1024 / 1440
-- `prefers-reduced-motion` respected on every animation (hydration-safe)
-- Motion audit report: `motion-audits/college-value-lab-2026-09-28.html`
+- axe-core: 0 violations on 13 routes at 375px and 1440px
+- No horizontal overflow at 375 / 768 / 1024 / 1440 on every route
+- `prefers-reduced-motion` respected on every animation; nothing is left hidden when motion is off
+- Typecheck, lint, 61 tests and the production build all pass
 
 ## Deploy
 
-Frontend on Vercel; API on Railway, Render or Fly.io. Configuration is via environment variables only (see `.env.example`). No secrets are committed.
+Frontend on Vercel (Application Preset: Next.js; `vercel.json` pins it); API on Railway, Render or Fly.io. Configuration is via environment variables only (see `.env.example`). No secrets are committed.

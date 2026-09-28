@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog, Popover } from "radix-ui";
-import { ExternalLink, X } from "lucide-react";
+import { ExternalLink, X, Info } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { Confidence, Lineage } from "@/types";
@@ -105,12 +105,12 @@ export function SourceFootnote({ metric, lineage, n, className }: { metric: stri
     <button
       type="button"
       className={cn(
-        "tabular relative inline-flex h-[1.15rem] min-w-[1.15rem] -translate-y-[0.35em] items-center justify-center rounded-[4px] border border-rule-strong bg-surface px-1 align-baseline text-[0.625rem] font-semibold leading-none text-ink-2 transition-colors after:absolute after:-inset-[5px] after:content-[''] hover:border-ink hover:text-ink",
+        "relative inline-flex size-6 -my-1 -translate-y-[0.05em] items-center justify-center rounded-full align-middle text-muted transition-colors after:absolute after:-inset-[5px] after:content-[''] hover:text-ink",
         className,
       )}
-      aria-label={`View source for ${metric}`}
+      aria-label={`View source for ${metric}${n ? ` (source ${n})` : ""}`}
     >
-      {n ?? "i"}
+      <Info className="size-[0.95rem]" aria-hidden />
     </button>
   );
 

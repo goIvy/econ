@@ -36,10 +36,11 @@ export function Chapter({
   const inView = useInView(ref, { once: true, margin: "0px 0px -12% 0px" });
   const reduce = useReducedMotion();
   const show = inView || reduce;
+  // Under reduced motion: show immediately (an explicit zero-length transition; no rise).
   const rise = (delay: number) => ({
-    initial: reduce ? false : { opacity: 0, y: 28 },
+    initial: { opacity: 0, y: 28 },
     animate: show ? { opacity: 1, y: 0 } : undefined,
-    transition: { duration: DUR.large, ease: EASE.smooth, delay },
+    transition: reduce ? { duration: 0 } : { duration: DUR.large, ease: EASE.smooth, delay },
   });
   return (
     <section

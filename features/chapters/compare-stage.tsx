@@ -101,7 +101,7 @@ export function CompareStage({ cards }: { cards: TrayCard[] }) {
     <LayoutGroup>
       <div className="grid gap-8">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="text-small text-ink-2">{fine ? "Drag a college onto the stage, or focus it and press Enter." : "Tap + to put a college on the stage."} Up to four.</p>
+          <p className="text-small text-ink-2">{fine ? "Drag a college onto the stage, or press its + button." : "Tap + to put a college on the stage."} Up to four.</p>
           <SampleChip />
         </div>
 
@@ -197,19 +197,7 @@ function TrayItem({ card, disabled, draggable, onAdd, onDragOver, inStage }: { c
       }}
       data-cursor={draggable ? "DRAG" : undefined}
     >
-      <div
-        tabIndex={0}
-        role="button"
-        aria-disabled={disabled}
-        aria-label={`${c.college.shortName} ${c.major.name}. Press Enter to add to the comparison.`}
-        onKeyDown={(e) => {
-          if ((e.key === "Enter" || e.key === " ") && !disabled) {
-            e.preventDefault();
-            onAdd();
-          }
-        }}
-        className="group flex h-full items-start gap-2 rounded-md border border-rule bg-surface p-3.5 shadow-1 transition-shadow hover:shadow-2"
-      >
+      <div className="group flex h-full items-start gap-2 rounded-md border border-rule bg-surface p-3.5 shadow-1 transition-shadow hover:shadow-2">
         <GripVertical className="mt-0.5 size-4 shrink-0 text-muted" aria-hidden />
         <div className="grid min-w-0 flex-1 gap-0.5">
           <p className="truncate text-[0.95rem] font-bold uppercase tracking-[0.02em] text-ink">{c.college.shortName}</p>
@@ -218,7 +206,7 @@ function TrayItem({ card, disabled, draggable, onAdd, onDragOver, inStage }: { c
             {c.college.control === "public" ? "Public" : "Private"}, {c.college.state}
           </p>
         </div>
-        <motion.button type="button" whileTap={{ scale: 0.9 }} onPointerDownCapture={(e) => e.stopPropagation()} onClick={onAdd} disabled={disabled} tabIndex={-1} aria-hidden className="grid size-8 shrink-0 place-items-center rounded-full border border-rule-strong text-ink hover:border-ink disabled:opacity-40">
+        <motion.button type="button" whileTap={{ scale: 0.9 }} onPointerDownCapture={(e) => e.stopPropagation()} onClick={onAdd} disabled={disabled} aria-label={`Add ${c.college.shortName} ${c.major.name} to the comparison`} className="grid size-9 shrink-0 place-items-center rounded-full border border-rule-strong text-ink hover:border-ink disabled:opacity-40">
           <Plus className="size-4" />
         </motion.button>
       </div>

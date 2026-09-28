@@ -1,15 +1,15 @@
 import { ViewTransition } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 import { Nav } from "@/components/site/nav";
 import { Footer } from "@/components/site/footer";
 import { Readout } from "@/components/ui/readout";
 import { SampleChip } from "@/components/ui/lineage";
 import { CollegeWorkspace } from "@/features/college/college-workspace";
+import { CollegeHero } from "@/features/college/college-hero";
+import { cumulativeSeries } from "@/lib/calc";
 import type { MajorBundle } from "@/features/major/major-panel";
-import { getCity, getCollege, getMajor, getOccupation, getOutcome, listColleges } from "@/services/data";
+import { getCity, getCollege, getMajor, getOccupation, getOutcome, listColleges, runPath } from "@/services/data";
 import { number } from "@/lib/format";
 import type { Occupation } from "@/types";
 
@@ -62,21 +62,37 @@ export default async function CollegePage(props: PageProps<"/college/[id]">) {
   const initialResidency = sp.residency === "nonresident" ? "nonresident" : "resident";
 
   const c = college.costs;
+  // Hero: the default major's path, with average grant aid.
+  const run = runPath({ collegeId: college.id, majorId: defaultMajorId, residency: initialResidency, living: "campus", yearsToGraduate: 4, funding: { aidPerYear: college.aid.avgGrant.value ?? 0, scholarshipsPerYear: 0, familyPerYear: 10000, workPerYear: 3000, savings: 0 }, options: { horizonAge: 40 } });
+  const sorted = listColleges().slice().sort((a, b) => a.shortName.localeCompare(b.shortName));
+  const at = sorted.findIndex((x) => x.id === college.id);
+  const prev = sorted[(at - 1 + sorted.length) % sorted.length];
+  const next = sorted[(at + 1) % sorted.length];
+  const accent = [...college.id].reduce((h, ch) => h + ch.charCodeAt(0), 0) % 3;
   return (
     <>
       <Nav />
       <main id="main">
+        {run && (
+          <CollegeHero
+            id={college.id}
+            name={college.shortName}
+            place={`${college.name} · ${college.city}, ${college.state} · ${college.control === "public" ? (initialResidency === "resident" ? "in-state" : "out-of-state") : "private"}, on campus, average grant aid`}
+            major={run.major.name}
+            metrics={{ netCost: run.result.net.netPrice, employment: run.result.employmentRate * 100, salary: run.result.startingSalary, debt: run.result.net.borrowing, breakEven: run.breakEven && run.breakEven.age > 18 ? run.breakEven.age : null }}
+            series={cumulativeSeries(run.result.rows, 40)}
+            base={cumulativeSeries(run.baseline, 40)}
+            prev={{ id: prev.id, name: prev.shortName }}
+            next={{ id: next.id, name: next.shortName }}
+            accent={accent}
+          />
+        )}
         <header className="relative isolate overflow-hidden border-b border-rule">
           <div aria-hidden className="measured-field field-fade pointer-events-none absolute inset-0 -z-10" />
           <div className="mx-auto grid max-w-[1200px] gap-8 px-4 pb-10 pt-8 md:px-8 md:pt-12 xl:px-12">
-            <Link href="/explore" className="inline-flex w-fit items-center gap-1 rounded-xs text-small font-medium text-ink-2 hover:text-ink">
-              <ChevronLeft className="size-4" aria-hidden /> All colleges
-            </Link>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="grid gap-2">
-                <ViewTransition name={`college-name-${college.id}`}>
-                  <h1 className="text-h1 font-[720]">{college.name}</h1>
-                </ViewTransition>
+                <h2 className="text-h2 font-bold">{college.name} at a glance</h2>
                 <p className="text-lede text-ink-2">
                   {college.city}, {college.state} · {college.control === "public" ? "Public" : "Private nonprofit"} · {number(college.undergradEnrollment.value)} undergraduates
                 </p>

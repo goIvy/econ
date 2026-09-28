@@ -302,7 +302,7 @@ function FloatCard({ i, parallax, className, label, value, fmt, note, color }: {
 
 function MobileCards({ f }: { f: Future }) {
   return (
-    <dl className="-mx-4 mt-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 xl:hidden" aria-label={`Path ${pathNo(f.index)} key numbers`}>
+    <dl tabIndex={0} className="-mx-4 mt-4 flex snap-x snap-mandatory scroll-px-4 gap-3 overflow-x-auto px-4 pb-2 xl:hidden" aria-label={`Path ${pathNo(f.index)} key numbers (scrolls sideways)`}>
       {metrics(f).map((m) => (
         <div key={m.label} className="grid min-w-[170px] shrink-0 snap-start gap-1 rounded-md border border-rule bg-surface px-4 py-3">
           <dt className="text-[10px] font-bold tracking-[0.14em] text-muted">{m.label}</dt>
