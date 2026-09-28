@@ -21,3 +21,4 @@ export * from "./timeline";
 export * from "./opportunity";
 export * from "./simulation";
 export * from "./whatif";
+export * from "./disposable";

@@ -77,6 +77,12 @@ export interface ProjectionOptions {
   costMultiplier?: number;
   /** Fraction of the first career year spent looking for work, 0–1. Default 0. */
   jobSearchYears?: number;
+  /**
+   * Annual inflation, e.g. 0.025. Loan payments are fixed in nominal dollars,
+   * so in the model's constant 2024 dollars each year's payment is worth less.
+   * Default 0 (payments treated as constant dollars).
+   */
+  inflation?: number;
 }
 
 export function projectPath(inputs: PathInputs, ctx: PathContext, opts: ProjectionOptions = {}): PathResult {
@@ -120,7 +126,7 @@ export function projectPath(inputs: PathInputs, ctx: PathContext, opts: Projecti
     } else {
       const t = age - graduationAge;
       earnings = (salaries[t] ?? 0) * employmentRate * (t === 0 ? 1 - Math.min(1, Math.max(0, opts.jobSearchYears ?? 0)) : 1);
-      loanPayment = t < repaymentYears ? monthly * 12 : 0;
+      loanPayment = t < repaymentYears ? (monthly * 12) / Math.pow(1 + (opts.inflation ?? 0), t + 1) : 0;
     }
     const afterTaxEarnings = inCollege ? earnings : afterTax(earnings, stateRate);
     const netFlow = afterTaxEarnings - collegeOutlay - loanPayment;

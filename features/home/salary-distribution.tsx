@@ -160,6 +160,7 @@ export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
                 width={innerW}
                 height={innerH}
                 fill="transparent"
+                data-cursor="EXPLORE"
                 className="cursor-ew-resize touch-pan-y outline-none focus-visible:[outline:2px_solid_var(--trace-a)]"
                 onPointerMove={(e) => (e.pointerType === "mouse" || dragging) && fromPointer(e)}
                 onPointerDown={(e) => {
@@ -182,19 +183,24 @@ export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
           </div>
         </div>
 
-        <div className="grid content-start gap-3 rounded-md bg-surface-sunk p-4">
-          <p className="text-caption text-muted">This graduate earns</p>
-          <p className="tabular text-h2 font-semibold tracking-[-0.02em] text-ink">{money(salary)}</p>
-          <p className="text-small text-ink-2" aria-live="polite">
-            About the <strong className="font-semibold text-ink">{ordinal(pctile)} percentile</strong>: more than {pctile}% of recent {m.name.toLowerCase()} graduates, less than {100 - pctile}%.
+        <div className="grid content-start gap-3 rounded-md bg-surface-sunk p-4" aria-live="polite">
+          <p className="tabular text-caption font-bold tracking-[0.14em] text-trace-a">{ordinal(pctile).toUpperCase()} PERCENTILE</p>
+          <p className="tabular text-metric font-extrabold text-ink">{money(salary)}</p>
+          <p className="text-small text-ink-2">
+            Estimated salary. More than {pctile}% of recent {m.name.toLowerCase()} graduates earn less; {100 - pctile}% earn more.
           </p>
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Jump to a percentile">
-            {([["10th", m.early.p10], ["Median", m.early.p50], ["90th", m.early.p90]] as Array<[string, number]>).map(([label, v]) => (
-              <motion.button key={label} type="button" whileTap={{ scale: 0.95 }} transition={microSpring} onClick={() => setSalary(v)} className={cn("h-9 rounded-full border px-3 text-caption font-semibold", Math.abs(salary - v) < 300 ? "border-ink bg-ink text-on-ink" : "border-rule-strong bg-surface text-ink hover:border-ink")}>
-                {label} {moneyCompact(v)}
+          <div className="grid gap-1.5" role="group" aria-label="Jump to an outcome">
+            {([["Lower outcome", m.early.p10, "10th percentile"], ["Typical outcome", m.early.p50, "Median"], ["Higher outcome", m.early.p90, "90th percentile"]] as Array<[string, number, string]>).map(([label, v, sub]) => (
+              <motion.button key={label} type="button" whileTap={{ scale: 0.97 }} transition={microSpring} onClick={() => setSalary(v)} className={cn("flex min-h-11 items-center justify-between gap-2 rounded-sm border px-3 text-left text-caption", Math.abs(salary - v) < 300 ? "border-ink bg-ink text-on-ink" : "border-rule-strong bg-surface text-ink hover:border-ink")}>
+                <span>
+                  <span className="block font-semibold">{label}</span>
+                  <span className="opacity-70">{sub}</span>
+                </span>
+                <span className="tabular font-bold">{moneyCompact(v)}</span>
               </motion.button>
             ))}
           </div>
+          <p className="text-caption text-muted">Not good or bad outcomes: the same degree leads to different jobs, cities and choices.</p>
         </div>
       </div>
 

@@ -164,3 +164,38 @@ export function useMeasuredWidth<T extends HTMLElement>(fallback = 720) {
   }, []);
   return [ref, width] as const;
 }
+
+/**
+ * Magnetic pull toward the cursor (primary buttons): at most `max` px,
+ * only while the pointer is within `reach` px of the element. Off on touch
+ * and under reduced motion.
+ */
+export function useMagnetic<T extends HTMLElement>(max = 6, reach = 36) {
+  const ref = useRef<T>(null);
+  const fine = useFinePointer();
+  const reduce = useReducedMotion();
+  const x = useSpring(0, { stiffness: 220, damping: 18, mass: 0.5 });
+  const y = useSpring(0, { stiffness: 220, damping: 18, mass: 0.5 });
+  const active = fine && !reduce;
+  useEffect(() => {
+    if (!active) return;
+    const move = (e: PointerEvent) => {
+      const el = ref.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const inside = e.clientX > r.left - reach && e.clientX < r.right + reach && e.clientY > r.top - reach && e.clientY < r.bottom + reach;
+      if (!inside) {
+        x.set(0);
+        y.set(0);
+        return;
+      }
+      const dx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2 + reach);
+      const dy = (e.clientY - (r.top + r.height / 2)) / (r.height / 2 + reach);
+      x.set(Math.max(-1, Math.min(1, dx)) * max);
+      y.set(Math.max(-1, Math.min(1, dy)) * max);
+    };
+    window.addEventListener("pointermove", move, { passive: true });
+    return () => window.removeEventListener("pointermove", move);
+  }, [active, max, reach, x, y]);
+  return { ref, style: active ? { x, y } : undefined };
+}

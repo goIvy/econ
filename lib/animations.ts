@@ -8,18 +8,34 @@
  */
 import type { Transition, Variants } from "framer-motion";
 
-/** Jakub Krehel's default enter spring. */
+/* ------------------------------------------------------------------ motion tokens
+ * FAST 150–220ms · STANDARD 300–450ms · LARGE 600–900ms · HERO 800–1100ms.
+ * Exits are faster than entrances so the interface feels responsive.
+ */
+export const DUR = { fast: 0.18, standard: 0.38, large: 0.75, hero: 0.95, exit: 0.42 } as const;
+export const EASE = {
+  /** Overshooting spring curve: drops, snaps, magnetic settles. */
+  spring: [0.34, 1.56, 0.64, 1],
+  /** Default for entrances and value changes. */
+  smooth: [0.16, 1, 0.3, 1],
+  /** Leaving: accelerate away. */
+  exit: [0.4, 0, 1, 1],
+} as const;
+/** Section stagger: heading 0, description 80ms, chart 160ms, metrics from 240ms in 80ms steps. */
+export const STAGGER = { heading: 0, description: 0.08, chart: 0.16, metric: (i: number) => 0.24 + i * 0.08 } as const;
+
+/** Physical spring for springs-in-code (numbers, scrubbers). */
 export const enterSpring: Transition = { type: "spring", duration: 0.45, bounce: 0 };
 /** Quick spring for micro-interactions (hover, tap, toggles). */
 export const microSpring: Transition = { type: "spring", duration: 0.3, bounce: 0 };
 /** Exponential ease-out for count-ups and line draws. */
-export const easeOutExpo = [0.16, 1, 0.3, 1] as const;
+export const easeOutExpo = EASE.smooth;
 
-/** Default enter recipe: opacity + 8px rise + 4px blur, spring 0.45 / bounce 0. */
+/** Scroll reveal: opacity 0 + 28px rise → in place. Large entrance, faster exit. */
 export const enter: Variants = {
-  hidden: { opacity: 0, translateY: 8, filter: "blur(4px)" },
-  visible: { opacity: 1, translateY: 0, filter: "blur(0px)", transition: enterSpring },
-  exit: { opacity: 0, translateY: -4, filter: "blur(2px)", transition: { duration: 0.18 } },
+  hidden: { opacity: 0, translateY: 28 },
+  visible: (delay: number = 0) => ({ opacity: 1, translateY: 0, transition: { duration: DUR.large, ease: EASE.smooth, delay } }),
+  exit: { opacity: 0, translateY: -12, transition: { duration: DUR.exit, ease: EASE.exit } },
 };
 
 /** Parent that staggers its `enter` children (hero: 0.06s). */
@@ -32,10 +48,7 @@ export const staggerParent = (stagger = 0.06, delayChildren = 0): Variants => ({
 /** Lists stagger at 0.04s, capped so long lists don't trail on for seconds. */
 export const listItem = (index: number): Variants => ({
   hidden: enter.hidden,
-  visible: {
-    ...(enter.visible as object),
-    transition: { ...enterSpring, delay: Math.min(index, 8) * 0.04 },
-  },
+  visible: { opacity: 1, translateY: 0, transition: { duration: DUR.large, ease: EASE.smooth, delay: Math.min(index, 8) * 0.04 } },
   exit: enter.exit,
 });
 
@@ -55,8 +68,8 @@ export const sheet: Variants = {
 
 /** Popover / dropdown. */
 export const pop: Variants = {
-  hidden: { opacity: 0, scale: 0.97, translateY: -4, filter: "blur(2px)" },
-  visible: { opacity: 1, scale: 1, translateY: 0, filter: "blur(0px)", transition: microSpring },
+  hidden: { opacity: 0, scale: 0.97, translateY: -4 },
+  visible: { opacity: 1, scale: 1, translateY: 0, transition: microSpring },
   exit: { opacity: 0, scale: 0.98, transition: { duration: 0.12 } },
 };
 
@@ -195,8 +208,8 @@ export const parallaxSpring = { stiffness: 90, damping: 22, mass: 1 } as const;
 /** Card tilt: at most TILT_DEG degrees. */
 export const TILT_DEG = 2;
 export const tiltSpring = { stiffness: 200, damping: 24 } as const;
-/** Cards snapping into comparison slots. */
-export const slotSpring: Transition = { type: "spring", duration: 0.45, bounce: 0.12 };
+/** Cards snapping into comparison slots (magnetic, slight overshoot). */
+export const slotSpring: Transition = { duration: 0.55, ease: EASE.spring };
 /** Card flip between front and back. */
 export const flipTransition: Transition = { type: "spring", duration: 0.55, bounce: 0 };
 

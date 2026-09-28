@@ -1,6 +1,7 @@
 "use client";
 
 import { MotionConfig } from "framer-motion";
+import { CursorLabel } from "@/components/motion/cursor-label";
 
 /**
  * reducedMotion="user": Framer Motion honors prefers-reduced-motion globally
@@ -8,5 +9,10 @@ import { MotionConfig } from "framer-motion";
  * to opacity-only variants via lib/animations.ts › motionSafe.
  */
 export function Providers({ children }: { children: React.ReactNode }) {
-  return <MotionConfig reducedMotion="user">{children}</MotionConfig>;
+  return (
+    <MotionConfig reducedMotion="user">
+      {children}
+      <CursorLabel />
+    </MotionConfig>
+  );
 }

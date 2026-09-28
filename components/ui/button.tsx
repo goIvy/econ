@@ -5,6 +5,7 @@ import { motion, type HTMLMotionProps } from "framer-motion";
 import { forwardRef } from "react";
 import { buttonHover, buttonTap, microSpring } from "@/lib/animations";
 import { cn } from "@/lib/cn";
+import { useMagnetic } from "@/components/motion";
 
 type Variant = "primary" | "secondary" | "tertiary" | "quiet";
 type Size = "md" | "lg" | "sm";
@@ -54,10 +55,15 @@ export interface ButtonLinkProps extends Omit<React.ComponentProps<typeof Motion
   size?: Size;
 }
 
-export function ButtonLink({ variant = "primary", size = "md", className, ...props }: ButtonLinkProps) {
+export function ButtonLink({ variant = "primary", size = "md", className, style, ...props }: ButtonLinkProps) {
   const lift = variant === "primary" || variant === "secondary";
+  // Primary calls to action lean toward the cursor (≤6px).
+  const mag = useMagnetic<HTMLAnchorElement>();
+  const magnetic = variant === "primary" && size === "lg";
   return (
     <MotionLink
+      ref={magnetic ? mag.ref : undefined}
+      style={magnetic && mag.style ? { ...mag.style, ...(style as object) } : style}
       whileHover={lift ? buttonHover : undefined}
       whileTap={buttonTap}
       transition={microSpring}

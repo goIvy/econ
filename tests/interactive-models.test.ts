@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  calculateLoanPayment,
   compoundSeries,
   crossingAge,
   debtAt,
@@ -33,6 +34,15 @@ describe("two students (opportunity cost teaching model)", () => {
   });
   it("returns null when the graduate never catches up", () => {
     expect(crossingAge(twoStudents({ ...base, graduateSalary: 30000, graduateGrowth: 0.02 }))).toBeNull();
+  });
+  it("borrowing eases the college years but costs interest later", () => {
+    const cash = twoStudents(base);
+    const loan = twoStudents({ ...base, debt: 40000 });
+    expect(loan.find((r) => r.age === 22)!.a).toBe(-80000);
+    expect(loan.at(-1)!.a).toBeLessThan(cash.at(-1)!.a);
+    // Total interest paid is the gap at the end.
+    const interest = calculateLoanPayment(40000, 6.53, 10) * 120 - 40000;
+    expect(cash.at(-1)!.a - loan.at(-1)!.a).toBeCloseTo(interest, 6);
   });
   it("opportunity cost is foregone earnings plus direct cost", () => {
     const oc = opportunityCostOf(base);
@@ -109,5 +119,32 @@ describe("Monte Carlo", () => {
     const draws = Array.from({ length: 4000 }, () => drawSalary(p, rand)).sort((x, y) => x - y);
     expect(draws[2000]).toBeGreaterThan(70000);
     expect(draws[2000]).toBeLessThan(80000);
+  });
+});
+
+import { calculateDisposableIncome, impliedGrowth, afterTax, projectPath as pp } from "@/lib/calc";
+
+describe("disposable income, inflation, implied growth", () => {
+  it("subtracts taxes, rent, core costs and loans", () => {
+    const d = calculateDisposableIncome({ salary: 80000, stateRate: 0.05, rentPerMonth: 1500, rpp: 100, loanPerYear: 6000 });
+    expect(d.disposable).toBeCloseTo(afterTax(80000, 0.05) - 18000 - 20400 - 6000, 6);
+    expect(d.taxes).toBeGreaterThan(0);
+  });
+  it("scales core costs by local prices", () => {
+    const a = calculateDisposableIncome({ salary: 80000, stateRate: 0, rentPerMonth: 0, rpp: 120 });
+    const b = calculateDisposableIncome({ salary: 80000, stateRate: 0, rentPerMonth: 0, rpp: 90 });
+    expect(b.disposable - a.disposable).toBeCloseTo(20400 * 0.3, 6);
+  });
+  it("implied growth reaches mid-career in 15 years", () => {
+    const g = impliedGrowth(50000, 80000);
+    expect(50000 * Math.pow(1 + g, 15)).toBeCloseTo(80000, 4);
+  });
+  it("inflation shrinks real loan payments and raises net value", () => {
+    const r = runPath({ collegeId: "nyu", majorId: "finance", residency: "resident", living: "campus", yearsToGraduate: 4, funding: { aidPerYear: 20000, scholarshipsPerYear: 0, familyPerYear: 10000, workPerYear: 3000, savings: 0 }, options: { horizonAge: 40 } })!;
+    const ctx = { college: r.college, major: r.major, outcome: r.outcome, collegeCity: r.collegeCity, careerCity: r.careerCity };
+    const base = pp(r.result.inputs, ctx, { horizonAge: 40 });
+    const infl = pp(r.result.inputs, ctx, { horizonAge: 40, inflation: 0.03 });
+    expect(infl.rows.at(-1)!.cumulative).toBeGreaterThan(base.rows.at(-1)!.cumulative);
+    expect(base.rows.at(-1)!.cumulative).toBeCloseTo(r.result.rows.at(-1)!.cumulative, 6);
   });
 });

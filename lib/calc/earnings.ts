@@ -26,6 +26,12 @@ export function projectSalary(opts: { start: number; midCareer: number; years: n
   return out;
 }
 
+/** Annual growth implied by moving from a starting salary to the mid-career median in 15 years. */
+export function impliedGrowth(start: number, midCareer: number): number {
+  if (start <= 0) return 0;
+  return Math.pow(Math.max(midCareer, start) / start, 1 / YEARS_TO_MID_CAREER) - 1;
+}
+
 /** Running total of a series. */
 export function calculateCumulativeEarnings(series: number[]): number[] {
   let total = 0;

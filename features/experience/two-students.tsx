@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useSpring, useTransform, type MotionValue } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { AnimatedNumber, ScrollScene, scrollSceneTo, useMeasuredWidth, useScrollScene, useSteppedValue } from "@/components/motion";
 import { GraduatedSlider } from "@/components/ui/graduated-slider";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
@@ -37,10 +37,12 @@ export function TwoStudents(defaults: TwoStudentsProps) {
   const [cost, setCost] = useState(defaults.costPerYear);
   const [salary, setSalary] = useState(defaults.graduateSalary);
   const [growth, setGrowth] = useState(defaults.graduateGrowth);
+  const [wage, setWage] = useState(defaults.workerSalary);
+  const [debt, setDebt] = useState(0);
   const [controlsOpen, setControlsOpen] = useState(false);
 
-  const inputs = { ...defaults, costPerYear: cost, graduateSalary: salary, graduateGrowth: growth, horizonAge: END };
-  const rows = useMemo(() => twoStudents(inputs), [cost, salary, growth]); // eslint-disable-line react-hooks/exhaustive-deps
+  const inputs = { ...defaults, costPerYear: cost, graduateSalary: salary, graduateGrowth: growth, workerSalary: wage, debt: Math.min(debt, cost * defaults.yearsInCollege), horizonAge: END };
+  const rows = twoStudents(inputs);
   const cross = crossingAge(rows);
   const oc = opportunityCostOf(inputs);
 
@@ -54,7 +56,9 @@ export function TwoStudents(defaults: TwoStudentsProps) {
     <>
       <GraduatedSlider size="sm" label="College cost per year" value={cost} onChange={setCost} min={0} max={80000} step={1000} format={moneyCompact} trace="a" />
       <GraduatedSlider size="sm" label="Starting salary after college" value={salary} onChange={setSalary} min={30000} max={120000} step={1000} format={moneyCompact} trace="a" />
-      <GraduatedSlider size="sm" label="Graduate's yearly raise" value={growth} onChange={setGrowth} min={0} max={0.07} step={0.0025} format={(v) => pct(v * 100, 1)} trace="a" />
+      <GraduatedSlider size="sm" label="Alternative wage (working from 18)" value={wage} onChange={setWage} min={20000} max={60000} step={1000} format={moneyCompact} trace="ink" />
+      <GraduatedSlider size="sm" label="Salary growth after college" value={growth} onChange={setGrowth} min={0} max={0.07} step={0.0025} format={(v) => pct(v * 100, 1)} trace="a" />
+      <GraduatedSlider size="sm" label="Student debt (borrowed, repaid over 10 years)" value={Math.min(debt, cost * defaults.yearsInCollege)} onChange={setDebt} min={0} max={Math.max(1000, cost * defaults.yearsInCollege)} step={1000} format={moneyCompact} trace="a" />
     </>
   );
   const phase = shownAge < START + defaults.yearsInCollege ? "college" : cross != null && shownAge >= cross ? "after" : "catching";
@@ -110,7 +114,7 @@ export function TwoStudents(defaults: TwoStudentsProps) {
             <Stat label={gap < 0 ? "A is behind by" : "A is ahead by"} value={Math.abs(gap)} strong />
           </dl>
           <p className="hidden text-caption text-muted sm:block">
-            Opportunity cost of college here: {money(oc.directCost)} in costs plus {money(oc.foregoneEarnings)} in wages not earned = {money(oc.total)}. Teaching model: before taxes, no loans, B&apos;s raise {pct(defaults.workerGrowth * 100, 1)} a year.
+            Opportunity cost of college here: {money(oc.directCost)} in costs plus {money(oc.foregoneEarnings)} in wages not earned = {money(oc.total)}. Teaching model: before taxes; borrowed money is repaid at 6.53% over 10 years; B&apos;s raise {pct(defaults.workerGrowth * 100, 1)} a year.
           </p>
         </div>
       </div>

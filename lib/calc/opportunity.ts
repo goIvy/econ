@@ -3,6 +3,7 @@
  * number can be checked by hand: pre-tax, no loans, college paid as you go.
  * Used by the opportunity-cost demonstration and the economics lessons.
  */
+import { calculateLoanPayment } from "./loans";
 
 export interface TwoStudentsInputs {
   /** Net college cost per year (tuition + living, after aid). */
@@ -18,6 +19,12 @@ export interface TwoStudentsInputs {
   workerGrowth: number;
   startAge?: number;
   horizonAge?: number;
+  /** Part of the college cost borrowed instead of paid during college. */
+  debt?: number;
+  /** Loan rate, % (default: federal undergraduate 6.53). */
+  debtRatePct?: number;
+  /** Repayment years after graduation (default 10). */
+  debtTermYears?: number;
 }
 
 export interface TwoStudentsRow {
@@ -32,15 +39,20 @@ export function twoStudents(inp: TwoStudentsInputs): TwoStudentsRow[] {
   const start = inp.startAge ?? 18;
   const end = inp.horizonAge ?? 40;
   const rows: TwoStudentsRow[] = [{ age: start, a: 0, b: 0 }];
+  // Borrowing lowers what A pays while studying, then comes back with interest.
+  const debt = Math.max(0, Math.min(inp.debt ?? 0, inp.costPerYear * inp.yearsInCollege));
+  const term = inp.debtTermYears ?? 10;
+  const payment = calculateLoanPayment(debt, inp.debtRatePct ?? 6.53, term) * 12;
   let a = 0;
   let b = 0;
   let gradSalary = inp.graduateSalary;
   let workSalary = inp.workerSalary;
   for (let age = start; age < end; age++) {
     const yearIndex = age - start;
-    if (yearIndex < inp.yearsInCollege) a -= inp.costPerYear;
+    if (yearIndex < inp.yearsInCollege) a -= inp.costPerYear - debt / inp.yearsInCollege;
     else {
       a += gradSalary;
+      if (yearIndex - inp.yearsInCollege < term) a -= payment;
       gradSalary *= 1 + inp.graduateGrowth;
     }
     b += workSalary;

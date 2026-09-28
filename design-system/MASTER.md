@@ -1,231 +1,161 @@
 # College Value Lab — Design System (MASTER)
 
-> **Single source of truth.** Every color, font, radius, shadow, spacing value, and motion recipe used in the app comes from this file (implemented as tokens in `app/globals.css` and `lib/animations.ts`). Nothing is hardcoded in components.
+> **Single source of truth.** Every color, font, radius, shadow, spacing value and motion recipe in the app comes from this file, implemented as tokens in `app/globals.css` and `lib/animations.ts`. Components never hardcode them.
 >
-> Page-level overrides may live in `design-system/pages/<page>.md`; they may only *narrow* these rules, never add colors or fonts.
+> Page-level overrides may live in `design-system/pages/<page>.md`; they may only *narrow* these rules.
 
-**Direction:** Calibrated Instrument. Each path is an experiment the visitor runs on a precision instrument.
-**Register:** Light-first. Warm off-white field, navy ink, blue and teal as trace inks.
-**Provenance:** Built from the owner's pinned brief (PRODUCT.md › Brand Commitments) plus the ui-ux-pro-max generator (`search.py … --design-system --persist`). The generator classified the product as "Fintech/Crypto" and proposed a dark gold/purple palette with IBM Plex. That output was **rejected** because it contradicts the pinned light-first navy/blue/teal brief, and purple is on the owner's anti-AI list. Kept from the generator: the spacing scale, contrast floor, focus/cursor rules, and the pre-delivery checklist.
+**Tagline:** See what college is really worth.
+**Core metaphor:** *Your future is a set of economic paths.* Paths appear everywhere: the hero's three futures, salary trajectories, break-even crossings, simulation fans, the methodology pipeline, the nav's section line.
+**Register:** premium fintech × academic research × interactive data journalism. Youthful, never childish.
+**Surface system:** dark-to-light hybrid. Story and simulation sections are dark (`.theme-dark`); research and data-reading sections are light. The same token names are redefined inside `.theme-dark`, so every component restyles itself.
+
+**Provenance:** v1 ("Calibrated Instrument", light-only) was replaced by the owner's v2 brief (dark/light hybrid, #0B1020 / #6C7CFF / #36D1B4 / #A78BFA, Geist). The validated-palette method, lineage language, reduced-motion rules and checklist carry over.
 
 ---
 
 ## 1. Color tokens
 
-All text/background pairs below were measured against `--paper` and `--surface` (WCAG 2.x). Every text color is ≥ 4.5:1 on both.
-
 ### Neutrals
 
-| Token | Hex | Use | Contrast on paper |
+| Token | Light (research) | Dark | Use |
 |---|---|---|---|
-| `--paper` | `#F8F6F2` | Page field (warm off-white) | — |
-| `--surface` | `#FFFFFF` | Cards, instrument panels, inputs | — |
-| `--surface-sunk` | `#F1EEE7` | Wells, table stripes, track of sliders | — |
-| `--ink` | `#10213A` | Primary text, axes, primary button fill | 14.96 |
-| `--ink-hover` | `#1B3152` | Primary button hover | — |
-| `--on-ink` | `#FFFFFF` | Text and marks on ink or trace fills (= surface) | — |
-| `--ink-2` | `#3E4C63` | Secondary text, body copy on long reads | 8.04 |
-| `--muted` | `#5B677A` | Captions, units, axis labels, footnotes | 5.31 |
-| `--rule` | `#DDD8CE` | Borders, dividers (non-text) | 1.32 |
-| `--rule-strong` | `#C9C2B4` | Input borders, focused-card borders (non-text) | — |
-| `--grid` | `rgba(16,33,58,0.055)` | The measured grid drawn on the field | — |
-| `--grid-major` | `rgba(16,33,58,0.09)` | Every 5th grid line | — |
+| `--paper` | `#F7F8FC` | `#0B1020` | Section background |
+| `--surface` | `#FFFFFF` | `#11182A` | Cards, panels |
+| `--surface-sunk` | `#EEF0F7` | `#0E1426` | Tracks, wells |
+| `--ink` | `#141824` | `#FFFFFF` | Text, primary fills, axes |
+| `--ink-2` | `#3A4152` | `rgba(255,255,255,.82)` | Secondary text |
+| `--muted` | `#667085` | `rgba(255,255,255,.65)` | Labels, captions |
+| `--rule` / `--rule-strong` | `#E3E6EF` / `#CBD0DD` | `rgba(255,255,255,.10)` / `.20` | Borders, gridlines |
+| `--on-ink` | `#FFFFFF` | `#0B1020` | Text on an `--ink` fill (primary buttons invert per theme) |
+| `--glass` | `rgba(247,248,252,.72)` | `rgba(11,16,32,.62)` | Frosted nav and hero cards only |
 
-### Trace inks (paths, series)
+`.theme-dark-2` swaps in the secondary dark `#11182A` as the section ground.
 
-Paths are identified by **letter tag + color + line style**, never by color alone.
+### Brand accents (UI, not data)
 
-| Token | Hex | Path | Line style | White text on it | On paper |
-|---|---|---|---|---|---|
-| `--trace-a` | `#2456C8` | Path A (blue) | solid | 6.48 | 6.00 |
-| `--trace-b` | `#007F68` | Path B (teal) | solid | 4.96 | 4.59 |
-| `--trace-c` | `#B04A1B` | Path C (rust) | dashed 6/4 | 5.47 | 5.06 |
-| `--trace-d` | `#7A4FB5` | Path D (violet) | dotted 2/3 | 5.81 | 5.38 |
-| `--trace-e` | `#7A6800` | Path E (olive) | dash-dot | 5.52 | 5.11 |
+`--accent #6C7CFF` (primary accent, focus ring), `--accent-2 #36D1B4` (secondary accent), `--highlight #A78BFA`. Used for glows, active states, selection and the cursor label. Not used as chart series fills.
 
-**Validated** with the dataviz skill's `validate_palette.js` on `--surface #F8F6F2` in this order: lightness band, chroma floor, adjacent CVD separation (worst ΔE 11.9), normal-vision floor, and contrast all PASS. With `--pairs all` a 5-series chart cannot separate every pair (rust↔olive under deuteranopia), which is expected past four series. That is why every path also carries its **letter tag, line style and direct end label**. Series text is never drawn in trace color. The original teal `#0A7468` and slate `#4F6378` failed the chroma floor and were replaced.
+### Trace inks (data series), validated per theme
 
-Each trace has a 10% tint for fills and selected states: `--trace-a-tint: rgba(36,86,200,0.10)` and so on.
+Paths are identified by **number tag + color + line style**, never color alone.
 
-### Signal colors (readout states only)
+| Token | Path | Light | Dark | Style |
+|---|---|---|---|---|
+| `--trace-a` | PATH 01 | `#4F5BD5` | `#6C7CFF` | solid |
+| `--trace-b` | PATH 02 | `#0E8F79` | `#16A48C` | solid |
+| `--trace-d` | PATH 03 | `#7A58D0` | `#9277F2` | dotted |
+| `--trace-c` | WORK (no college) | `#667085` | `rgba(255,255,255,.55)` | dashed 6/4 |
+| `--trace-e` | spare / 5th | `#A86A12` | `#BE8230` | dash-dot |
 
-| Token | Hex | Meaning | Paired tint |
-|---|---|---|---|
-| `--gain` | `#2A7547` | Positive financial indicator (earnings, surplus, lower cost) | `#E4F0E8` |
-| `--caution` | `#8A5A0B` | Caution (moderate debt burden, limited data) | `#F6ECD6` |
-| `--risk` | `#B23B33` | Risk / negative pressure only (high debt-to-income, losses) | `#F6E1DE` |
+Validated with the dataviz `validate_palette.js` (a, b, d, e): light on `#F7F8FC` and `#FFFFFF`, dark on `#11182A`. Lightness band, chroma floor, CVD separation, normal-vision floor and contrast all PASS. The brand's `#36D1B4` and `#A78BFA` sit above the dark lightness band, so the series use the deeper `#16A48C` / `#9277F2` and the bright versions stay UI accents. The "work from 18" path is deliberately neutral: it is the baseline every college path is measured against.
 
-Signals always ship with an icon or word ("Lower", "Caution", "Risk"), never color alone.
+### Signals (readout states only; always with an icon or word)
 
-### Gradients (allowed in exactly three places)
+| Token | Light | Dark |
+|---|---|---|
+| `--gain` | `#1F8A5B` | `#42C98A` |
+| `--caution` | `#9A6412` | `#F4B860` |
+| `--risk` | `#C2414E` | `#EF6A75` |
 
-1. **Hero field:** `radial-gradient(60% 50% at 78% 30%, rgba(36,86,200,0.08), transparent 70%), radial-gradient(40% 40% at 90% 70%, rgba(0,127,104,0.07), transparent 70%)` over `--paper`.
-2. **Chart emphasis:** area under a trace, from `--trace-x` at 16% opacity to 0%.
-3. **CTA accent:** the closing CTA band may use the hero field recipe.
+### Gradients (sparingly)
 
-**Banned:** gradient text, glassmorphism/backdrop blur on content (the sticky nav may use a solid 92% `--paper`), purple/pink AI gradients, neon glows.
+Exactly two recipes: `--glow-hero` `radial-gradient(circle at 55% 40%, rgba(108,124,255,.28), transparent 45%)` behind the hero, and `--glow-2` `radial-gradient(circle at 30% 50%, rgba(54,209,180,.18), transparent 50%)` for at most one secondary dark section. Never gradient text.
 
 ---
 
 ## 2. Typography
 
-No Inter, Roboto, Arial, IBM Plex, DM Sans, Space Grotesk, or Plus Jakarta Sans.
+**Geist** for everything (display weight 700–800, tight tracking). Numbers use tabular figures.
 
-| Role | Family | Package | Notes |
-|---|---|---|---|
-| Display / headings | **Schibsted Grotesk** (variable, 400–900) | `@fontsource-variable/schibsted-grotesk` | Editorial grotesk with a sturdy, confident voice; tight tracking at large sizes |
-| UI / body / numerals | **Geist** (variable) | `geist` | Precise, instrument-like; `font-variant-numeric: tabular-nums` on every number |
+| Token | Size | Line | Tracking | Use |
+|---|---|---|---|---|
+| `--text-display` | `clamp(3rem, 8vw, 8.25rem)` (132px max) | 0.92 | -0.05em | Hero headline |
+| `--text-section` | `clamp(2.5rem, 6vw, 5.5rem)` (88px max) | 0.96 | -0.045em | Homepage section headings |
+| `--text-h1` | `clamp(2.4rem, 4.6vw, 4rem)` | 1 | -0.04em | Page titles |
+| `--text-h2` / `--text-h3` | `clamp(1.75rem,3vw,2.6rem)` / `clamp(1.2rem,1.6vw,1.45rem)` | | | Sub-sections, card titles |
+| `--text-metric` | `clamp(2.25rem, 4.2vw, 3.75rem)` | 1 | -0.04em | Large metric values |
+| `--text-lede` / body / small / caption | 17–20px / 16px / 14px / 13px | | | Copy |
 
-No monospace face. Readouts use Geist tabular numerals.
-
-### Type scale (fluid, 1.25 ratio on mobile → 1.333 on desktop)
-
-| Token | Size (clamp) | Line-height | Weight | Family | Tracking |
-|---|---|---|---|---|---|
-| `--text-display` | `clamp(2.5rem, 4.7vw, 4.25rem)` | 0.98 | 750 | Schibsted | -0.03em |
-| `--text-h1` | `clamp(2.1rem, 4.2vw, 3.5rem)` | 1.04 | 720 | Schibsted | -0.025em |
-| `--text-h2` | `clamp(1.7rem, 3vw, 2.5rem)` | 1.1 | 700 | Schibsted | -0.02em |
-| `--text-h3` | `clamp(1.2rem, 1.6vw, 1.45rem)` | 1.25 | 650 | Schibsted | -0.01em |
-| `--text-readout-xl` | `clamp(2.2rem, 4vw, 3.25rem)` | 1 | 600 | Geist tabular | -0.02em |
-| `--text-readout` | `1.5rem` | 1.1 | 600 | Geist tabular | -0.01em |
-| `--text-lede` | `clamp(1.08rem, 1.3vw, 1.25rem)` | 1.55 | 400 | Geist | 0 |
-| `--text-body` | `1rem` (16px floor) | 1.6 | 400 | Geist | 0 |
-| `--text-small` | `0.875rem` | 1.5 | 450 | Geist | 0 |
-| `--text-caption` | `0.8125rem` | 1.45 | 500 | Geist | 0.005em |
-
-Rules:
-- Sentence case everywhere. **No all-caps labels, no tracked-out eyebrows.**
-- Headlines are not decorated. No single accented word in a different color or italic.
-- Body line length ≤ 68ch.
-- Units sit next to numbers in `--muted` at 0.6em of the number size (for example, "$78,400 /yr").
+Mobile floors (48px hero, 40px sections) are below the brief's 64/44px so headlines fit a 375px screen in a few lines; desktop sizes match the brief.
 
 ---
 
 ## 3. Spacing, layout, radius, elevation
 
-### Spacing (4px base; from the generator)
-
-`--space-1: 4px` · `--space-2: 8px` · `--space-3: 12px` · `--space-4: 16px` · `--space-5: 24px` · `--space-6: 32px` · `--space-7: 48px` · `--space-8: 64px` · `--space-9: 96px` · `--space-10: 128px`
-
-These map one-to-one to Tailwind's 4px spacing scale (`--space-2` = `2`, `--space-5` = `6`, `--space-9` = `24`); components use the Tailwind utilities rather than separate CSS variables.
-
-- Section rhythm: `--space-9` desktop / `--space-8` mobile between homepage sections; more space above a heading than below it.
-- Content max width `1200px`; reading width `68ch`; gutters `16px` (mobile) → `32px` (≥768) → `48px` (≥1280).
-- Grid module: the field grid is **8px minor / 40px major**, and layouts snap to it.
-
-### Breakpoints (mobile-first)
-
-Tailwind defaults for utilities (`sm 640` · `md 768` · `lg 1024` · `xl 1280`). Every layout is verified at **375 / 768 / 1024 / 1440**, and 375 is the design floor.
-
-### Radius
-
-| Token | Value | Use |
-|---|---|---|
-| `--radius-xs` | 6px | Tags, path letters, small chips |
-| `--radius-sm` | 10px | Inputs, buttons, segmented controls |
-| `--radius-md` | 14px | Cards, readout panels |
-| `--radius-lg` | 20px | The instrument (hero demo), modals, bottom sheets |
-| `--radius-pill` | 999px | Toggles, filter pills |
-
-Radius encodes hierarchy: the instrument is rounder than the cards inside it, and cards are rounder than their controls. Never one radius everywhere.
-
-### Elevation (soft, navy-tinted, never grey)
-
-| Token | Value | Use |
-|---|---|---|
-| `--shadow-1` | `0 1px 2px rgba(16,33,58,0.06)` | Inputs, resting cards |
-| `--shadow-2` | `0 1px 2px rgba(16,33,58,0.05), 0 8px 24px -12px rgba(16,33,58,0.16)` | Hovered cards, popovers |
-| `--shadow-3` | `0 2px 4px rgba(16,33,58,0.05), 0 24px 48px -20px rgba(16,33,58,0.24)` | The instrument, modals, sheets |
-
-Resting cards use a `1px --rule` border plus `--shadow-1`. Shadow grows only on interaction or for the single most important object in a view.
+- 4px spacing base (Tailwind scale). Content max-width 1200px (compare page 1320px). Section rhythm 96–160px desktop, 64–96px mobile.
+- Radius: `--radius-xs 6`, `sm 10`, `md 14`, `lg 20`, `pill 999`.
+- Shadows `--shadow-1/2/3`, redefined darker in `.theme-dark`.
+- Breakpoints: Tailwind defaults. Verified at 375 / 768 / 1024 / 1440.
 
 ---
 
-## 4. The instrument language (component character)
+## 4. Component language
 
-These are the parts that make the world recognizable with the content removed.
-
-- **Measured field:** `--paper` with an 8/40px grid in `--grid`/`--grid-major`, masked to fade out toward content so it never sits behind body text.
-- **Axis rules:** section dividers are horizontal rules carrying fine tick marks every 8px (major tick every 40px). They are used as dividers only where the content is quantitative.
-- **Path tag:** a 22px rounded square with the path letter (A–E) in white on its trace ink, followed by the path's specimen line in `--text-small`, e.g. **A** UC Berkeley · Economics · CA resident · $15k aid.
-- **Readout:** label (`--text-caption`, `--muted`) above a tabular number (`--text-readout`), unit after it in `--muted`, and a footnote marker `[1]` that opens *View source*. Readouts count up from the previous value when inputs change.
-- **Graduated slider:** track in `--surface-sunk` with tick marks, fill in the active trace ink, and a thumb showing its value on drag. Min/max labels always visible.
-- **Segmented toggle:** used for Resident / Non-resident and Campus / Off-campus / At home. The selected segment is `--ink` fill with white text, and the indicator slides between segments.
-- **Source footnote:** every metric has a superscript marker. It opens a popover (desktop) or bottom sheet (mobile) showing Source, Dataset, Year, Population, Last updated, Methodology, and a confidence badge.
-- **Confidence badge:** "High confidence", "Moderate confidence", or "Limited data". Each has a three-segment gauge icon plus a word, and uses gain/caution/muted tints.
-- **Demo-data label:** while seeded data is live, every readout cluster carries a quiet "Sample data" chip (`--caution` tint), and the footnote popover says "Seeded demo value — not from a live dataset."
-- **Buttons:** primary = `--ink` fill, white text, `--radius-sm`, 44px min height. Secondary = `--surface` fill, 1px `--rule-strong` border, `--ink` text. Tertiary = text link with underline on hover. No arrows appended to labels.
-- **Cards:** surface, 1px rule, `--radius-md`. **Banned:** side-stripe borders, identical card grids (feature sections vary layout: split, stacked, table, chart-led), and a hover lift applied to every card.
+- **Path tag:** "PATH 01" / "01" chip in the path's trace ink. The work path reads "WORK".
+- **Metric:** label (caption, muted) above a big tabular number, a **data-kind chip** (Observed · Estimated · Projected · Simulated) and an ⓘ that opens the source card (source, year, population, sample, confidence).
+- **Confidence:** High / Moderate / Limited, gauge icon + word, with an explanation of why.
+- **Sample data chip** while seeded data is live.
+- **Glass:** only the fixed navbar and the hero's floating cards.
+- **Buttons:** primary = `--ink` fill with `--on-ink` text (navy on light, white on dark); secondary = outline. Primary buttons are magnetic (≤6px). No arrows in labels.
+- **Cards:** `--surface`, 1px `--rule`, `--radius-md`/`lg`. No side-stripe borders; no rows of identical metric cards (a section is a narrative, not a dashboard).
 
 ---
 
 ## 5. Data visualization
 
-- Library: Recharts for standard charts (debt balance, tuition trend). Custom SVG for the instrument's signature charts: the cumulative-value trace chart (path draw, crosshair, break-even marker, direct end labels), the salary-percentile strip, and the tradeoff strip plot.
-- Series colors: trace inks in path order A–E, plus line style (solid/solid/dashed/dotted/dash-dot) and end-of-line labels. **Never color alone.**
-- Axes in `--muted`; tick labels at 11px (the one sub-caption size, allowed only inside plots), with units always in the axis title ("Cumulative net value, USD"). Plot gridlines use `--rule`; `--grid-major` belongs to the measured-field background only.
-- Break-even: a vertical hairline in `--ink` at the crossing, with an annotation "≈ 8.2 years after graduation (estimate)".
-- Uncertainty: a 10th–90th percentile band as a trace tint, with the median as a solid line.
-- Every chart has a text summary below it (a visible sentence, not only `aria-label`), a keyboard-focusable data table fallback ("View as table"), a source footnote, and a "Projection" label when values are modeled.
+- Custom SVG for paths, distributions and the map; `<canvas>` for the 1,000-futures simulation; Recharts only on app pages.
+- Series: trace inks in path order with line style and direct labels. Text never wears series color.
+- Axes `--muted` 11px inside plots; gridlines `--rule`.
+- Every chart: visible text summary, accessible description, keyboard control where interactive, source ⓘ, and a data-kind label.
+- Never fabricate precision: medians and ranges over averages; confidence shown; demo data labeled.
 
 ---
 
-## 6. Motion (Framer Motion only)
+## 6. Motion
 
-All variants live in `lib/animations.ts`. Every animation checks `useReducedMotion()`; under reduced motion elements render in their final state and only opacity may crossfade (≤150ms).
+Tokens (`lib/animations.ts`): `DUR.fast 0.18s`, `standard 0.38s`, `large 0.75s`, `hero 0.95s`, `exit 0.42s`; `EASE.spring cubic-bezier(0.34,1.56,0.64,1)`, `EASE.smooth (0.16,1,0.3,1)`, `EASE.exit (0.4,0,1,1)`. Exits are faster than entrances.
 
-- **Default enter (Jakub Krehel):** `initial { opacity: 0, translateY: 8, filter: "blur(4px)" }` → `animate { opacity: 1, translateY: 0, filter: "blur(0px)" }`, `transition { type: "spring", duration: 0.45, bounce: 0 }`.
-- **Scroll reveal:** `useInView(ref, { once: true, margin: "0px 0px -10% 0px" })` drives the default enter.
-- **Stagger:** hero children 0.06s. Lists 0.04s, capped at 8 items (the rest enter together).
-- **Micro-interactions:** buttons `whileHover { y: -1 }`, `whileTap { scale: 0.98 }`. Interactive cards `whileHover { y: -2 }` with a shadow step to `--shadow-2`. Springs use `{ type: "spring", duration: 0.3, bounce: 0 }`.
-- **Enter/exit:** `AnimatePresence` wraps every conditional render (results, tabs, sheets, toasts, compare tray).
-- **Readout count-up:** 600ms ease-out from the previous value to the new value.
-- **Trace draw:** path length 0→1 over 900ms ease-out on first reveal. Later changes morph the data rather than redrawing.
-- **Signature moment:** in the hero, three paths (A public, B private, C work from 18) leave the same point at age 18. A time head advances along them: it follows the cursor across the chart on desktop, follows scroll everywhere, and is draggable with an Age scrubber. Crossings appear only once the head passes them.
-- No infinite decorative loops. Skeleton shimmer only while loading.
+- **Scroll reveal:** IntersectionObserver (framer `useInView`, once): opacity 0 + translateY 28px → in place, `DUR.large` smooth.
+- **Stagger:** heading 0, description 80ms, chart 160ms, metrics 240 / 320 / 400ms.
+- **Paths:** SVG stroke draw left to right; changes morph, never redraw instantly. A replaced hero path fades, shifts and compresses; the new one draws in and its timeline markers appear at 0.15 / 0.28 / 0.42 / 0.58 / 0.74s.
+- **Background crossfade:** two stacked glow layers; paint the hidden one, fade it in while the other fades out (0.9s).
+- **Numbers:** spring to the new value (`numberSpring`).
+- **Parallax:** ≤ 30px background, ≤ 14px floating cards, fine pointers only.
+- **Cursor:** on data interactions only, a small label (DRAG · EXPLORE · COMPARE · SCRUB) follows the pointer; the system cursor remains. Fine pointers only; off under reduced motion.
+- **Performance:** animate transform, opacity and SVG stroke; motion values instead of React renders per frame; canvas for hundreds of lines.
+- **Reduced motion:** no parallax, cursor label, magnetic pull, long scroll scenes or path choreography; keep short fades and instant chart updates.
 
-### 6.1 Interactive layer ("the instrument is alive")
+### 6.1 Concept → metaphor
 
-Motion here explains an economic idea or it doesn't ship. Each concept has one visual metaphor, used everywhere:
+| Concept | Metaphor |
+|---|---|
+| Opportunity cost | Branching paths from one origin |
+| Break-even | Two paths crossing, marked |
+| Net price | A stack of cost blocks; aid subtracts blocks |
+| Debt / compounding | Stacked blocks; a curve that bends upward |
+| Salary uncertainty | A distribution with a tracer |
+| Employment | 100 dots regrouping into outcomes |
+| Risk | Faint futures settling into a band |
+| Purchasing power | The same salary changing size by city |
 
-| Concept | Metaphor | Where |
-|---|---|---|
-| Opportunity cost | Branching paths from one origin | Hero, two students, lessons |
-| Break-even | Two traces crossing, marked by the ink crossing marker | Two students, timeline, What-If |
-| Debt | Physical stack of $1,000 blocks; interest blocks hatched | Debt section |
-| Earnings growth / compounding | A curve that visibly accelerates | Timeline, lessons |
-| Risk / uncertainty | A spread of faint trajectories settling into a band | 1,000 Possible Futures |
-| Purchasing power | The same salary changing size across a map | Purchasing-power map |
-| Net price | A ledger that grows line by line, then aid slides in and subtracts | Net-cost story |
-
-- **Primitives:** `components/motion` (AnimatedNumber, MotionText, Tilt, usePointerParallax, useScrollScene/ScrollScene, useSteppedValue). Springs live in `lib/animations.ts` (`scrubSpring`, `numberSpring`, `parallaxSpring`, `tiltSpring`, `slotSpring`, `flipTransition`, `ledgerItem`, `block`).
-- **Separation:** components animate values; `lib/calc` computes them. No financial math inside a component beyond reading a precomputed series.
-- **Scroll scenes:** a sticky stage inside a section 2–3 viewports tall; scroll progress drives the explanation. Always pair with a visible control (steps, age stops or a scrubber) so the scene can be operated without scrolling. Under reduced motion a scene collapses to its final state at normal height.
-- **Cursor:** fine pointers only (`(hover: hover) and (pointer: fine)`). Tilt at most 2°; parallax at most 8px; heavy springs. Nothing essential depends on hover: every hover has a tap, focus or scrubber equivalent.
-- **Timing:** 150–600ms for UI transitions; value springs settle in under 500ms. User-started demonstrations ("Play repayment", "Run simulation") may run 1–6s and can be stopped or skipped.
-- **Performance:** animate transforms, opacity, clip widths and SVG attributes driven by motion values (no React render per frame). Hundreds of simulated lines draw on `<canvas>`, not SVG.
-- **Depth:** `--shadow-2`/`--shadow-3` and the 2° tilt are the only depth tools. Blur is limited to the enter recipe (4px) and the dimmed overlay behind sheets; no glass panels.
-- **Trace inks on the homepage:** A `--trace-a` public university, B `--trace-b` private university, C `--trace-c` (dashed) working from 18. The same letters mean the same paths in every section.
+Primitives live in `components/motion`; springs and variants in `lib/animations.ts`; all math in `lib/calc` (no animation code there).
 
 ---
 
 ## 7. Anti-patterns (do not ship)
 
-- Gradient text; glassmorphism by default; purple/pink gradients; neon.
-- Identical card grids; side-stripe borders on cards; one radius everywhere.
-- All-caps tracked labels; single-word colored accents in headlines; middle-dot meta strings as decoration; arrows appended to CTAs.
-- A single "score" or "better/worse" verdict for any college.
-- Unlabeled projections; numbers without a source marker; color-only meaning.
-- Emoji icons (use Lucide); missing `cursor: pointer`; invisible focus.
+- Gradient text; gradients on every section; glass anywhere but the nav and hero cards; neon glows.
+- Dashboards made of metric-card rows and charts; identical card grids; side-stripe borders.
+- A single "score" or better/worse verdict for a college; labeling salary outcomes good/bad.
+- Unlabeled projections; numbers without a source or data-kind; color-only meaning.
+- Emoji icons; hover-only functionality; motion that doesn't explain something.
 
 ## 8. Pre-delivery checklist
 
-- [ ] No colors or fonts outside this file
-- [ ] Every number has units, tabular numerals, and a source marker
-- [ ] Projections labeled "Estimate" / "Projection"; demo data labeled "Sample data"
-- [ ] Contrast ≥ 4.5:1 for text; focus ring 2px `--trace-a` with 2px offset
-- [ ] `prefers-reduced-motion` respected on every animation
-- [ ] Tested at 375 / 768 / 1024 / 1440; no horizontal scroll
-- [ ] All images via `next/image` with `alt` and `sizes`
-- [ ] Charts have text summary + table fallback + keyboard access
-- [ ] Loading, empty, error, and no-data states designed
+- [ ] Colors and fonts only from this file; both themes checked
+- [ ] Every number: units, tabular figures, ⓘ source, data-kind
+- [ ] Contrast ≥ 4.5:1 text in both themes; focus ring 2px `--accent`
+- [ ] `prefers-reduced-motion` respected everywhere
+- [ ] 375 / 768 / 1024 / 1440, no horizontal scroll; nothing depends on hover
+- [ ] Charts: text summary, accessible description, keyboard control
+- [ ] Loading, empty and error states designed
