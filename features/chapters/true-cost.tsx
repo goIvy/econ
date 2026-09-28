@@ -1,250 +1,164 @@
 "use client";
 
-import { AnimatePresence, motion, useTransform } from "framer-motion";
-import { useMemo } from "react";
-import { AnimatedNumber, ScrollScene, scrollSceneTo, useScrollScene, useSteppedValue } from "@/components/motion";
+import { AnimatePresence, motion, useInView } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import { useRef, useState } from "react";
+import { AnimatedNumber } from "@/components/motion";
+import { DataKindChip } from "@/components/ui/data-kind";
+import { GraduatedSlider } from "@/components/ui/graduated-slider";
 import { Segmented } from "@/components/ui/segmented";
 import { SampleChip, SourceFootnote } from "@/components/ui/lineage";
-import { annualCostLines, type CostKey } from "@/lib/calc";
+import type { CostKey } from "@/lib/calc";
 import { DUR, EASE } from "@/lib/animations";
-import { money } from "@/lib/format";
+import { money, moneyCompact } from "@/lib/format";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/cn";
-import { PATH_VAR, pathNo, useScenario } from "@/features/scenario/store";
+import { useScenario } from "@/features/scenario/store";
 import type { LivingArrangement } from "@/types";
 
-/** The order costs arrive in, largest first after tuition. */
-const ORDER: CostKey[] = ["tuition", "housing", "food", "fees", "transportation", "books", "misc"];
-const LABELS: Record<CostKey, string> = { tuition: "TUITION", housing: "HOUSING", food: "FOOD", fees: "FEES", transportation: "TRANSPORTATION", books: "BOOKS", misc: "PERSONAL" };
-/** Stack tones: one hue family, dark (tuition) to light. */
-const TONE: Record<CostKey, string> = {
-  tuition: "color-mix(in srgb, var(--trace-a) 92%, var(--paper))",
-  housing: "color-mix(in srgb, var(--trace-a) 74%, var(--paper))",
-  food: "color-mix(in srgb, var(--trace-a) 58%, var(--paper))",
-  fees: "color-mix(in srgb, var(--trace-a) 46%, var(--paper))",
-  transportation: "color-mix(in srgb, var(--trace-a) 36%, var(--paper))",
-  books: "color-mix(in srgb, var(--trace-a) 28%, var(--paper))",
-  misc: "color-mix(in srgb, var(--trace-a) 22%, var(--paper))",
-};
-const FAMILY = 10000;
-const WORK = 3000;
-
-type Step =
-  | { kind: "cost"; key: CostKey; label: string; amount: number }
-  | { kind: "total"; label: string; amount: number }
-  | { kind: "aid"; label: string; amount: number }
-  | { kind: "net"; label: string; amount: number }
-  | { kind: "pay"; label: string; amount: number };
+const PARTS: Array<{ key: CostKey; label: string }> = [
+  { key: "tuition", label: "Tuition" },
+  { key: "housing", label: "Housing" },
+  { key: "food", label: "Food" },
+  { key: "fees", label: "Fees" },
+  { key: "books", label: "Books & supplies" },
+  { key: "transportation", label: "Transportation" },
+  { key: "misc", label: "Personal" },
+];
+/** One hue family, dark (tuition) to light. */
+const TONE = [92, 74, 60, 48, 38, 30, 22].map((m) => `color-mix(in srgb, var(--trace-a) ${m}%, var(--paper))`);
 
 /**
- * TRUE COST. Scroll adds one line at a time: each cost slides in from
- * alternating sides and lands on the stack; aid slides in and subtracts;
- * the result is the net cost, then how that net cost actually gets paid.
+ * TRUE COST. Sticker price − aid = net cost, readable in five seconds. The
+ * bar shows it: aid slides in over the sticker price and what's left is what
+ * you pay. "Where does the money go?" opens the breakdown.
  */
 export function TrueCost() {
-  const { futures, active, setPath, paths } = useScenario();
-  const f = futures.find((x) => x.index === active) ?? futures[0];
-  const sel = paths[f.index];
-  const { ref, progress, reduce } = useScrollScene();
-
-  const steps = useMemo<Step[]>(() => {
-    const lines = annualCostLines(f.ctx.college, f.ctx.college.control === "public" ? sel.residency : "resident", sel.living, f.ctx.collegeCity);
-    const costs = ORDER.flatMap((k) => {
-      const l = lines.find((x) => x.key === k);
-      return l && l.perYear > 0 ? [{ kind: "cost" as const, key: k, label: LABELS[k], amount: Math.round(l.perYear) }] : [];
-    });
-    const gross = costs.reduce((s, c) => s + c.amount, 0);
-    const aid = Math.min(sel.aid, gross);
-    const net = gross - aid;
-    const family = Math.min(FAMILY, net);
-    const work = Math.min(WORK, net - family);
-    return [
-      ...costs,
-      { kind: "total", label: "COST OF ATTENDANCE", amount: gross },
-      { kind: "aid", label: "GRANTS & SCHOLARSHIPS", amount: aid },
-      { kind: "net", label: "NET COST", amount: net },
-      { kind: "pay", label: "FAMILY CONTRIBUTION", amount: family },
-      { kind: "pay", label: "WORK & SUMMER JOBS", amount: work },
-      { kind: "pay", label: "BORROWED", amount: Math.max(0, net - family - work) },
-    ];
-  }, [f, sel.residency, sel.living, sel.aid]);
-
-  // Thresholds from 0.10 to 0.90 across the scroll, one step at a time.
-  const n = steps.length;
-  const threshold = (i: number) => 0.1 + (0.8 * i) / (n - 1);
-  const raw = useTransform(progress, (p) => steps.reduce((c, _, i) => (p >= threshold(i) ? i + 1 : c), 0));
-  const stepped = useSteppedValue(raw, 1);
-  const shown = reduce ? n : Math.max(1, stepped);
-
-  const gross = steps.find((s) => s.kind === "total")!.amount;
-  const aid = steps.find((s) => s.kind === "aid")!.amount;
-  const net = steps.find((s) => s.kind === "net")!.amount;
-  const costSteps = steps.filter((s): s is Extract<Step, { kind: "cost" }> => s.kind === "cost");
-  const visible = steps.slice(0, shown);
-  const running = visible.filter((s) => s.kind === "cost").reduce((t, s) => t + s.amount, 0) - (shown > costSteps.length + 1 ? aid : 0);
-  const phase = shown <= costSteps.length ? "adding" : shown <= costSteps.length + 1 ? "total" : shown <= costSteps.length + 3 ? "net" : "paying";
+  const { futures, paths, setPath } = useScenario();
+  const f = futures.find((x) => x.index === 0)!;
+  const sel = paths[0];
+  const n = f.result.net;
+  const years = n.years;
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -20% 0px" });
+  const reduce = useReducedMotion();
+  const shown = inView || reduce;
+  const [open, setOpen] = useState(false);
+  const sticker = n.gross;
+  const aid = n.aid + n.scholarships;
+  const net = n.netPrice;
+  const aidShare = sticker > 0 ? Math.min(1, aid / sticker) : 0;
+  const lines = PARTS.map((p, i) => ({ ...p, tone: TONE[i], perYear: f.result.costLines.find((l) => l.key === p.key)?.perYear ?? 0 })).filter((l) => l.perYear > 0);
+  const grossYear = lines.reduce((s, l) => s + l.perYear, 0);
 
   return (
-    <ScrollScene sceneRef={ref} reduce={reduce} length={3.6} label="How net cost is built, one line at a time">
-      <div className="grid w-full items-center gap-6 py-4 lg:grid-cols-[1fr_minmax(0,440px)_1fr] lg:gap-10">
-        {/* left: context + controls */}
-        <div className="order-3 grid content-start gap-4 lg:order-1">
-          <p className="flex items-center gap-2 text-caption font-bold tracking-[0.12em] text-muted">
-            <span className="size-2 rounded-full" style={{ background: PATH_VAR[f.index] }} />
-            PATH {pathNo(f.index)} · ONE YEAR
-          </p>
-          <p className="text-h3 font-bold text-ink">{f.label}</p>
-          <p className="text-small text-ink-2">
-            {f.ctx.college.control === "public" ? (sel.residency === "resident" ? `In-state (${f.ctx.college.state})` : "Out-of-state") : "Private"}, {money(sel.aid)} a year in grants. Change the path in the hero and this story follows.
-          </p>
-          <Segmented
-            label="Where you live"
-            size="sm"
-            value={sel.living}
-            onChange={(v: LivingArrangement) => void setPath(f.index, { living: v })}
-            options={[
-              { value: "campus", label: "Campus" },
-              { value: "off-campus", label: "Apartment" },
-              { value: "home", label: "Home" },
-            ]}
-          />
-          <StepDots n={n} shown={shown} onPick={(i) => scrollSceneTo(ref.current, threshold(i) + 0.01, reduce)} />
-          <div className="flex items-center gap-2">
-            <SampleChip />
-            <SourceFootnote metric={`${f.ctx.college.shortName} cost of attendance`} lineage={f.ctx.college.costs.tuitionInState.lineage} n={1} />
-          </div>
-        </div>
-
-        {/* center: the calculation */}
-        <div className="order-1 grid gap-1.5 lg:order-2" aria-live="polite">
-          <ol className="grid gap-0.5">
-            <AnimatePresence initial={false}>
-              {visible.map((s, i) => (
-                <motion.li
-                  key={`${s.label}`}
-                  layout="position"
-                  initial={reduce ? false : { opacity: 0, x: i % 2 ? 56 : -56 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, transition: { duration: DUR.fast } }}
-                  transition={{ duration: DUR.standard, ease: EASE.spring }}
-                  className={cn(
-                    "flex items-baseline justify-between gap-4 rounded-sm px-3 py-1",
-                    s.kind === "total" && "mt-1.5 border-t border-rule-strong pt-2.5",
-                    s.kind === "net" && "my-1.5 bg-surface py-2.5 shadow-2",
-                  )}
-                >
-                  <span className={cn("text-[11px] font-bold tracking-[0.14em]", s.kind === "net" ? "text-ink" : "text-muted")}>
-                    {s.kind === "pay" && s.label === "FAMILY CONTRIBUTION" && <span className="mb-1 block text-[10px] tracking-[0.16em] text-trace-a">HOW IT&apos;S PAID</span>}
-                    {s.label}
-                  </span>
-                  <span className={cn("tabular font-bold tracking-[-0.02em]", s.kind === "net" ? "text-h2 text-ink" : s.kind === "total" ? "text-h3 text-ink" : "text-base text-ink-2")}>
-                    {s.kind === "cost" && i > 0 ? "+" : s.kind === "aid" ? "−" : ""}
-                    {money(s.amount)}
-                  </span>
-                </motion.li>
-              ))}
-            </AnimatePresence>
-          </ol>
-          <AnimatePresence initial={false}>
-            {(phase === "adding" || phase === "total") && (
-              <motion.div key="running" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, height: 0, transition: { duration: DUR.fast } }} className="mt-3 flex items-baseline justify-between gap-3 border-t border-rule px-3 pt-3">
-                <span className="text-caption text-muted">{phase === "adding" ? "Adding up" : "The sticker price"}</span>
-                <span className="tabular text-metric font-extrabold">
-                  <AnimatedNumber value={running} format={money} />
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <AnimatePresence>
-            {phase === "paying" && (
-              <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="px-3 text-small text-ink-2">
-                The sticker price was {money(gross)}. Grants cover {Math.round((aid / gross) * 100)}%. Family and work pay part of the rest; the remainder is borrowed and repaid later, with interest.
-              </motion.p>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* right: the cost stack */}
-        <CostStack steps={steps} shown={shown} gross={gross} aid={aid} net={net} reduce={reduce} />
+    <div ref={ref} className="grid gap-8">
+      {/* the equation */}
+      <div className="grid gap-4 sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:items-end">
+        <Term label="Sticker price" sub={`${years} years, before aid`} value={sticker} />
+        <Op>−</Op>
+        <Term label="Grants & scholarships" sub={`${money(sel.aid)} a year`} value={aid} />
+        <Op>=</Op>
+        <Term label="Net cost" sub="What you actually pay" value={net} strong />
       </div>
-    </ScrollScene>
-  );
-}
 
-function CostStack({ steps, shown, gross, aid, net, reduce }: { steps: Step[]; shown: number; gross: number; aid: number; net: number; reduce: boolean }) {
-  const costs = steps.filter((s): s is Extract<Step, { kind: "cost" }> => s.kind === "cost");
-  const aidIn = shown > costs.length + 1;
-  const payIn = shown > costs.length + 3;
-  const pays = steps.filter((s) => s.kind === "pay");
-  // Where each block starts, as a share of the stack (precomputed, no mutation during render).
-  const starts = costs.map((_, i) => costs.slice(0, i).reduce((t, c) => t + (c.amount / gross) * 100, 0));
-  return (
-    <div className="order-2 mx-auto w-full max-w-[220px] lg:order-3" aria-hidden>
-      <div className="relative h-[240px] rounded-md border border-rule bg-surface-sunk sm:h-[300px] lg:h-[440px]">
-        {costs.map((c, i) => {
-          const h = (c.amount / gross) * 100;
-          const b = starts[i];
-          return (
-            <motion.div
-              key={c.key}
-              className="absolute inset-x-2 origin-bottom rounded-[4px]"
-              style={{ bottom: `${b}%`, height: `calc(${h}% - 2px)`, background: TONE[c.key] }}
-              initial={false}
-              animate={{ scaleY: i < shown ? 1 : 0, opacity: i < shown ? 1 : 0 }}
-              transition={{ duration: reduce ? 0 : DUR.standard, ease: EASE.spring }}
-            />
-          );
-        })}
-        {/* aid drops in from above and removes the top of the stack */}
-        <AnimatePresence>
-          {aidIn && (
-            <motion.div
-              key="aid"
-              className="aid-hatch absolute inset-x-1 rounded-[4px] border-2 border-ink"
-              style={{ top: 0, height: `${(aid / gross) * 100}%` }}
-              initial={reduce ? false : { y: -40, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: DUR.large, ease: EASE.spring }}
-            />
+      {/* the bar: sticker price, with aid sliding over it */}
+      <div className="grid gap-2" aria-hidden>
+        <div className="relative h-14 overflow-hidden rounded-md bg-surface-sunk">
+          <motion.div className="absolute inset-y-0 left-0 flex" initial={{ width: reduce ? "100%" : "0%" }} animate={{ width: shown ? "100%" : "0%" }} transition={{ duration: reduce ? 0 : 0.9, ease: EASE.smooth }}>
+            {lines.map((l) => (
+              <motion.span key={l.key} className="h-full" style={{ background: l.tone, boxShadow: "inset -2px 0 0 var(--surface-sunk)" }} initial={false} animate={{ width: `${(l.perYear / grossYear) * 100}%` }} transition={{ duration: DUR.standard, ease: EASE.smooth }} />
+            ))}
+          </motion.div>
+          <motion.div
+            className="aid-hatch absolute inset-y-0 right-0 border-l-2 border-ink"
+            initial={{ width: "0%" }}
+            animate={{ width: shown ? `${aidShare * 100}%` : "0%" }}
+            transition={{ duration: reduce ? 0 : DUR.large, ease: EASE.smooth, delay: reduce ? 0 : 0.9 }}
+          />
+        </div>
+        <div className="flex justify-between text-caption text-muted">
+          <span>You pay {moneyCompact(net)}</span>
+          <span>Grants cover {moneyCompact(aid)}</span>
+        </div>
+      </div>
+
+      {/* change it */}
+      <div className="grid gap-5 rounded-md border border-rule bg-surface p-4 sm:grid-cols-2 sm:p-5">
+        <GraduatedSlider size="sm" label="Grants & scholarships per year" value={sel.aid} onChange={(v) => void setPath(0, { aid: v })} min={0} max={60000} step={1000} format={moneyCompact} trace="a" />
+        <Segmented
+          label="Where you live"
+          size="sm"
+          value={sel.living}
+          onChange={(v: LivingArrangement) => void setPath(0, { living: v })}
+          options={[
+            { value: "campus", label: "On campus" },
+            { value: "off-campus", label: "Apartment" },
+            { value: "home", label: "At home" },
+          ]}
+        />
+      </div>
+
+      {/* where the money goes */}
+      <div className="rounded-md border border-rule bg-surface">
+        <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="money-goes" className="flex w-full items-center justify-between gap-3 p-4 text-left sm:p-5">
+          <span className="text-small font-bold text-ink">Where does the money go?</span>
+          <ChevronDown className={cn("size-5 text-ink-2 transition-transform", open && "rotate-180")} aria-hidden />
+        </button>
+        <AnimatePresence initial={false}>
+          {open && (
+            <motion.div id="money-goes" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: reduce ? 0 : DUR.standard, ease: EASE.smooth }} className="overflow-hidden">
+              <div className="grid gap-3 border-t border-rule p-4 sm:p-5">
+                <p className="text-caption text-muted">One year at {f.ctx.college.shortName}</p>
+                <ul className="grid gap-2">
+                  {lines.map((l) => (
+                    <li key={l.key} className="grid grid-cols-[8.5rem_1fr_auto] items-center gap-3 text-small sm:grid-cols-[11rem_1fr_auto]">
+                      <span className="flex items-center gap-2 text-ink-2">
+                        <span className="size-2.5 shrink-0 rounded-[3px]" style={{ background: l.tone }} />
+                        {l.label}
+                      </span>
+                      <span className="h-2 rounded-full bg-surface-sunk">
+                        <motion.span className="block h-full rounded-full" style={{ background: l.tone }} initial={{ width: 0 }} animate={{ width: `${(l.perYear / grossYear) * 100}%` }} transition={{ duration: reduce ? 0 : DUR.large, ease: EASE.smooth }} />
+                      </span>
+                      <span className="tabular font-semibold text-ink">{money(l.perYear)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-rule pt-3">
+                  <span className="flex items-center gap-2 text-caption text-muted">
+                    <DataKindChip kind="observed" /> Published costs; living costs follow where you live.
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <SampleChip />
+                    <SourceFootnote metric={`${f.ctx.college.shortName} cost of attendance`} lineage={f.ctx.college.costs.tuitionInState.lineage} n={1} />
+                  </span>
+                </div>
+              </div>
+            </motion.div>
           )}
         </AnimatePresence>
-        {/* how the net cost is paid, as bands inside the remaining stack */}
-        <AnimatePresence>
-          {payIn &&
-            pays.reduce<{ els: React.ReactNode[]; at: number }>(
-              (acc, p, i) => {
-                const h = (p.amount / gross) * 100;
-                acc.els.push(
-                  <motion.div
-                    key={p.label}
-                    className="absolute inset-x-0 flex items-center justify-end border-t border-dashed border-ink/40 pr-1"
-                    style={{ bottom: `${acc.at}%`, height: `${h}%` }}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ delay: i * 0.12 }}
-                  />,
-                );
-                acc.at += h;
-                return acc;
-              },
-              { els: [], at: 0 },
-            ).els}
-        </AnimatePresence>
       </div>
-      <p className="mt-2 text-center text-caption text-muted">{aidIn ? `Net ${money(net)} of ${money(gross)}` : "Cost of attendance"}</p>
     </div>
   );
 }
 
-function StepDots({ n, shown, onPick }: { n: number; shown: number; onPick: (i: number) => void }) {
+function Term({ label, sub, value, strong }: { label: string; sub: string; value: number; strong?: boolean }) {
   return (
-    <div role="group" aria-label="Jump to a step" className="flex flex-wrap gap-1">
-      {Array.from({ length: n }, (_, i) => (
-        <button key={i} type="button" onClick={() => onPick(i)} aria-label={`Step ${i + 1} of ${n}`} aria-current={i + 1 === shown ? "step" : undefined} className="grid size-7 place-items-center rounded-full">
-          <span className={cn("block h-1.5 rounded-full transition-all duration-300", i < shown ? "w-4 bg-trace-a" : "w-1.5 bg-rule-strong")} />
-        </button>
-      ))}
+    <div className={cn("grid gap-1 rounded-md p-4", strong ? "bg-ink text-on-ink" : "border border-rule bg-surface")}>
+      <p className={cn("text-caption font-semibold", strong ? "text-on-ink" : "text-ink-2")}>{label}</p>
+      <p className="tabular text-[clamp(2rem,4vw,3rem)] font-extrabold leading-none tracking-[-0.04em]">
+        <AnimatedNumber value={value} format={moneyCompact} />
+      </p>
+      <p className={cn("text-caption", strong ? "text-on-ink/80" : "text-muted")}>{sub}</p>
     </div>
+  );
+}
+
+function Op({ children }: { children: string }) {
+  return (
+    <span className="-my-2 text-center text-h3 font-bold leading-none text-muted sm:my-0 sm:pb-8 sm:text-h2">
+      <span aria-hidden>{children}</span>
+      <span className="sr-only">{children === "=" ? "equals" : "minus"}</span>
+    </span>
   );
 }

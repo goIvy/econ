@@ -49,7 +49,7 @@ export function Chapter({
       className={cn("relative isolate scroll-mt-[var(--nav-h)] overflow-x-clip", theme !== "light" && "theme-dark", theme === "dark-2" && "theme-dark-2", "bg-paper", className)}
     >
       {glow && <div aria-hidden className="glow-2 pointer-events-none absolute inset-0 -z-10" />}
-      <div ref={ref} className="mx-auto max-w-[1200px] px-4 py-20 md:px-8 md:py-28 lg:py-36">
+      <div ref={ref} className="mx-auto max-w-[1200px] px-4 py-16 md:px-8 md:py-24">
         <div className={cn("grid gap-5", align === "center" ? "justify-items-center text-center" : "max-w-[56rem]")}>
           {eyebrow && (
             <motion.p {...rise(STAGGER.heading)} className="text-caption font-semibold tracking-[0.18em] text-trace-a">
@@ -66,7 +66,7 @@ export function Chapter({
           )}
         </div>
         {children && (
-          <motion.div {...rise(STAGGER.chart)} className="mt-12 md:mt-16">
+          <motion.div {...rise(STAGGER.chart)} className="mt-10 md:mt-12">
             {children}
           </motion.div>
         )}

@@ -6,13 +6,14 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatedNumber, useMeasuredWidth } from "@/components/motion";
 import { Button } from "@/components/ui/button";
 import { SampleChip } from "@/components/ui/lineage";
+import { DataKindChip } from "@/components/ui/data-kind";
 import { linear, linePath, ticks } from "@/components/charts/scale";
 import { runMonteCarlo, SIM_ASSUMPTIONS, type SimulationResult } from "@/lib/calc";
 import { DUR, EASE } from "@/lib/animations";
 import { moneyCompact, pct } from "@/lib/format";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/cn";
-import { HORIZON, PATH_VAR, pathNo, useScenario } from "@/features/scenario/store";
+import { HORIZON, PATH_VAR, useScenario } from "@/features/scenario/store";
 
 const RUNS = 1000;
 /** Stage timings (ms). */
@@ -26,8 +27,8 @@ const RGB = ["108,124,255", "22,164,140", "146,119,242"];
  * band) → complete (distribution and odds). Canvas, not 1,000 DOM nodes.
  */
 export function FuturesSim() {
-  const { futures, active, baselineSeries } = useScenario();
-  const f = futures.find((x) => x.index === active) ?? futures[0];
+  const { futures, baselineSeries } = useScenario();
+  const f = futures.find((x) => x.index === 0)!;
   const reduce = useReducedMotion();
   const [sim, setSim] = useState<SimulationResult | null>(null);
   const [stage, setStage] = useState<Stage>("idle");
@@ -45,12 +46,13 @@ export function FuturesSim() {
     setStage("idle");
   }
 
+  const runCount = useRef(1);
   const run = () => {
     // Rows end at age HORIZON-1, so the final value is the position at exactly 40.
     const s = runMonteCarlo(
       { collegeId: f.sel.collegeId, majorId: f.sel.majorId, residency: f.ctx.college.control === "public" ? f.sel.residency : "resident", living: f.sel.living, yearsToGraduate: 4, funding: { aidPerYear: f.sel.aid, scholarshipsPerYear: 0, familyPerYear: 10000, workPerYear: 3000, savings: 0 } },
       f.ctx,
-      { runs: RUNS, horizonAge: HORIZON - 1, seed: 1 + Math.floor(Math.random() * 1e9) },
+      { runs: RUNS, horizonAge: HORIZON - 1, seed: (runCount.current += 7919) },
     );
     setSim(s);
     if (reduce) return setStage("complete");
@@ -158,10 +160,10 @@ export function FuturesSim() {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="flex items-center gap-2 text-caption font-bold tracking-[0.12em] text-ink">
             <span className="size-2 rounded-full" style={{ background: color }} />
-            PATH {pathNo(f.index)} <span className="font-medium tracking-normal text-muted">{f.label}</span>
+            YOUR PATH <span className="font-medium tracking-normal text-muted">{f.label}</span>
           </p>
           <p className="text-caption font-bold tracking-[0.14em] text-muted" aria-live="polite">
-            {stage === "idle" ? "READY" : stage === "complete" ? `${RUNS.toLocaleString()} FUTURES` : `${stage.toUpperCase()}…`}
+            {stage === "idle" ? "READY" : stage === "complete" ? `${RUNS.toLocaleString()} FUTURES` : "SIMULATING…"}
           </p>
         </div>
         <div ref={ref} className="relative min-w-0" style={{ height: H }}>
@@ -209,7 +211,7 @@ export function FuturesSim() {
             {stage === "idle" && (
               <motion.div key="cta" className="absolute inset-0 grid place-items-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: DUR.fast } }}>
                 <Button size="lg" onClick={run} className="gap-2 shadow-3">
-                  <Play className="size-4" aria-hidden /> RUN 1,000 FUTURES
+                  <Play className="size-4" aria-hidden /> Run simulation
                 </Button>
               </motion.div>
             )}
@@ -217,46 +219,50 @@ export function FuturesSim() {
         </div>
         <p className="flex flex-wrap gap-x-4 gap-y-1 text-caption text-ink-2">
           <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-4 rounded-[2px]" style={{ background: color, opacity: 0.4 }} />Middle 50%</span>
-          <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-4 rounded-[2px]" style={{ background: color, opacity: 0.15 }} />10th–90th percentile</span>
-          <span className="flex items-center gap-1.5"><span className="inline-block h-0.5 w-4" style={{ background: color }} />Median</span>
+          <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-4 rounded-[2px]" style={{ background: color, opacity: 0.15 }} />Most futures (80%)</span>
+          <span className="flex items-center gap-1.5"><span className="inline-block h-0.5 w-4" style={{ background: color }} />Typical</span>
           <span className="flex items-center gap-1.5"><span className="inline-block w-4 border-t-2 border-dashed border-trace-c" />Work from 18</span>
           <SampleChip className="ml-auto" />
         </p>
       </div>
 
       <div className="grid content-start gap-5 lg:col-span-4">
-        <dl className="grid grid-cols-2 gap-4">
-          <Stat label="MEDIAN OUTCOME AT 40" value={done ? sim.median : null} fmt={moneyCompact} big />
-          <Stat label="BREAK-EVEN BY YEAR 10" value={done ? sim.recoverWithin10 * 100 : null} fmt={(v) => pct(v)} big />
-          <div className="col-span-2 grid gap-1">
-            <dt className="text-[10px] font-bold tracking-[0.14em] text-muted">MIDDLE 50%</dt>
-            <dd className="tabular text-h3 font-bold text-ink">{done ? `${moneyCompact(sim.q25)} – ${moneyCompact(sim.q75)}` : "—"}</dd>
+        <dl className="grid gap-4">
+          <Stat label="Typical outcome by 40" value={done ? sim.median : null} fmt={moneyCompact} big />
+          <div className="grid gap-1">
+            <dt className="text-caption font-semibold text-ink-2">Likely range (middle half)</dt>
+            <dd className="tabular text-h2 font-bold text-ink">{done ? `${moneyCompact(sim.q25)} – ${moneyCompact(sim.q75)}` : <span className="text-muted">—</span>}</dd>
           </div>
-          <Stat label="DOWNSIDE (10TH PCT)" value={done ? sim.downside : null} fmt={moneyCompact} />
-          <Stat label="UPSIDE (90TH PCT)" value={done ? sim.upside : null} fmt={moneyCompact} />
+          <Stat label="Chance of breaking even within 10 years" value={done ? sim.recoverWithin10 * 100 : null} fmt={(v) => pct(v)} big />
         </dl>
+        <p className="flex items-center gap-2 text-caption text-muted">
+          <DataKindChip kind="simulated" /> Total money earned minus costs, across {RUNS.toLocaleString()} futures.
+        </p>
         <AnimatePresence>
           {done && (
             <motion.p key="ex" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-small text-ink-2">
-              Half of these futures end between {moneyCompact(sim.q25)} and {moneyCompact(sim.q75)} by 40. {pct(sim.recoverWithin10 * 100)} pass working-from-18 within 10 years of graduating; {pct(sim.neverRecover * 100)} haven&apos;t by 40.
+              Half of these futures end between {moneyCompact(sim.q25)} and {moneyCompact(sim.q75)} by age 40. In {pct(sim.recoverWithin10 * 100)} of them, college has paid for itself within 10 years of graduating.
             </motion.p>
           )}
         </AnimatePresence>
-        <div className="grid gap-2 border-t border-rule pt-4">
-          <p className="text-caption font-bold tracking-[0.12em] text-ink">WHAT VARIES IN EACH FUTURE</p>
-          <ul className="grid gap-1.5 text-caption text-ink-2">
-            <li>Starting salary and its growth path: from this program&apos;s 10th–90th percentiles</li>
-            <li>Employment delay: job search averaging {SIM_ASSUMPTIONS.jobSearchMeanMonths} months</li>
-            <li>Graduation timing: 4, 5 or 6 years, from the college&apos;s rates</li>
-            <li>Cost and living-cost variation: about ±{Math.round(SIM_ASSUMPTIONS.costSd * 100)}%; debt follows</li>
-          </ul>
-          <p className="text-caption text-muted">{SIM_ASSUMPTIONS.note}</p>
-        </div>
         {sim && stage === "complete" && (
           <Button variant="secondary" onClick={run} className={cn("justify-self-start gap-2")}>
             <RotateCcw className="size-4" aria-hidden /> Run again
           </Button>
         )}
+        <details className="group rounded-md border border-rule bg-surface p-4 text-caption text-ink-2">
+          <summary className="cursor-pointer list-none font-semibold text-ink marker:hidden">
+            What changes in each future? <span className="text-muted group-open:hidden">Show</span>
+          </summary>
+          <ul className="mt-3 grid gap-1.5">
+            <li>Starting salary and raises, drawn from this program&apos;s pay range (10th–90th percentile)</li>
+            <li>Time to find a first job: about {SIM_ASSUMPTIONS.jobSearchMeanMonths} months on average</li>
+            <li>Graduating in 4, 5 or 6 years, from the college&apos;s rates</li>
+            <li>Costs and living costs: about ±{Math.round(SIM_ASSUMPTIONS.costSd * 100)}%; debt follows</li>
+          </ul>
+          {done && <p className="mt-2">Lowest 10%: {moneyCompact(sim.downside)} · Highest 10%: {moneyCompact(sim.upside)} by 40.</p>}
+          <p className="mt-2 text-muted">{SIM_ASSUMPTIONS.note}</p>
+        </details>
       </div>
     </div>
   );
@@ -265,7 +271,7 @@ export function FuturesSim() {
 function Stat({ label, value, fmt, big }: { label: string; value: number | null; fmt: (v: number) => string; big?: boolean }) {
   return (
     <div className="grid gap-1">
-      <dt className="text-[10px] font-bold tracking-[0.14em] text-muted">{label}</dt>
+      <dt className="text-caption font-semibold text-ink-2">{label}</dt>
       <dd className={cn("font-bold text-ink", big ? "text-h2" : "text-h3")}>{value == null ? <span className="text-muted">—</span> : <AnimatedNumber value={value} format={fmt} />}</dd>
     </div>
   );

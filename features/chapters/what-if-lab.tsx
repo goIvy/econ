@@ -143,7 +143,7 @@ export function WhatIfLab() {
 
       <div className="z-10 grid min-w-0 content-start gap-4 self-start rounded-lg border border-rule bg-surface p-4 shadow-3 max-lg:sticky max-lg:top-[calc(var(--nav-h)+8px)] sm:p-6 lg:sticky lg:top-[calc(var(--nav-h)+24px)] lg:col-span-7">
         <div className="flex items-center justify-between gap-2">
-          <p className="text-small font-semibold text-ink">Cumulative net value vs. working from 18</p>
+          <p className="text-small font-semibold text-ink">Total money earned minus costs, vs. working from 18</p>
           <SampleChip />
         </div>
         <Chart now={out.series} start={start.series} base={out.base} be={out.breakEven} color={PATH_VAR[f.index]} />
@@ -206,7 +206,7 @@ function Chart({ now, start, base, be, color }: { now: number[]; start: number[]
   const MORPH = { duration: 0.25, ease: EASE.smooth };
   return (
     <div ref={ref} className="min-w-0" data-cursor="EXPLORE">
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block max-w-full" role="img" aria-label={`Cumulative net value by age for this scenario. ${be ? `Break-even at ${be.toFixed(1)}.` : "No break-even by 40."}`}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block max-w-full" role="img" aria-label={`Total money earned minus costs by age for this scenario. ${be ? `Break-even at ${be.toFixed(1)}.` : "No break-even by 40."}`}>
         {ticks(lo, hi, 4).map((t) => (
           <g key={t}>
             <line x1={M.l} x2={W - M.r} y1={y(t)} y2={y(t)} stroke={t === 0 ? "var(--rule-strong)" : "var(--rule)"} />

@@ -24,13 +24,24 @@ Chart series use slightly deeper teal and violet than the brand accents so they 
 
 ## Typography
 
-Geist for everything, with tabular figures for numbers. Display 700–800 with tight tracking: hero up to 132px, section headings up to 88px. Mobile floors are lower (48 / 40px) so headlines fit a 375px screen.
+Geist for everything, with tabular figures for numbers. Display 700–800 with tight tracking: the hero headline up to ~92px, section questions up to 64px (36px on phones).
+
+## Simplicity rules (cleanup pass)
+
+- **One journey:** college → major → residency → optional aid → result → compare → explore deeper. The starter card is the clearest element on the page.
+- **Progressive disclosure:** level 1 a simple answer (five numbers + "What this means"), level 2 "Details", level 3 "View calculation". Advanced analysis sits behind **Simple / Advanced**; a **Guided view** walks through the result step by step.
+- **Every section:** small label, large question, one sentence, one interactive component.
+- **Plain words first**, the economics term second ("What you give up", then "Economists call this opportunity cost").
+- **Overview numbers are compact** ($84K, 7.4 yrs, 91%); full values appear in details.
+- **Badges:** DATA, ESTIMATE, SIMULATION.
+- **Three card styles only:** metric card, interactive selection card, educational card. **Buttons:** primary (continue / calculate / compare / run), secondary, quiet (ghost).
+- **Animation budget:** the big moments are the hero paths, cost bar, comparison transitions, break-even and the simulation; everything else only fades up. Text updates immediately; charts animate after.
 
 ## Components and surfaces
 
-- Fixed glass navbar (Explore, Compare, Simulator, Learn, Research; Search, Saved, Get Started) with a scroll-spy line; it switches to the dark or light treatment based on the section underneath.
+- Fixed glass navbar: Explore, Compare, Learn, Research; a Saved icon; one primary action, **Start comparing**. A thin progress line shows how far down the page you are; the bar switches to the dark or light treatment of the section underneath. Deep pages use breadcrumbs (Explore / UC Berkeley / Economics).
 - Glass is used only for the navbar and the hero's floating cards.
-- Every metric shows a label, a tabular value, a **data kind** (Observed, Estimated, Projected, Simulated), an ⓘ source card and, where it applies, a confidence level.
+- Every metric shows a label, a compact tabular value, a badge (DATA, ESTIMATE, SIMULATION) and, in its details, an ⓘ source card.
 - Primary buttons are ink-filled and magnetic (≤6px). Cards are `--surface` with a 1px rule; no side stripes and no rows of identical metric cards.
 
 ## Motion

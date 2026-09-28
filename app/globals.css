@@ -156,8 +156,8 @@
   --text-display: clamp(3rem, 8vw, 8.25rem);
   --text-display--line-height: 0.92;
   --text-display--letter-spacing: -0.05em;
-  --text-section: clamp(2.5rem, 6vw, 5.5rem);
-  --text-section--line-height: 0.96;
+  --text-section: clamp(2.25rem, 4.6vw, 4rem);
+  --text-section--line-height: 1;
   --text-section--letter-spacing: -0.045em;
   --text-h1: clamp(2.4rem, 4.6vw, 4rem);
   --text-h1--line-height: 1;

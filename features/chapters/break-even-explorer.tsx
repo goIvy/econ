@@ -7,6 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatedNumber, useMeasuredWidth, useSteppedValue } from "@/components/motion";
 import { Button } from "@/components/ui/button";
 import { SampleChip } from "@/components/ui/lineage";
+import { DataKindChip } from "@/components/ui/data-kind";
+import { breakEvenYears } from "@/features/scenario/facts";
 import { clamp, linear, linePath, ticks, valueAt } from "@/components/charts/scale";
 import { snapshotAt } from "@/lib/calc";
 import { DUR, EASE, scrubSpring } from "@/lib/animations";
@@ -25,8 +27,10 @@ const PLAY_SECONDS = 10;
  * break-even marker lands when the timeline reaches it.
  */
 export function BreakEvenExplorer() {
-  const { futures, baseline, baselineSeries } = useScenario();
-  const pair = futures.slice(0, 2);
+  const { futures, baseline, baselineSeries, shown: count } = useScenario();
+  const pair = futures.filter((f) => f.index < Math.min(2, count));
+  const mine = pair[0];
+  const beYears = breakEvenYears(mine);
   const reduce = useReducedMotion();
   const target = useMotionValue(22);
   const age = useSpring(target, scrubSpring);
@@ -50,6 +54,13 @@ export function BreakEvenExplorer() {
 
   return (
     <div className="grid gap-6">
+      <div className="grid gap-2" aria-live="polite">
+        <p className="text-small font-semibold text-ink-2">Estimated break-even for {mine.ctx.college.shortName} {mine.ctx.major.name}</p>
+        <p className="text-[clamp(2.25rem,5.5vw,4.25rem)] font-extrabold leading-none tracking-[-0.045em] text-ink">{beYears == null ? "Not by age 40" : `${beYears.toFixed(1)} years after graduation`}</p>
+        <p className="flex flex-wrap items-center gap-2 text-small text-muted">
+          <DataKindChip kind="projected" /> The point where total earnings recover the extra cost of this path, compared with working from 18.
+        </p>
+      </div>
       <div className="grid gap-6 rounded-lg border border-rule bg-surface p-4 shadow-3 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-caption text-ink-2">
@@ -58,7 +69,7 @@ export function BreakEvenExplorer() {
                 <svg width="24" height="8" aria-hidden>
                   <line x1="1" x2="23" y1="4" y2="4" stroke={PATH_VAR[f.index]} strokeWidth="3" strokeDasharray={PATH_DASH[f.index]} />
                 </svg>
-                <span className="font-bold tracking-[0.08em]">PATH {pathNo(f.index)}</span> {f.label}
+                <span className="font-bold tracking-[0.08em]">{f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`}</span> {f.label}
               </span>
             ))}
             <span className="flex items-center gap-2">
@@ -87,7 +98,7 @@ export function BreakEvenExplorer() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className={cn("grid gap-4", pair.length > 1 && "md:grid-cols-2")}>
         {pair.map((f) => (
           <Readouts key={f.index} f={f} age={shown} baseline={baseline} />
         ))}
@@ -133,7 +144,7 @@ function Chart({ pair, base, age }: { pair: Future[]; base: number[]; age: Motio
   const d = (s: number[]) => linePath(s.map((v, i) => [x(START + i), y(v)]));
   return (
     <div ref={ref} className="min-w-0" data-cursor="SCRUB">
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block max-w-full" role="img" aria-label={`Cumulative net value by age. ${pair.map((f) => `${f.label}: ${f.breakEven ? `break-even at ${f.breakEven.toFixed(1)}` : "no break-even by 40"}`).join(". ")}.`}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block max-w-full" role="img" aria-label={`Total money earned minus costs, by age. ${pair.map((f) => `${f.label}: ${f.breakEven ? `break-even at ${f.breakEven.toFixed(1)}` : "no break-even by 40"}`).join(". ")}.`}>
         <defs>
           <clipPath id="be-clip">
             <motion.rect x={M.l - 2} y={0} height={H} style={{ width: clipW }} />
@@ -198,7 +209,7 @@ function BreakEvenMarker({ f, i, age, x, y, W }: { f: Future; i: number; age: Mo
             <motion.g initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: DUR.standard, ease: EASE.smooth }} transform={`translate(${left ? -170 : 14}, ${i === 0 ? -64 : 18})`}>
               <rect width={156} height={44} rx={10} fill="var(--ink)" />
               <text x={12} y={18} className="fill-on-ink text-[10px] font-bold tracking-[0.14em]">
-                BREAK-EVEN · PATH {pathNo(f.index)}
+                BREAK-EVEN · {f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`}
               </text>
               <text x={12} y={35} className="tabular fill-on-ink text-[14px] font-extrabold">
                 AGE {f.breakEven!.toFixed(1)}
@@ -218,14 +229,14 @@ function Readouts({ f, age, baseline }: { f: Future; age: number; baseline: Para
   const rows: Array<[string, number]> = [
     ["Salary", s.salary],
     ["Debt remaining", s.remainingDebt],
-    ["Cumulative earnings", s.cumulativeEarnings],
+    ["Earned so far", s.cumulativeEarnings],
   ];
   return (
     <div className="grid gap-4 rounded-lg border border-rule bg-surface p-4 sm:p-5">
       <div className="flex items-center justify-between gap-2">
         <p className="flex items-center gap-2 text-caption font-bold tracking-[0.12em] text-ink">
           <span className="size-2 rounded-full" style={{ background: PATH_VAR[f.index] }} />
-          PATH {pathNo(f.index)} <span className="font-medium tracking-normal text-muted">{f.label}</span>
+          {f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`} <span className="font-medium tracking-normal text-muted">{f.label}</span>
         </p>
         <span className="tabular text-caption text-muted">Age {age.toFixed(1)}</span>
       </div>
@@ -241,7 +252,7 @@ function Readouts({ f, age, baseline }: { f: Future; age: number; baseline: Para
       </dl>
       <div className="flex items-end justify-between gap-3 border-t border-rule pt-3">
         <div>
-          <p className="text-caption text-muted">Net position</p>
+          <p className="text-caption text-muted">Earned minus costs</p>
           <p className="text-metric font-extrabold text-ink">
             <AnimatedNumber value={s.netPosition} format={money} />
           </p>

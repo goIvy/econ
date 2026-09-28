@@ -27,6 +27,15 @@ export interface Future {
 
 interface Store {
   paths: PathSel[];
+  /** How many paths are in play (1–3). Path 01 is always "your path". */
+  shown: number;
+  /** False while path 01 is still the example the page opened with. */
+  personal: boolean;
+  /** The example path the page opens with. */
+  example: PathSel;
+  setPersonal: (v: boolean) => void;
+  addPath: (sel: PathSel) => Promise<boolean>;
+  removePath: (i: number) => void;
   active: number;
   setActive: (i: number) => void;
   setPath: (i: number, patch: Partial<PathSel>) => Promise<boolean>;
@@ -51,6 +60,8 @@ export function ScenarioProvider({
 }) {
   const [paths, setPaths] = useState<PathSel[]>(seed.paths);
   const [active, setActive] = useState(0);
+  const [shown, setShown] = useState(2);
+  const [personal, setPersonal] = useState(false);
   const [contexts, setContexts] = useState<Record<string, PathContext>>(seed.contexts);
   const [loading, setLoading] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -93,7 +104,39 @@ export function ScenarioProvider({
     [paths, contexts, load],
   );
 
-  const baseline = useMemo(() => projectNoCollege({ horizonAge: HORIZON }), []);
+  const addPath = useCallback(
+    async (sel: PathSel) => {
+      if (shown >= paths.length) return false;
+      setError(null);
+      setLoading(shown);
+      const ctx = await load(sel.collegeId, sel.majorId);
+      setLoading(null);
+      if (!ctx) {
+        setError("We couldn't load that college and major. Try another major.");
+        return false;
+      }
+      const at = shown;
+      setPaths((ps) => ps.map((p, j) => (j === at ? sel : p)));
+      setShown(at + 1);
+      return true;
+    },
+    [shown, paths.length, load],
+  );
+
+  // Removing keeps the slot's data (moved to the end) so it can come back instantly.
+  const removePath = useCallback(
+    (i: number) => {
+      if (i === 0 || shown <= 1) return;
+      setPaths((ps) => [...ps.filter((_, j) => j !== i), ps[i]]);
+      setShown((n) => n - 1);
+      setActive((a) => (a === i ? 0 : a > i ? a - 1 : a));
+    },
+    [shown],
+  );
+
+  // "Work from 18" in your path's state (state income tax), matching the API and the simulation.
+  const homeState = contexts[key(paths[0])]?.careerCity?.stateTaxRate ?? contexts[key(paths[0])]?.collegeCity?.stateTaxRate;
+  const baseline = useMemo(() => projectNoCollege({ horizonAge: HORIZON, stateRate: homeState }), [homeState]);
   const baselineSeries = useMemo(() => cumulativeSeries(baseline, HORIZON), [baseline]);
 
   const futures = useMemo(
@@ -106,15 +149,17 @@ export function ScenarioProvider({
           ctx,
           { horizonAge: HORIZON },
         );
-        const be = calculateBreakEvenYear(result.rows, baseline, result.graduationAge);
+        // Each path's break-even is measured against working from 18 in its own state.
+        const own = projectNoCollege({ horizonAge: HORIZON, stateRate: (ctx.careerCity ?? ctx.collegeCity)?.stateTaxRate });
+        const be = calculateBreakEvenYear(result.rows, own, result.graduationAge);
         return [{ index, sel, ctx, result, series: cumulativeSeries(result.rows, HORIZON), breakEven: be && be.age > 18 ? be.age : null, label: `${ctx.college.shortName} ${ctx.major.name}` }];
       }),
-    [paths, contexts, baseline],
+    [paths, contexts],
   );
 
   const value = useMemo<Store>(
-    () => ({ paths, active, setActive, setPath, futures, baseline, baselineSeries, colleges: seed.colleges, majors: seed.majors, loading, error }),
-    [paths, active, setPath, futures, baseline, baselineSeries, seed.colleges, seed.majors, loading, error],
+    () => ({ paths, shown, personal, setPersonal, example: seed.paths[0], addPath, removePath, active, setActive, setPath, futures, baseline, baselineSeries, colleges: seed.colleges, majors: seed.majors, loading, error }),
+    [paths, shown, personal, seed.paths, addPath, removePath, active, setPath, futures, baseline, baselineSeries, seed.colleges, seed.majors, loading, error],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

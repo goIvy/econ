@@ -6,24 +6,29 @@ Compare the real financial value of a specific college path: one college, one ma
 
 ## What's in this release
 
+The site has one obvious journey: **pick a college, a major and residency, add aid if you have it, see your result, compare another college, then explore deeper if you want.**
+
 | Area | Where |
 |---|---|
-| Homepage: Three Futures hero (build up to three paths, staggered timeline markers, floating cards, cursor-reactive background), True Cost scroll story, drag-to-compare stage (up to 4 paths across Cost, Career, Risk, Long term), opportunity cost with sliders, salary distribution explorer, employment outcomes (100 graduates regrouping), break-even explorer with scrubber and PLAY MY FUTURE, What-If Lab with change indicators, 1,000 Possible Futures simulation (canvas), cost-of-living map, 8 lessons that expand into micro-experiences, methodology pipeline | `app/page.tsx`, `features/hero/`, `features/chapters/`, `features/home/` |
-| Shared scenario state: the paths you build in the hero drive every chapter below it; `/api/context` loads any college + major | `features/scenario/`, `app/api/context/` |
-| College detail: big-metric hero with a scrubbable timeline and a college switcher (arrows, ← → keys, swipe; View Transitions), plus Overview, Costs, Majors, Earnings, Debt, Outcomes, Research tabs | `/college/[id]`, `features/college/` |
-| Saved comparisons (stored in the browser) | `/saved`, `features/saved/`, `hooks/use-saved.ts` |
-| Research: net price vs. earnings across colleges, and break-even age by major | `/research`, `features/research/` |
-| Learn the Economics, onboarding, college search, compare workspace, simulator, methodology | `/learn`, `/get-started`, `/explore`, `/compare`, `/simulator`, `/methodology` |
+| Hero with a starter card (college, major, residency, optional aid → "See my college path") | `features/start/` |
+| Results: five numbers (net cost, expected debt, early-career pay, employment, break-even), "What this means", details and "View calculation" on demand, **Simple / Advanced** switch, **Guided view** (cost → debt → jobs → salary → long-term value) | `features/results/results.tsx` |
+| Advanced analysis: assumptions (What-If), salary range by major, where graduates are a year later, how every number is made | `app/page.tsx` → `features/chapters/` |
+| Compare: add a college in one click (search or samples), five numbers side by side, "Show more"; swipe on phones | `features/results/compare.tsx` |
+| Sticky "Your path" summary (slim bar on desktop, expandable bar on phones) | `features/results/sticky-summary.tsx` |
+| Cost (sticker price − grants = net cost, "Where does the money go?"), What you give up, Break-even, Possible futures (1,000-run simulation), 3 featured lessons, data transparency | `features/chapters/` |
+| College detail: live hero (follows the major/residency you pick), breadcrumbs, tabs: Overview, Cost, Career outcomes, Majors, Research | `/college/[id]`, `features/college/` |
+| Learn: scroll lessons, "What your salary can actually buy" map, 8 quick experiments | `/learn` |
+| Explore, full comparison table, saved comparisons, research, methodology | `/explore`, `/compare`, `/saved`, `/research`, `/methodology` |
 | FastAPI + PostgreSQL service, 29-table schema | `backend/` |
 
-Every number carries a data kind (Observed, Estimated, Projected, Simulated) and an ⓘ source card. Careers and accounts are later-release areas; their pages say so.
+Every number carries a badge (DATA, ESTIMATE or SIMULATION) and a source. Plain words first, the economics term second ("What you give up. Economists call this opportunity cost.").
 
 ## Run it
 
 ```bash
 npm install
 npm run dev          # http://localhost:3000
-npm test             # 61 calculation + data tests (vitest)
+npm test             # 68 calculation, data and wording tests (vitest)
 npm run typecheck
 npm run lint
 npm run build
@@ -57,10 +62,12 @@ backend/      FastAPI + SQLAlchemy + pytest
 
 ## Quality checks run
 
-- axe-core: 0 violations on 13 routes at 375px and 1440px
-- No horizontal overflow at 375 / 768 / 1024 / 1440 on every route
-- `prefers-reduced-motion` respected on every animation; nothing is left hidden when motion is off
-- Typecheck, lint, 61 tests and the production build all pass
+- Full journey (college → major → residency → aid → results → guided view → advanced → add/remove/compare) scripted at 390px and 1440px: no console errors, warnings or hydration issues, in dev and production
+- axe-core: 0 violations on 13 routes at 375px and 1440px, plus the opened states (details, Advanced, Guided, dropdowns, simulation)
+- No horizontal overflow at 375 / 390 / 430 / 768 / 1024 / 1440 on every route
+- Keyboard-only journey works; `prefers-reduced-motion` leaves nothing hidden and the simulation completes instantly
+- The same path shows the same numbers on the homepage, its compare section and `/compare`
+- Typecheck, lint, 68 tests and the production build pass
 
 ## Deploy
 

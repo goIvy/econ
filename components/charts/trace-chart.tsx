@@ -57,7 +57,7 @@ export function TraceChart({
   height = 320,
   drawn = true,
   xLabel = "Age",
-  yLabel = "Cumulative net value (2024 dollars)",
+  yLabel = "Total money earned minus costs (2024 dollars)",
   className,
   caption,
 }: {

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowDown, ArrowUp, Bookmark, BookmarkCheck, Check, Link2, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Bookmark, BookmarkCheck, Check, ChevronDown, Link2, Pencil, Plus, Trash2 } from "lucide-react";
 import { useSaved } from "@/hooks/use-saved";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -45,14 +45,16 @@ export interface CompareFunding {
 type SortKey = "order" | "net" | "debt" | "grad" | "employment" | "salary" | "ten" | "breakEven";
 
 const COLUMNS: Array<{ key: SortKey; label: string; tip: string; get: (d: PathResponse) => number | null; fmt: (n: number) => string }> = [
-  { key: "net", label: "Net cost", tip: "What your household pays over 4 years after grants and scholarships.", get: (d) => d.net.netPrice, fmt: money },
-  { key: "debt", label: "Debt", tip: "Estimated amount borrowed after family contribution and work income.", get: (d) => d.net.borrowing, fmt: money },
-  { key: "grad", label: "Grad rate", tip: "Share of students finishing within 6 years. Historical, not a prediction for any individual.", get: (d) => d.gradRate6, fmt: (n) => pct(n) },
-  { key: "employment", label: "Employment", tip: "Share of recent graduates in the labor force who have jobs.", get: (d) => d.employmentRate * 100, fmt: (n) => pct(n, 1) },
-  { key: "salary", label: "Starting salary", tip: "Median early-career earnings for this program.", get: (d) => d.startingSalary, fmt: money },
+  { key: "net", label: "Net cost", tip: "What your household pays over 4 years after grants and scholarships.", get: (d) => d.net.netPrice, fmt: moneyCompact },
+  { key: "debt", label: "Debt", tip: "Estimated amount borrowed after family contribution and work income.", get: (d) => d.net.borrowing, fmt: moneyCompact },
+  { key: "salary", label: "Starting pay", tip: "Typical (median) early-career earnings for this program.", get: (d) => d.startingSalary, fmt: moneyCompact },
+  { key: "employment", label: "Employment", tip: "Share of recent graduates in the labor force who have jobs.", get: (d) => d.employmentRate * 100, fmt: (n) => pct(n) },
+  { key: "breakEven", label: "Break-even", tip: "About how many years after graduating this path's total money earned minus costs passes working from 18. An estimate.", get: (d) => d.breakEven?.age ?? null, fmt: (n) => `${Math.max(0, n - 22).toFixed(1)} yrs` },
+  { key: "grad", label: "Graduate in 6 yrs", tip: "Share of students finishing within 6 years. Historical, not a prediction for any individual.", get: (d) => d.gradRate6, fmt: (n) => pct(n) },
   { key: "ten", label: "10-year earnings", tip: "Projected pre-tax earnings over the first 10 years after graduating, adjusted for employment rate. An estimate.", get: (d) => d.tenYearEarnings, fmt: moneyCompact },
-  { key: "breakEven", label: "Break-even", tip: "Approximate age when this path's cumulative value passes working from 18 without a degree. An estimate.", get: (d) => d.breakEven?.age ?? null, fmt: (n) => `age ${n.toFixed(1)}` },
 ];
+/** The first five columns are shown by default; "Show more" adds the rest. */
+const MAIN_COLUMNS = 5;
 
 export function CompareWorkspace({
   colleges,
@@ -73,6 +75,8 @@ export function CompareWorkspace({
   const endIntro = useCallback(() => setShowIntro(false), []);
   const [paths, setPaths] = useState<PathSpec[]>(initial);
   const [editing, setEditing] = useState<number | "new" | null>(initial.length === 0 ? "new" : null);
+  const [more, setMore] = useState(false);
+  const cols = more ? COLUMNS : COLUMNS.slice(0, MAIN_COLUMNS);
   const [sort, setSort] = useState<{ key: SortKey; dir: 1 | -1 }>({ key: "order", dir: 1 });
   const [filter, setFilter] = useState<"all" | "public" | "private">("all");
   const [copied, setCopied] = useState(false);
@@ -105,7 +109,7 @@ export function CompareWorkspace({
   const series: TraceSeries[] = ready.map((r) => ({ id: specKey(r.spec), trace: r.trace, label: `${r.d.college.shortName} ${r.d.major.name}`, points: r.d.series.map((p) => ({ x: p.age, y: p.cumulative })) }));
   if (ready[0]) series.push({ id: "base", trace: "baseline", label: "Working from 18, no degree", points: ready[0].d.baseline.map((p) => ({ x: p.age, y: p.cumulative })) });
 
-  let summary = "Add at least one path to see cumulative value over time.";
+  let summary = "Add at least one path to see total money earned minus costs over time.";
   let marker: { x: number; y: number; label: string } | null = null;
   if (ready.length >= 2) {
     const byCost = [...ready].sort((a, b) => b.d.net.netPrice - a.d.net.netPrice);
@@ -196,6 +200,8 @@ export function CompareWorkspace({
         )}
       </AnimatePresence>
 
+      {paths.length > 0 && (
+      <>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <Segmented
@@ -234,7 +240,7 @@ export function CompareWorkspace({
               <th scope="col" className="px-4 py-3 text-left font-medium text-muted">
                 <button type="button" onClick={() => setSort({ key: "order", dir: 1 })} className="hover:text-ink">Path</button>
               </th>
-              {COLUMNS.map((c) => sortHeader(c.key, c.label, c.tip))}
+              {cols.map((c) => sortHeader(c.key, c.label, c.tip))}
               <th scope="col" className="px-3 py-3"><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
@@ -254,7 +260,7 @@ export function CompareWorkspace({
                       </span>
                     </span>
                   </th>
-                  {COLUMNS.map((c) => (
+                  {cols.map((c) => (
                     <td key={c.key} className="tabular px-3 py-3 text-right font-semibold text-ink">
                       {r.res.status === "error" ? <span className="text-caption font-normal text-risk">Unavailable</span> : r.res.data ? (c.get(r.res.data) == null ? <span className="text-caption font-normal text-muted">Not by 40</span> : c.fmt(c.get(r.res.data)!)) : <span className="inline-block h-4 w-14 animate-pulse rounded bg-surface-sunk" />}
                     </td>
@@ -286,7 +292,7 @@ export function CompareWorkspace({
               <RowActions onEdit={() => setEditing(r.i)} onRemove={() => remove(r.i)} name={r.meta.shortName} />
             </div>
             <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2">
-              {COLUMNS.map((c) => (
+              {cols.map((c) => (
                 <div key={c.key} className="flex items-baseline justify-between gap-2 border-t border-rule pt-2">
                   <dt className="text-caption text-muted">{c.label}</dt>
                   <dd className="tabular text-small font-semibold text-ink">{r.res.data ? (c.get(r.res.data) == null ? "—" : c.fmt(c.get(r.res.data)!)) : "…"}</dd>
@@ -296,6 +302,12 @@ export function CompareWorkspace({
           </motion.li>
         ))}
       </ul>
+      <button type="button" onClick={() => setMore((m) => !m)} aria-expanded={more} className="-mt-4 flex h-11 items-center gap-1.5 justify-self-start rounded-sm px-1 text-small font-semibold text-ink hover:underline">
+        {more ? "Show fewer numbers" : "Show more numbers"}
+        <ChevronDown className={cn("size-4 transition-transform", more && "rotate-180")} aria-hidden />
+      </button>
+      </>
+      )}
 
       {/* editor */}
       <AnimatePresence mode="wait">
@@ -313,7 +325,7 @@ export function CompareWorkspace({
         ) : paths.length < MAX ? (
           <motion.div key="add" variants={enter} initial="hidden" animate="visible" exit="exit">
             <Button variant="secondary" onClick={() => setEditing("new")}>
-              <Plus className="size-4" aria-hidden /> Add a path ({paths.length} of {MAX})
+              <Plus className="size-4" aria-hidden /> Add college ({paths.length} of {MAX})
             </Button>
           </motion.div>
         ) : (
@@ -324,8 +336,8 @@ export function CompareWorkspace({
       <AnimatePresence>
       {paths.length > 0 && (
         <motion.section key="chart" variants={enter} initial="hidden" animate="visible" exit="exit" aria-labelledby="cum-h" className="rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
-          <h2 id="cum-h" className="mb-4 text-h3 font-[650]">Cumulative net value</h2>
-          <TraceChart title="Cumulative net value by path" series={series} marker={marker} band={{ from: 18, to: 22, label: "College" }} summary={summary} height={340} />
+          <h2 id="cum-h" className="mb-4 text-h3 font-[650]">Total money earned minus costs</h2>
+          <TraceChart title="Total money earned minus costs, by path" series={series} marker={marker} band={{ from: 18, to: 22, label: "College" }} summary={summary} height={340} />
           <p className="mt-3 text-caption text-muted">
             Assumes {money(FUNDING.familyPerYear)}/yr family contribution{FUNDING.savings > 0 ? `, ${money(FUNDING.savings)} in savings` : ""} and {money(FUNDING.workPerYear)}/yr from work for every path. Debt is repaid over 10 years at the federal rate.
             {FUNDING.plannedLoan > 0 && ` You planned to borrow up to ${money(FUNDING.plannedLoan)}; paths whose estimated debt is higher would need more aid or a different plan.`}
@@ -388,11 +400,9 @@ function PathEditor({
   const valid = Boolean(college && majorId && college.majorIds.includes(majorId));
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        if (valid) onSave({ collegeId, majorId, residency: college?.control === "private" ? "resident" : residency, living, aid });
-      }}
+    // Not a <form>: Radix radio groups inside forms dispatch synthetic clicks that collide with open popovers.
+    <div
+      role="form"
       className="grid gap-5 rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6"
       aria-label={initial ? "Edit path" : "Add a path"}
     >
@@ -445,7 +455,7 @@ function PathEditor({
         <GraduatedSlider label="Grants and scholarships per year" value={aid} onChange={setAid} min={0} max={70000} step={500} format={moneyCompact} trace={trace} description={college ? `This college's average grant is ${money(college.avgGrant)}.` : undefined} />
       </div>
       <div className="flex flex-wrap gap-3">
-        <Button type="submit" disabled={!valid}>
+        <Button disabled={!valid} onClick={() => valid && onSave({ collegeId, majorId, residency: college?.control === "private" ? "resident" : residency, living, aid })}>
           {initial ? "Update path" : "Add path"}
         </Button>
         {onCancel && (
@@ -454,6 +464,6 @@ function PathEditor({
           </Button>
         )}
       </div>
-    </form>
+    </div>
   );
 }

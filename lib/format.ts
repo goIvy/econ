@@ -9,13 +9,13 @@ export const moneyCents = (n: number | null | undefined) => (n == null || !Numbe
 export const number = (n: number | null | undefined) => (n == null || !Number.isFinite(n) ? "—" : int.format(n));
 export const pct = (n: number | null | undefined, digits = 0) => (n == null || !Number.isFinite(n) ? "—" : `${n.toFixed(digits)}%`);
 
-/** $78.4K / $1.2M style, for axes and tight spaces. */
+/** $78K / $5.5K / $1.2M style: overview numbers, axes and tight spaces. */
 export function moneyCompact(n: number | null | undefined): string {
   if (n == null || !Number.isFinite(n)) return "—";
   const sign = n < 0 ? "−" : "";
   const a = Math.abs(n);
-  if (a >= 1_000_000) return `${sign}$${(a / 1_000_000).toFixed(a >= 10_000_000 ? 0 : 1).replace(/\.0$/, "")}M`;
-  if (a >= 1_000) return `${sign}$${(a / 1_000).toFixed(a >= 100_000 ? 0 : 1).replace(/\.0$/, "")}K`;
+  if (a >= 999_500) return `${sign}$${(a / 1_000_000).toFixed(a >= 10_000_000 ? 0 : 1).replace(/\.0$/, "")}M`;
+  if (a >= 1_000) return `${sign}$${(a / 1_000).toFixed(a >= 10_000 ? 0 : 1).replace(/\.0$/, "")}K`;
   return `${sign}$${Math.round(a)}`;
 }
 

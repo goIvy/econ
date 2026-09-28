@@ -5,8 +5,7 @@ import { Nav } from "@/components/site/nav";
 import { Footer } from "@/components/site/footer";
 import { Readout } from "@/components/ui/readout";
 import { SampleChip } from "@/components/ui/lineage";
-import { CollegeWorkspace } from "@/features/college/college-workspace";
-import { CollegeHero } from "@/features/college/college-hero";
+import { CollegeDetail } from "@/features/college/college-detail";
 import { cumulativeSeries } from "@/lib/calc";
 import type { MajorBundle } from "@/features/major/major-panel";
 import { getCity, getCollege, getMajor, getOccupation, getOutcome, listColleges, runPath } from "@/services/data";
@@ -73,59 +72,62 @@ export default async function CollegePage(props: PageProps<"/college/[id]">) {
     <>
       <Nav />
       <main id="main">
-        {run && (
-          <CollegeHero
-            id={college.id}
-            name={college.shortName}
-            place={`${college.name} · ${college.city}, ${college.state} · ${college.control === "public" ? (initialResidency === "resident" ? "in-state" : "out-of-state") : "private"}, on campus, average grant aid`}
-            major={run.major.name}
-            metrics={{ netCost: run.result.net.netPrice, employment: run.result.employmentRate * 100, salary: run.result.startingSalary, debt: run.result.net.borrowing, breakEven: run.breakEven && run.breakEven.age > 18 ? run.breakEven.age : null }}
-            series={cumulativeSeries(run.result.rows, 40)}
-            base={cumulativeSeries(run.baseline, 40)}
-            prev={{ id: prev.id, name: prev.shortName }}
-            next={{ id: next.id, name: next.shortName }}
-            accent={accent}
-          />
-        )}
-        <header className="relative isolate overflow-hidden border-b border-rule">
-          <div aria-hidden className="measured-field field-fade pointer-events-none absolute inset-0 -z-10" />
-          <div className="mx-auto grid max-w-[1200px] gap-8 px-4 pb-10 pt-8 md:px-8 md:pt-12 xl:px-12">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div className="grid gap-2">
-                <h2 className="text-h2 font-bold">{college.name} at a glance</h2>
-                <p className="text-lede text-ink-2">
-                  {college.city}, {college.state} · {college.control === "public" ? "Public" : "Private nonprofit"} · {number(college.undergradEnrollment.value)} undergraduates
-                </p>
-              </div>
-              <SampleChip />
-            </div>
-            <ViewTransition name={`college-stats-${college.id}`}>
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-6 rounded-lg border border-rule bg-surface p-5 shadow-2 sm:grid-cols-3 lg:grid-cols-5">
-              {college.control === "public" ? (
-                <>
-                  <Readout size="sm" label="In-state tuition" value={c.tuitionInState.value} format="money" lineage={c.tuitionInState.lineage} footnote={1} />
-                  <Readout size="sm" label="Out-of-state tuition" value={c.tuitionOutOfState.value} format="money" lineage={c.tuitionOutOfState.lineage} footnote={2} />
-                </>
-              ) : (
-                <Readout size="sm" label="Tuition" value={c.tuitionInState.value} format="money" lineage={c.tuitionInState.lineage} footnote={1} />
-              )}
-              <Readout size="sm" label="Fees" value={c.fees.value} format="money" lineage={c.fees.lineage} footnote={3} />
-              <Readout size="sm" label="Room and board" value={(c.room.value ?? 0) + (c.board.value ?? 0)} format="money" lineage={c.room.lineage} footnote={4} />
-              <Readout size="sm" label="Average net price" value={c.netPrice.value} format="money" lineage={c.netPrice.lineage} footnote={5} explain="What students receiving grant aid paid on average, after grants and scholarships, for one year." />
-              <Readout size="sm" label="6-year graduation rate" value={college.gradRate6.value} format="pct" lineage={college.gradRate6.lineage} footnote={6} explain="This is based on historical outcomes for students at this institution and does not predict any individual student with certainty." />
-              <Readout size="sm" label="Median debt" value={college.medianDebt.value} format="money" lineage={college.medianDebt.lineage} footnote={7} />
-              <Readout size="sm" label="Median earnings" value={college.medianEarnings.value} format="money" lineage={college.medianEarnings.lineage} footnote={8} unit="/yr" explain="Median earnings of federally aided students 10 years after they started college." />
-              <Readout size="sm" label="Receive grant aid" value={college.aid.pctReceivingGrants.value} format="pct" lineage={college.aid.pctReceivingGrants.lineage} footnote={9} />
-              {college.control === "private" && (
-                <Readout size="sm" label="Average grant" value={college.aid.avgGrant.value} format="money" lineage={college.aid.avgGrant.lineage} footnote={10} />
-              )}
-            </dl>
-            </ViewTransition>
-          </div>
-        </header>
-        <div className="mx-auto max-w-[1200px] px-4 pb-20 pt-6 md:px-8 xl:px-12">
-          <CollegeWorkspace college={college} city={city} majors={majors} defaultMajorId={defaultMajorId} initialResidency={initialResidency} />
-        </div>
+        <CollegeDetail
+          hero={{
+            id: college.id,
+            name: college.shortName,
+            place: `${college.name} · ${college.city}, ${college.state} · ${college.control === "public" ? "Public" : "Private nonprofit"}`,
+            major: run?.major.name ?? "",
+            metrics: run
+              ? { netCost: run.result.net.netPrice, employment: run.result.employmentRate * 100, salary: run.result.startingSalary, debt: run.result.net.borrowing, breakEven: run.breakEven && run.breakEven.age > 18 ? run.breakEven.age : null }
+              : { netCost: 0, employment: 0, salary: 0, debt: 0, breakEven: null },
+            series: run ? cumulativeSeries(run.result.rows, 40) : [],
+            base: run ? cumulativeSeries(run.baseline, 40) : [],
+            prev: { id: prev.id, name: prev.shortName },
+            next: { id: next.id, name: next.shortName },
+            accent,
+          }}
+          workspace={{
+            college,
+            city,
+            majors,
+            defaultMajorId,
+            initialResidency,
+            facts: (
+              <section key="facts" aria-labelledby="glance-h" className="grid gap-4">
+                <div className="flex flex-wrap items-end justify-between gap-3">
+                  <div className="grid gap-1">
+                    <h2 id="glance-h" className="text-h3 font-bold">
+                      {college.shortName} at a glance
+                    </h2>
+                    <p className="text-small text-ink-2">
+                      {college.city}, {college.state} · {college.control === "public" ? "Public" : "Private nonprofit"} · {number(college.undergradEnrollment.value)} undergraduates
+                    </p>
+                  </div>
+                  <SampleChip />
+                </div>
+                <ViewTransition name={`college-stats-${college.id}`}>
+                  <dl className="grid grid-cols-2 gap-x-6 gap-y-6 rounded-lg border border-rule bg-surface p-5 sm:grid-cols-3 lg:grid-cols-4">
+                    {college.control === "public" ? (
+                      <>
+                        <Readout size="sm" label="In-state tuition" value={c.tuitionInState.value} format="money" lineage={c.tuitionInState.lineage} footnote={1} />
+                        <Readout size="sm" label="Out-of-state tuition" value={c.tuitionOutOfState.value} format="money" lineage={c.tuitionOutOfState.lineage} footnote={2} />
+                      </>
+                    ) : (
+                      <Readout size="sm" label="Tuition" value={c.tuitionInState.value} format="money" lineage={c.tuitionInState.lineage} footnote={1} />
+                    )}
+                    <Readout size="sm" label="Room and board" value={(c.room.value ?? 0) + (c.board.value ?? 0)} format="money" lineage={c.room.lineage} footnote={3} />
+                    <Readout size="sm" label="Average net price" value={c.netPrice.value} format="money" lineage={c.netPrice.lineage} footnote={4} explain="What students receiving grant aid paid on average, after grants and scholarships, for one year." />
+                    <Readout size="sm" label="Graduate within 6 years" value={college.gradRate6.value} format="pct" lineage={college.gradRate6.lineage} footnote={5} explain="Based on historical outcomes for students at this college; it does not predict any individual student." />
+                    <Readout size="sm" label="Median debt" value={college.medianDebt.value} format="money" lineage={college.medianDebt.lineage} footnote={6} />
+                    <Readout size="sm" label="Median earnings" value={college.medianEarnings.value} format="money" lineage={college.medianEarnings.lineage} footnote={7} unit="/yr" explain="Median earnings of federally aided students 10 years after they started college." />
+                    <Readout size="sm" label="Receive grant aid" value={college.aid.pctReceivingGrants.value} format="pct" lineage={college.aid.pctReceivingGrants.lineage} footnote={8} />
+                  </dl>
+                </ViewTransition>
+              </section>
+            ),
+          }}
+        />
       </main>
       <Footer />
     </>

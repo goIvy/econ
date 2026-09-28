@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
-import { Bookmark, Menu, Search, X } from "lucide-react";
+import { Bookmark, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ButtonLink } from "@/components/ui/button";
 import { collapse, enter, microSpring, staggerParent } from "@/lib/animations";
@@ -14,7 +14,6 @@ import { Logo } from "./logo";
 export const NAV_LINKS = [
   { href: "/explore", label: "Explore" },
   { href: "/compare", label: "Compare" },
-  { href: "/simulator", label: "Simulator" },
   { href: "/learn", label: "Learn" },
   { href: "/research", label: "Research" },
 ];
@@ -35,7 +34,6 @@ export function Nav({ overlay = false, sections }: { overlay?: boolean; sections
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(overlay);
   const [scrolled, setScrolled] = useState(false);
-  const [current, setCurrent] = useState<string | null>(null);
   const saved = useSavedCount();
 
   // Theme under the nav + scroll-spy, sampled at most once per frame.
@@ -47,14 +45,6 @@ export function Nav({ overlay = false, sections }: { overlay?: boolean; sections
       setScrolled(window.scrollY > 8);
       const below = document.elementsFromPoint(window.innerWidth / 2, navH / 2).find((el) => !el.closest("header[data-site-nav]"));
       setDark(!!below?.closest(".theme-dark"));
-      if (sections?.length) {
-        let cur: string | null = null;
-        for (const s of sections) {
-          const el = document.getElementById(s.id);
-          if (el && el.getBoundingClientRect().top <= navH + window.innerHeight * 0.3) cur = s.id;
-        }
-        setCurrent(cur);
-      }
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(sample);
@@ -79,7 +69,6 @@ export function Nav({ overlay = false, sections }: { overlay?: boolean; sections
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 40 });
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
-  const currentLabel = sections?.find((s) => s.id === current)?.label;
 
   return (
     <>
@@ -113,22 +102,18 @@ export function Nav({ overlay = false, sections }: { overlay?: boolean; sections
             </ul>
           </nav>
           <div className="ml-auto flex items-center gap-1 lg:ml-0">
-            <Link href="/explore" className="grid size-10 place-items-center rounded-sm text-muted transition-colors hover:bg-surface-sunk hover:text-ink" aria-label="Search colleges">
-              <Search className="size-[18px]" aria-hidden />
-            </Link>
-            <Link href="/saved" className="relative grid size-10 place-items-center rounded-sm text-muted transition-colors hover:bg-surface-sunk hover:text-ink sm:flex sm:w-auto sm:gap-1.5 sm:px-3" aria-label={`Saved comparisons${saved ? ` (${saved})` : ""}`}>
+            <Link href="/saved" title="Saved comparisons" className="relative grid size-10 place-items-center rounded-sm text-muted transition-colors hover:bg-surface-sunk hover:text-ink" aria-label={`Saved comparisons${saved ? ` (${saved})` : ""}`}>
               <Bookmark className="size-[18px]" aria-hidden />
-              <span className="hidden text-small font-medium sm:inline">Saved</span>
               <AnimatePresence>
                 {saved > 0 && (
-                  <motion.span key={saved} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} className="tabular absolute right-1 top-1 grid min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-[#0b1020] sm:static">
+                  <motion.span key={saved} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} className="tabular absolute right-0.5 top-0.5 grid min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-[#0b1020]">
                     {saved}
                   </motion.span>
                 )}
               </AnimatePresence>
             </Link>
-            <ButtonLink href="/get-started" size="sm" className="ml-1 hidden sm:inline-flex">
-              Get started
+            <ButtonLink href="/#starter" size="sm" className="ml-1 hidden sm:inline-flex">
+              Start comparing
             </ButtonLink>
             <button
               type="button"
@@ -149,24 +134,6 @@ export function Nav({ overlay = false, sections }: { overlay?: boolean; sections
             <motion.div className="h-full origin-left bg-accent" style={{ scaleX: progress }} />
           </div>
         )}
-        {sections && (
-          <AnimatePresence mode="wait">
-            {currentLabel && (
-              <motion.p
-                key={currentLabel}
-                initial={{ opacity: 0, y: -4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 4 }}
-                transition={{ duration: 0.2 }}
-                className="glass pointer-events-none absolute left-1/2 top-full hidden -translate-x-1/2 rounded-b-md border border-t-0 border-rule px-3 py-1 text-caption font-medium text-muted xl:block"
-                aria-live="polite"
-              >
-                {currentLabel}
-              </motion.p>
-            )}
-          </AnimatePresence>
-        )}
-
         <AnimatePresence>
           {open && (
             <motion.nav
@@ -192,12 +159,9 @@ export function Nav({ overlay = false, sections }: { overlay?: boolean; sections
                     </Link>
                   </motion.li>
                 ))}
-                <motion.li variants={enter} className="mt-4 grid grid-cols-2 gap-3 border-t border-rule pt-5">
-                  <ButtonLink href="/sign-in" variant="secondary" onClick={() => setOpen(false)}>
-                    Sign in
-                  </ButtonLink>
-                  <ButtonLink href="/get-started" onClick={() => setOpen(false)}>
-                    Get started
+                <motion.li variants={enter} className="mt-4 grid border-t border-rule pt-5">
+                  <ButtonLink href="/#starter" onClick={() => setOpen(false)}>
+                    Start comparing
                   </ButtonLink>
                 </motion.li>
               </motion.ul>

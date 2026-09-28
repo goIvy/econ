@@ -111,7 +111,7 @@ export function Simulator({ colleges, majors, tuition }: { colleges: CollegeMeta
                 </div>
                 <div className="rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
                   <TraceChart
-                    title="Cumulative net value"
+                    title="Total money earned minus costs"
                     series={[
                       { id: "p", trace: "a", label: `${d.college.shortName} ${d.major.name}`, points: d.series.map((p) => ({ x: p.age, y: p.cumulative })) },
                       { id: "b", trace: "baseline", label: "Working from 18, no degree", points: d.baseline.map((p) => ({ x: p.age, y: p.cumulative })) },

@@ -65,7 +65,7 @@ export default async function ExplorePage(props: PageProps<"/explore">) {
         </Suspense>
       }
     >
-      <div className="grid gap-8 pb-24 lg:grid-cols-[17rem_1fr] lg:gap-12">
+      <div className="grid grid-cols-1 gap-8 pb-24 lg:grid-cols-[17rem_minmax(0,1fr)] lg:gap-12 [&>*]:min-w-0">
         <aside aria-label="Filters" className="lg:sticky lg:top-[calc(var(--nav-h)+24px)] lg:self-start">
           <Suspense>
             <ExploreFilters states={states} majors={majors} count={results.length} />
@@ -77,7 +77,7 @@ export default async function ExplorePage(props: PageProps<"/explore">) {
               {results.length} {results.length === 1 ? "college" : "colleges"}
               {filters.q ? ` matching “${filters.q}”` : ""}
             </h2>
-            <div className="flex items-center gap-3">
+            <div className="flex min-w-0 flex-wrap items-center gap-3">
               <SampleChip />
               <Suspense>
                 <ExploreSort />

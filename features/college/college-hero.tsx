@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ArrowLeft, ArrowRight, ChevronLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Slider } from "radix-ui";
@@ -11,7 +11,7 @@ import { DataKindChip } from "@/components/ui/data-kind";
 import { SampleChip } from "@/components/ui/lineage";
 import { clamp, linear, linePath, valueAt } from "@/components/charts/scale";
 import { EASE, scrubSpring } from "@/lib/animations";
-import { money, moneyCompact, pct } from "@/lib/format";
+import { moneyCompact, pct } from "@/lib/format";
 
 export interface CollegeHeroProps {
   id: string;
@@ -53,11 +53,11 @@ export function CollegeHero(p: CollegeHeroProps) {
   const swipe = useRef<number | null>(null);
 
   const metrics: Array<{ label: string; value: number | null; fmt: (v: number) => string; kind: "estimated" | "observed" | "projected" }> = [
-    { label: "NET COST", value: p.metrics.netCost, fmt: money, kind: "estimated" },
+    { label: "NET COST", value: p.metrics.netCost, fmt: moneyCompact, kind: "estimated" },
+    { label: "EXPECTED DEBT", value: p.metrics.debt, fmt: moneyCompact, kind: "estimated" },
+    { label: "EARLY-CAREER PAY", value: p.metrics.salary, fmt: moneyCompact, kind: "observed" },
     { label: "EMPLOYMENT", value: p.metrics.employment, fmt: (v) => pct(v), kind: "observed" },
-    { label: "MEDIAN SALARY", value: p.metrics.salary, fmt: money, kind: "observed" },
-    { label: "DEBT", value: p.metrics.debt, fmt: money, kind: "estimated" },
-    { label: "BREAK-EVEN", value: p.metrics.breakEven, fmt: (v) => `Age ${v.toFixed(1)}`, kind: "projected" },
+    { label: "BREAK-EVEN", value: p.metrics.breakEven == null ? null : Math.max(0, p.metrics.breakEven - 22), fmt: (v) => `${v.toFixed(1)} yrs`, kind: "projected" },
   ];
 
   return (
@@ -75,9 +75,19 @@ export function CollegeHero(p: CollegeHeroProps) {
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 transition-[background-image] duration-[900ms]" style={{ backgroundImage: `radial-gradient(circle at 70% 35%, ${GLOWS[p.accent]}, transparent 50%)` }} />
       <div className="mx-auto grid max-w-[1200px] gap-8 px-4 pb-12 pt-8 md:px-8 md:pt-10">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <Link href="/explore" className="inline-flex items-center gap-1 rounded-xs text-small font-medium text-ink-2 hover:text-ink">
-            <ChevronLeft className="size-4" aria-hidden /> All colleges
-          </Link>
+          <nav aria-label="Breadcrumb">
+            <ol className="flex flex-wrap items-center gap-1.5 text-small text-ink-2">
+              <li>
+                <Link href="/explore" className="rounded-xs font-medium hover:text-ink">
+                  Explore
+                </Link>
+              </li>
+              <li aria-hidden className="text-muted">/</li>
+              <li className="font-medium text-ink">{p.name}</li>
+              <li aria-hidden className="text-muted">/</li>
+              <li aria-current="page">{p.major}</li>
+            </ol>
+          </nav>
           <div className="flex items-center gap-2">
             <button type="button" onClick={() => go("prev")} className="flex h-10 items-center gap-2 rounded-full border border-rule px-3 text-caption font-semibold text-ink-2 hover:border-rule-strong hover:text-ink" aria-label={`Previous college: ${p.prev.name}`}>
               <ArrowLeft className="size-4" aria-hidden /> <span className="hidden sm:inline">{p.prev.name}</span>
@@ -104,7 +114,8 @@ export function CollegeHero(p: CollegeHeroProps) {
                     <dt className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold tracking-[0.14em] text-muted">
                       {m.label} <DataKindChip kind={m.kind} className="hidden sm:inline-flex" />
                     </dt>
-                    <dd className="tabular text-[clamp(1.75rem,2.9vw,2.6rem)] font-extrabold leading-tight tracking-[-0.035em] text-ink">{m.value == null ? "Not by 40" : <AnimatedNumber value={m.value} format={m.fmt} />}</dd>
+                    <dd className="tabular text-[clamp(1.75rem,2.9vw,2.6rem)] font-extrabold leading-tight tracking-[-0.035em] text-ink">{m.value == null ? "Not by 40" : <AnimatedNumber value={m.value} format={m.fmt} />}
+                      {m.label === "BREAK-EVEN" && m.value != null && <span className="block text-caption font-medium tracking-normal text-muted">after graduation, vs. working from 18</span>}</dd>
                   </motion.div>
                 ))}
               </dl>
@@ -138,11 +149,11 @@ function Timeline({ series, base, be }: { series: number[]; base: number[]; be: 
   return (
     <div className="grid gap-3 rounded-lg border border-rule bg-surface p-4 shadow-3 sm:p-5">
       <div className="flex items-center justify-between gap-2">
-        <p className="text-small font-semibold text-ink">Cumulative net value vs. working from 18</p>
+        <p className="text-small font-semibold text-ink">Total money earned minus costs, vs. working from 18</p>
         <SampleChip />
       </div>
       <div ref={ref} className="min-w-0" data-cursor="SCRUB">
-        <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block max-w-full" role="img" aria-label={`Cumulative net value from 18 to 40. ${be ? `Break-even at ${be.toFixed(1)}.` : "No break-even by 40."}`}>
+        <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block max-w-full" role="img" aria-label={`Total money earned minus costs from 18 to 40. ${be ? `Break-even at ${be.toFixed(1)}.` : "No break-even by 40."}`}>
           <defs>
             <clipPath id="ch-clip">
               <motion.rect x={M.l} y={0} height={H} style={{ width: clipW }} />

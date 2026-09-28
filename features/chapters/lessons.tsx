@@ -15,44 +15,47 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/cn";
 import type { LessonInputs } from "./data";
 
-type LessonId = "opportunity" | "purchasing" | "expected" | "debt" | "inflation" | "human" | "risk" | "npv";
-const LESSONS: Array<{ id: LessonId; title: string; hook: string; span?: string }> = [
-  { id: "opportunity", title: "Opportunity Cost", hook: "Spend $20,000 now, or invest it?", span: "md:col-span-2 md:row-span-2" },
-  { id: "purchasing", title: "Purchasing Power", hook: "$100K in San Francisco vs. Cleveland.", span: "md:col-span-2" },
-  { id: "debt", title: "Debt Interest", hook: "Where each loan payment really goes." },
-  { id: "expected", title: "Expected Value", hook: "Salary × the chance of a job." },
-  { id: "inflation", title: "Inflation", hook: "What $100 buys over time." },
-  { id: "human", title: "Human Capital", hook: "Skills as an investment that pays yearly." },
-  { id: "risk", title: "Risk", hook: "Same average, different spread." },
-  { id: "npv", title: "Net Present Value", hook: "What future money is worth today." },
+export type LessonId = "opportunity" | "purchasing" | "expected" | "debt" | "inflation" | "human" | "risk" | "npv";
+const LESSONS: Array<{ id: LessonId; title: string; term: string; hook: string; span?: string }> = [
+  { id: "opportunity", title: "What You Give Up", term: "Opportunity cost", hook: "Spend $20,000 now, or invest it?", span: "md:col-span-2 md:row-span-2" },
+  { id: "purchasing", title: "What Your Salary Can Actually Buy", term: "Purchasing power", hook: "$100K in San Francisco vs. Cleveland.", span: "md:col-span-2" },
+  { id: "debt", title: "Where Loan Payments Go", term: "Debt interest", hook: "How much of each payment is interest." },
+  { id: "expected", title: "The Average Outcome", term: "Expected value", hook: "Salary × the chance of having the job." },
+  { id: "inflation", title: "Why $100 Buys Less Later", term: "Inflation", hook: "What $100 buys over time." },
+  { id: "human", title: "Skills as an Investment", term: "Human capital", hook: "Education that pays back every year." },
+  { id: "risk", title: "Same Average, Different Spread", term: "Risk", hook: "Why the range matters, not just the middle." },
+  { id: "npv", title: "What Future Money Is Worth Today", term: "Net present value", hook: "A dollar later is worth less than a dollar now." },
 ];
 
 /**
  * LEARN THE ECONOMICS. Eight concept cards; each expands (shared layout) into
  * a small working experiment built on the same calculation engine.
  */
-export function Lessons({ data }: { data: LessonInputs }) {
+export function Lessons({ data, only }: { data: LessonInputs; only?: LessonId[] }) {
   const [open, setOpen] = useState<LessonId | null>(null);
   const lesson = LESSONS.find((l) => l.id === open);
+  const list = only ? LESSONS.filter((l) => only.includes(l.id)).map((l) => ({ ...l, span: undefined })) : LESSONS;
   return (
     <LayoutGroup>
-      <ul className="grid auto-rows-[minmax(150px,auto)] gap-3 md:grid-cols-4">
-        {LESSONS.map((l, i) => (
+      <ul className={cn("grid auto-rows-[minmax(150px,auto)] gap-3", only ? "md:grid-cols-3" : "md:grid-cols-4")}>
+        {list.map((l, i) => (
           <li key={l.id} className={cn(l.span)}>
             <motion.button
               layoutId={`lesson-${l.id}`}
               type="button"
               onClick={() => setOpen(l.id)}
-              whileHover={{ y: -3 }}
               whileTap={{ scale: 0.985 }}
               transition={{ duration: DUR.standard, ease: EASE.smooth }}
               className="group relative grid h-full w-full content-between gap-6 overflow-hidden rounded-lg border border-rule bg-surface p-5 text-left shadow-1 hover:shadow-3"
               data-cursor="EXPLORE"
             >
               <span className="flex items-start justify-between gap-3">
-                <motion.span layoutId={`lesson-t-${l.id}`} className="text-h3 font-bold text-ink">
-                  {l.title}
-                </motion.span>
+                <span className="grid gap-1">
+                  <motion.span layoutId={`lesson-t-${l.id}`} className="text-h3 font-bold text-ink">
+                    {l.title}
+                  </motion.span>
+                  <span className="text-caption text-muted">Economists call this {l.term.toLowerCase()}.</span>
+                </span>
                 <span className="tabular text-caption font-bold text-muted">{String(i + 1).padStart(2, "0")}</span>
               </span>
               <span className={cn("grid gap-3", l.span?.includes("row-span-2") && "self-end")}>
@@ -80,11 +83,14 @@ export function Lessons({ data }: { data: LessonInputs }) {
                     className="grid max-h-full w-full max-w-[880px] content-start gap-5 overflow-y-auto rounded-lg border border-rule bg-surface p-5 shadow-3 sm:p-8 md:max-h-[86vh]"
                   >
                     <div className="flex items-start justify-between gap-4">
-                      <Dialog.Title asChild>
-                        <motion.h3 layoutId={`lesson-t-${lesson.id}`} className="text-h2 font-extrabold">
-                          {lesson.title}
-                        </motion.h3>
-                      </Dialog.Title>
+                      <div className="grid gap-1">
+                        <Dialog.Title asChild>
+                          <motion.h3 layoutId={`lesson-t-${lesson.id}`} className="text-h2 font-extrabold">
+                            {lesson.title}
+                          </motion.h3>
+                        </Dialog.Title>
+                        <p className="text-small text-muted">Economists call this {lesson.term.toLowerCase()}.</p>
+                      </div>
                       <Dialog.Close className="grid size-10 shrink-0 place-items-center rounded-full border border-rule text-ink-2 hover:text-ink" aria-label="Close lesson">
                         <X className="size-4" />
                       </Dialog.Close>

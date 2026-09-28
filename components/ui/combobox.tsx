@@ -62,8 +62,20 @@ export function Combobox({
         <AnimatePresence>
           {open && (
             <Popover.Portal forceMount>
-              <Popover.Content asChild forceMount align="start" sideOffset={6} collisionPadding={12}>
+              <Popover.Content
+                asChild
+                forceMount
+                align="start"
+                sideOffset={6}
+                collisionPadding={12}
+                // If focus already moved elsewhere (a click outside while closing), leave it there.
+                onCloseAutoFocus={(e) => {
+                  const a = document.activeElement;
+                  if (a && a !== document.body) e.preventDefault();
+                }}
+              >
                 <motion.div
+                  aria-label={label}
                   variants={pop}
                   initial="hidden"
                   animate="visible"

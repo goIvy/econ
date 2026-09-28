@@ -70,13 +70,13 @@ Exactly two recipes: `--glow-hero` `radial-gradient(circle at 55% 40%, rgba(108,
 | Token | Size | Line | Tracking | Use |
 |---|---|---|---|---|
 | `--text-display` | `clamp(3rem, 8vw, 8.25rem)` (132px max) | 0.92 | -0.05em | Hero headline |
-| `--text-section` | `clamp(2.5rem, 6vw, 5.5rem)` (88px max) | 0.96 | -0.045em | Homepage section headings |
+| `--text-section` | `clamp(2.25rem, 4.6vw, 4rem)` (64px max) | 1 | -0.045em | Homepage section questions |
 | `--text-h1` | `clamp(2.4rem, 4.6vw, 4rem)` | 1 | -0.04em | Page titles |
 | `--text-h2` / `--text-h3` | `clamp(1.75rem,3vw,2.6rem)` / `clamp(1.2rem,1.6vw,1.45rem)` | | | Sub-sections, card titles |
 | `--text-metric` | `clamp(2.25rem, 4.2vw, 3.75rem)` | 1 | -0.04em | Large metric values |
 | `--text-lede` / body / small / caption | 17–20px / 16px / 14px / 13px | | | Copy |
 
-Mobile floors (48px hero, 40px sections) are below the brief's 64/44px so headlines fit a 375px screen in a few lines; desktop sizes match the brief.
+Section questions were reduced from 88px to 64px in the cleanup pass so each section reads as label → question → one sentence → component without a wall of type.
 
 ---
 
@@ -92,11 +92,12 @@ Mobile floors (48px hero, 40px sections) are below the brief's 64/44px so headli
 ## 4. Component language
 
 - **Path tag:** "PATH 01" / "01" chip in the path's trace ink. The work path reads "WORK".
-- **Metric:** label (caption, muted) above a big tabular number, a **data-kind chip** (Observed · Estimated · Projected · Simulated) and an ⓘ that opens the source card (source, year, population, sample, confidence).
+- **Metric card** (`components/ui/metric-card.tsx`): label, big compact number ($84K), a badge (**DATA · ESTIMATE · SIMULATION**) and "Details". Details hold the parts, the ⓘ source card and "View calculation".
+- **Only three card styles:** metric card, interactive selection card (starter card, compare column, add-college), educational card (lessons, "What this means", data kinds).
 - **Confidence:** High / Moderate / Limited, gauge icon + word, with an explanation of why.
 - **Sample data chip** while seeded data is live.
 - **Glass:** only the fixed navbar and the hero's floating cards.
-- **Buttons:** primary = `--ink` fill with `--on-ink` text (navy on light, white on dark); secondary = outline. Primary buttons are magnetic (≤6px). No arrows in labels.
+- **Buttons:** primary = `--ink` fill with `--on-ink` text, used only for continue / calculate / compare / run; secondary = outline; quiet = ghost. Primary buttons are magnetic (≤6px). No arrows in labels.
 - **Cards:** `--surface`, 1px `--rule`, `--radius-md`/`lg`. No side-stripe borders; no rows of identical metric cards (a section is a narrative, not a dashboard).
 
 ---
@@ -142,6 +143,10 @@ Primitives live in `components/motion`; springs and variants in `lib/animations.
 
 ---
 
+### 6.2 Animation budget
+
+Big moments: hero paths, the cost bar, comparison transitions, break-even and the 1,000-futures simulation. Every other section only fades up once. Text and numbers update immediately; charts animate after. No long scroll-jacked scenes.
+
 ## 7. Anti-patterns (do not ship)
 
 - Gradient text; gradients on every section; glass anywhere but the nav and hero cards; neon glows.
@@ -149,6 +154,8 @@ Primitives live in `components/motion`; springs and variants in `lib/animations.
 - A single "score" or better/worse verdict for a college; labeling salary outcomes good/bad.
 - Unlabeled projections; numbers without a source or data-kind; color-only meaning.
 - Emoji icons; hover-only functionality; motion that doesn't explain something.
+- Jargon first. Say it plainly, then name the term: "What you give up" before "opportunity cost"; "Total money earned minus costs" instead of "cumulative net value".
+- More than five numbers before the user asks for more.
 
 ## 8. Pre-delivery checklist
 

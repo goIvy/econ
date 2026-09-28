@@ -28,9 +28,9 @@ interface City {
 const QUICK = ["sf", "aus", "chi", "nyc", "sea"];
 const PARTS = [
   { key: "taxes", label: "Taxes", color: "var(--trace-c)" },
-  { key: "rent", label: "Rent", color: "var(--trace-d)" },
-  { key: "core", label: "Core expenses", color: "var(--trace-b)" },
-  { key: "disposable", label: "Disposable income", color: "var(--trace-a)" },
+  { key: "rent", label: "Housing", color: "var(--trace-d)" },
+  { key: "core", label: "Basic costs", color: "var(--trace-b)" },
+  { key: "disposable", label: "Money left", color: "var(--trace-a)" },
 ] as const;
 
 /**
@@ -93,10 +93,10 @@ export function CityExplorer({ cities, lineage }: { cities: City[]; lineage: Lin
             <SampleChip />
           </div>
           <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-small">
-            <Row label="Nominal salary" v={s} />
-            <Row label="Taxes (fed. + state)" v={d.taxes} minus />
-            <Row label="Rent, 1-bedroom" v={d.rent} minus />
-            <Row label="Core expenses" v={d.core} minus />
+            <Row label="Salary" v={s} />
+            <Row label="Taxes" v={d.taxes} minus />
+            <Row label="Housing (1-bed rent)" v={d.rent} minus />
+            <Row label="Basic costs" v={d.core} minus />
           </dl>
           {/* the salary, split: blocks resize with transforms */}
           <div className="flex h-4 overflow-hidden rounded-full bg-surface-sunk" aria-hidden>
@@ -114,14 +114,14 @@ export function CityExplorer({ cities, lineage }: { cities: City[]; lineage: Lin
           </div>
           <div className="grid grid-cols-2 gap-4 border-t border-rule pt-3">
             <div>
-              <p className="text-caption text-muted">Disposable income</p>
+              <p className="text-caption text-muted">Money left each year</p>
               <p className="text-h2 font-extrabold text-ink">
                 <AnimatedNumber value={d.disposable} format={money} />
               </p>
               <p className="text-caption text-muted">{moneyCompact(dHome.disposable)} in {home.name}</p>
             </div>
             <div>
-              <p className="text-caption text-muted">Equivalent salary</p>
+              <p className="text-caption text-muted">Same lifestyle would need</p>
               <p className="text-h2 font-extrabold text-trace-a">
                 <AnimatedNumber value={equivalent} format={money} />
               </p>
@@ -135,12 +135,12 @@ export function CityExplorer({ cities, lineage }: { cities: City[]; lineage: Lin
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-small font-semibold text-ink">
             Where {moneyCompact(s)} goes further
-            <SourceFootnote metric="Regional price parities and rents" lineage={lineage} n={1} className="ml-1" />
+            <SourceFootnote metric="Local prices and rents" lineage={lineage} n={1} className="ml-1" />
           </p>
-          <p className="text-caption text-muted">Circle = purchasing power of {moneyCompact(s)}</p>
+          <p className="text-caption text-muted">Bigger circle = your salary goes further</p>
         </div>
         <div className="relative w-full overflow-hidden rounded-md bg-surface-sunk" style={{ aspectRatio: `${US_MAP.width} / ${US_MAP.height}` }} data-cursor="EXPLORE">
-          <svg viewBox={`0 0 ${US_MAP.width} ${US_MAP.height}`} className="absolute inset-0 h-full w-full" role="img" aria-label={`Map of US metros. ${money(s)} in ${home.name} equals ${money(equivalent)} in ${city.name}; disposable income there ${money(d.disposable)}.`}>
+          <svg viewBox={`0 0 ${US_MAP.width} ${US_MAP.height}`} className="absolute inset-0 h-full w-full" role="img" aria-label={`Map of US metros. ${money(s)} in ${home.name} buys the same as ${money(equivalent)} in ${city.name}; money left there ${money(d.disposable)} a year.`}>
             <motion.g initial={false} animate={{ x: tx, y: ty, scale: zoom }} transition={reduce ? { duration: 0 } : { duration: DUR.large, ease: EASE.smooth }} style={{ originX: 0, originY: 0 }}>
               <path d={US_NATION} fill="var(--surface)" stroke="var(--rule-strong)" strokeWidth={1} />
               <path d={US_STATE_BORDERS} fill="none" stroke="var(--rule)" strokeWidth={0.75} />

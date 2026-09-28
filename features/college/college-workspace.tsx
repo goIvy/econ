@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { Tabs } from "radix-ui";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { TraceChart } from "@/components/charts/trace-chart";
 import { PercentileStrip } from "@/components/charts/percentile-strip";
@@ -17,7 +17,7 @@ import { DebtModel } from "@/features/debt/debt-model";
 import { MajorPanel, type MajorBundle } from "@/features/major/major-panel";
 import { OutcomesPanel } from "@/features/outcomes/outcomes-panel";
 import { SOURCES } from "@/data/sources";
-import { calculateBreakEvenYear, projectNoCollege, projectPath } from "@/lib/calc";
+import { calculateBreakEvenYear, cumulativeSeries, projectNoCollege, projectPath } from "@/lib/calc";
 import { crossfade, enter, microSpring, motionSafe } from "@/lib/animations";
 import { money, moneyCompact, number, pct } from "@/lib/format";
 import { cn } from "@/lib/cn";
@@ -25,13 +25,24 @@ import type { City, College, FundingInputs, Lineage, LivingArrangement, Residenc
 
 const TABS = [
   ["overview", "Overview"],
-  ["costs", "Costs"],
+  ["cost", "Cost"],
+  ["career", "Career outcomes"],
   ["majors", "Majors"],
-  ["earnings", "Earnings"],
-  ["debt", "Debt"],
-  ["outcomes", "Outcomes"],
   ["research", "Research"],
 ] as const;
+
+/** What the hero needs to stay in step with the choices made here. */
+export interface PathSummary {
+  majorName: string;
+  residency: Residency;
+  netCost: number;
+  employment: number;
+  salary: number;
+  debt: number;
+  breakEven: number | null;
+  series: number[];
+  base: number[];
+}
 type Tab = (typeof TABS)[number][0];
 
 export function CollegeWorkspace({
@@ -40,12 +51,16 @@ export function CollegeWorkspace({
   majors,
   defaultMajorId,
   initialResidency,
+  facts,
+  onResult,
 }: {
   college: College;
   city: City | null;
   majors: Record<string, MajorBundle>;
   defaultMajorId: string;
   initialResidency: Residency;
+  facts?: React.ReactNode;
+  onResult?: (s: PathSummary) => void;
 }) {
   const reduce = useReducedMotion();
   const [tab, setTab] = useState<Tab>("overview");
@@ -80,6 +95,21 @@ export function CollegeWorkspace({
 
   const effectiveResidency = college.control === "private" ? "resident" : residency;
 
+  useEffect(() => {
+    if (!result || !bundle || !onResult) return;
+    onResult({
+      majorName: bundle.major.name,
+      residency: effectiveResidency,
+      netCost: result.r.net.netPrice,
+      employment: result.r.employmentRate * 100,
+      salary: result.r.startingSalary,
+      debt: result.r.net.borrowing,
+      breakEven: result.be && result.be.age > 18 ? result.be.age : null,
+      series: cumulativeSeries(result.r.rows, 40),
+      base: cumulativeSeries(result.baseline, 40),
+    });
+  }, [result, bundle, effectiveResidency, onResult]);
+
   return (
     <div className="grid min-w-0 grid-cols-1 gap-8">
       {/* path bar: the choices every tab shares */}
@@ -108,8 +138,9 @@ export function CollegeWorkspace({
         <AnimatePresence mode="wait">
           <motion.div key={tab} variants={motionSafe(crossfade, reduce)} initial="hidden" animate="visible" exit="exit" className="min-w-0 pt-8">
             <Tabs.Content value={tab} forceMount className="outline-none">
-              {tab === "overview" && <Overview college={college} result={result} bundle={bundle} residency={effectiveResidency} />}
-              {tab === "costs" && (
+              {tab === "overview" && <Overview college={college} result={result} bundle={bundle} residency={effectiveResidency} facts={facts} />}
+              {tab === "cost" && (
+                <div className="grid gap-12">
                 <div className="grid gap-10 lg:grid-cols-12">
                   <div className="lg:col-span-5">
                     <CostControls
@@ -133,11 +164,30 @@ export function CollegeWorkspace({
                     )}
                   </div>
                 </div>
+                  <section aria-labelledby="borrow-h" className="grid gap-4 border-t border-rule pt-10">
+                    <div className="grid gap-1">
+                      <h2 id="borrow-h" className="text-h3 font-bold">If you borrow</h2>
+                      <p className="max-w-[44rem] text-small text-ink-2">Two colleges with similar salaries can end very differently if one needs much more borrowing.</p>
+                    </div>
+                    <DebtModel key={Math.round(result?.r.net.borrowing ?? 0)} defaultPrincipal={result?.r.net.borrowing ?? (college.medianDebt.value ?? 0)} />
+                  </section>
+                </div>
+              )}
+              {tab === "career" && (
+                <div className="grid gap-12">
+                  <Earnings college={college} bundle={bundle} />
+                  {bundle && (
+                    <section aria-labelledby="jobs-h" className="grid gap-4 border-t border-rule pt-10">
+                      <div className="grid gap-1">
+                        <h2 id="jobs-h" className="text-h3 font-bold">Jobs and graduation</h2>
+                        <p className="max-w-[44rem] text-small text-ink-2">A high salary is less meaningful if graduates struggle to find work.</p>
+                      </div>
+                      <OutcomesPanel college={college} major={bundle.major} />
+                    </section>
+                  )}
+                </div>
               )}
               {tab === "majors" && bundle && <MajorPanel bundle={bundle} collegeName={college.shortName} />}
-              {tab === "earnings" && <Earnings college={college} bundle={bundle} />}
-              {tab === "debt" && <DebtModel key={Math.round(result?.r.net.borrowing ?? 0)} defaultPrincipal={result?.r.net.borrowing ?? (college.medianDebt.value ?? 0)} />}
-              {tab === "outcomes" && bundle && <OutcomesPanel college={college} major={bundle.major} />}
               {tab === "research" && <Research college={college} />}
             </Tabs.Content>
           </motion.div>
@@ -169,9 +219,8 @@ function NoMajor() {
 
 type Result = { r: ReturnType<typeof projectPath>; baseline: ReturnType<typeof projectNoCollege>; be: ReturnType<typeof calculateBreakEvenYear> } | null;
 
-function Overview({ college, result, bundle, residency }: { college: College; result: Result; bundle?: MajorBundle; residency: Residency }) {
+function Overview({ college, result, bundle, residency, facts }: { college: College; result: Result; bundle?: MajorBundle; residency: Residency; facts?: React.ReactNode }) {
   const reduce = useReducedMotion();
-  const model: Lineage = { ...college.costs.netPrice.lineage, sourceId: "cvl-model", population: "Calculated from your choices", note: "Estimate in 2024 dollars." };
   const trend = college.trends;
   return (
     <div className="grid gap-10">
@@ -183,15 +232,10 @@ function Overview({ college, result, bundle, residency }: { college: College; re
             </h2>
             <SampleChip />
           </div>
-          <dl className="grid grid-cols-2 gap-5 sm:grid-cols-4">
-            <Readout label="Net cost, 4 years" value={result.r.net.netPrice} format={money} lineage={college.costs.tuitionInState.lineage} footnote={1} />
-            <Readout label="Estimated debt" value={result.r.net.borrowing} format={money} lineage={model} footnote={2} />
-            <Readout label="Median starting salary" value={result.r.startingSalary} format={money} lineage={bundle.outcome!.earlyCareer.lineage} footnote={3} unit="/yr" />
-            <Readout label="Break-even age" value={result.be?.age ?? null} format={(n) => n.toFixed(1)} lineage={model} footnote={4} estimate emptyText="Not by 40" explain="Approximately when this path's cumulative value passes working from 18 without a degree." />
-          </dl>
-          <div className="mt-6">
+
+          <div>
             <TraceChart
-              title="Cumulative net value by age"
+              title="Total money earned minus costs, by age"
               series={[
                 { id: "p", trace: "a", label: `${college.shortName} ${bundle.major.name}`, points: result.r.rows.map((x) => ({ x: x.age, y: x.cumulative })) },
                 { id: "b", trace: "baseline", label: "Working from 18, no degree", points: result.baseline.map((x) => ({ x: x.age, y: x.cumulative })) },
@@ -209,6 +253,7 @@ function Overview({ college, result, bundle, residency }: { college: College; re
           </div>
         </motion.section>
       )}
+      {facts}
       <section aria-labelledby="trend-h" className="grid gap-4">
         <h2 id="trend-h" className="text-h3 font-[650]">
           Price over time

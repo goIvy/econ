@@ -38,7 +38,7 @@ export function ConfidenceBadge({ level, className }: { level: Confidence; class
 /** "Sample data" marker shown on every readout cluster while data is seeded. */
 export function SampleChip({ className }: { className?: string }) {
   return (
-    <span className={cn("inline-flex items-center gap-1.5 rounded-full bg-caution-tint px-2 py-0.5 text-[0.75rem] font-semibold text-caution", className)}>
+    <span className={cn("inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-caution-tint px-2 py-0.5 text-[0.75rem] font-semibold text-caution", className)}>
       <span className="size-1.5 rounded-full bg-current" aria-hidden />
       Sample data
     </span>

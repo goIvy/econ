@@ -1,6 +1,5 @@
 /** Server-side inputs for the homepage chapters (seed data only). */
 import "server-only";
-import { contextFor } from "@/features/scenario/data";
 import { getMajor, listCities, listMajors } from "@/services/data";
 import { METRO_XY } from "@/data/geo/us-map";
 import type { PathContext } from "@/lib/calc";
@@ -12,27 +11,6 @@ export interface TrayCard {
 }
 
 /** The comparison tray: eight real college/major pairs. */
-export function trayCards(): TrayCard[] {
-  const picks: Array<[string, string[], number]> = [
-    ["uc-berkeley", ["economics"], 15000],
-    ["nyu", ["finance"], 30000],
-    ["san-jose-state", ["economics"], 8000],
-    ["usc", ["business-administration", "economics", "finance"], 28000],
-    ["ucla", ["economics"], 15000],
-    ["ut-austin", ["computer-science"], 10000],
-    ["u-michigan", ["mechanical-engineering"], 12000],
-    ["georgia-state", ["nursing"], 9000],
-  ];
-  return picks.flatMap(([collegeId, majors, aid]) => {
-    for (const m of majors) {
-      const ctx = contextFor(collegeId, m);
-      if (ctx) return [{ id: `${collegeId}.${m}`, aid, ctx }];
-    }
-    return [];
-  });
-}
-
-/** Employment outcomes for a handful of majors (defined data, not random). */
 export function employmentMajors() {
   return ["computer-science", "economics", "nursing", "psychology", "english"].flatMap((id) => {
     const m = getMajor(id);

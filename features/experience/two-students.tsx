@@ -1,15 +1,16 @@
 "use client";
 
-import { AnimatePresence, motion, useSpring, useTransform, type MotionValue } from "framer-motion";
-import { useState } from "react";
-import { AnimatedNumber, ScrollScene, scrollSceneTo, useMeasuredWidth, useScrollScene, useSteppedValue } from "@/components/motion";
+import { AnimatePresence, animate, motion, useInView, useMotionValue, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatedNumber, useMeasuredWidth, useSteppedValue } from "@/components/motion";
 import { GraduatedSlider } from "@/components/ui/graduated-slider";
-import { BottomSheet } from "@/components/ui/bottom-sheet";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { SampleChip, SourceFootnote } from "@/components/ui/lineage";
 import { clamp, linear, linePath, ticks, valueAt } from "@/components/charts/scale";
 import { crossingAge, opportunityCostOf, twoStudents } from "@/lib/calc";
-import { ledgerItem, markerSettle, scrubSpring, valueTween } from "@/lib/animations";
-import { money, moneyCompact, pct } from "@/lib/format";
+import { markerSettle, scrubSpring, valueTween } from "@/lib/animations";
+import { moneyCompact, pct } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { Lineage } from "@/types";
 
@@ -28,97 +29,94 @@ export interface TwoStudentsProps {
 }
 
 /**
- * Opportunity cost, taught by scrolling through two lives. Student A goes to
- * college; Student B works from 18. The gap between them is the opportunity
- * cost; the crossing is break-even. Sliders move the crossing live.
+ * WHAT YOU GIVE UP. Two paths from 18: college, or work right away. When the
+ * chart comes into view it plays from 18 to 40 once; tap an age to jump.
+ * The gap is what college costs you beyond tuition (opportunity cost); the
+ * crossing is break-even. Assumptions sit behind "Adjust assumptions".
  */
-export function TwoStudents(defaults: TwoStudentsProps) {
-  const { ref, progress, reduce } = useScrollScene();
+export function TwoStudents(defaults: TwoStudentsProps & { debt?: number; pathLabel?: string }) {
+  const reduce = useReducedMotion();
   const [cost, setCost] = useState(defaults.costPerYear);
   const [salary, setSalary] = useState(defaults.graduateSalary);
   const [growth, setGrowth] = useState(defaults.graduateGrowth);
   const [wage, setWage] = useState(defaults.workerSalary);
-  const [debt, setDebt] = useState(0);
-  const [controlsOpen, setControlsOpen] = useState(false);
+  const [debt, setDebt] = useState(defaults.debt ?? 0);
+  const [open, setOpen] = useState(false);
 
   const inputs = { ...defaults, costPerYear: cost, graduateSalary: salary, graduateGrowth: growth, workerSalary: wage, debt: Math.min(debt, cost * defaults.yearsInCollege), horizonAge: END };
   const rows = twoStudents(inputs);
   const cross = crossingAge(rows);
   const oc = opportunityCostOf(inputs);
 
-  const ageTarget = useTransform(progress, (p) => clamp(START + p * 1.08 * (END - START), START, END));
-  const age = useSpring(ageTarget, scrubSpring);
+  // Play 18 → 40 once when the chart scrolls into view.
+  const viewRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(viewRef, { once: true, margin: "0px 0px -25% 0px" });
+  const target = useMotionValue(reduce ? END : START);
+  const age = useSpring(target, scrubSpring);
+  useEffect(() => {
+    if (!inView) return;
+    if (reduce) {
+      target.jump(END);
+      age.jump(END);
+      return;
+    }
+    const c = animate(target, END, { duration: 3.2, ease: "linear" });
+    return () => c.stop();
+  }, [inView, reduce, target, age]);
   const stepped = useSteppedValue(age, 1);
-  const shownAge = reduce ? END : clamp(stepped, START, END);
+  const shownAge = clamp(stepped, START, END);
   const row = rows[shownAge - START];
   const gap = row.a - row.b;
-  const controls = (
-    <>
-      <GraduatedSlider size="sm" label="College cost per year" value={cost} onChange={setCost} min={0} max={80000} step={1000} format={moneyCompact} trace="a" />
-      <GraduatedSlider size="sm" label="Starting salary after college" value={salary} onChange={setSalary} min={30000} max={120000} step={1000} format={moneyCompact} trace="a" />
-      <GraduatedSlider size="sm" label="Alternative wage (working from 18)" value={wage} onChange={setWage} min={20000} max={60000} step={1000} format={moneyCompact} trace="ink" />
-      <GraduatedSlider size="sm" label="Salary growth after college" value={growth} onChange={setGrowth} min={0} max={0.07} step={0.0025} format={(v) => pct(v * 100, 1)} trace="a" />
-      <GraduatedSlider size="sm" label="Student debt (borrowed, repaid over 10 years)" value={Math.min(debt, cost * defaults.yearsInCollege)} onChange={setDebt} min={0} max={Math.max(1000, cost * defaults.yearsInCollege)} step={1000} format={moneyCompact} trace="a" />
-    </>
-  );
-  const phase = shownAge < START + defaults.yearsInCollege ? "college" : cross != null && shownAge >= cross ? "after" : "catching";
+  const pick = (a: number) => {
+    if (reduce) age.jump(a);
+    target.set(a);
+  };
 
   return (
-    <ScrollScene sceneRef={ref} reduce={reduce} length={3.4} label="Opportunity cost: two students">
-      <div className="mx-auto grid w-full max-w-[1200px] gap-5 px-4 py-4 md:px-8 lg:grid-cols-12 lg:gap-10 xl:px-12">
-        <div className="order-2 grid min-w-0 content-start gap-3 lg:order-1 lg:col-span-4 lg:gap-4">
-          <AgeRail age={shownAge} onPick={(a) => scrollSceneTo(ref.current, (a - START) / (1.08 * (END - START)), reduce)} cross={cross} />
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.p key={phase} variants={ledgerItem} initial="hidden" animate="visible" exit="exit" className="min-h-[3.75rem] text-small text-ink-2 lg:min-h-[4.5rem] lg:text-base" aria-live="polite">
-              {phase === "college" && (
-                <>
-                  Age {shownAge}. A is in college, paying <strong className="font-semibold text-ink">{money(cost)}</strong> a year. B is working and has earned <strong className="font-semibold text-ink">{money(row.b)}</strong>. The gap between them is the opportunity cost so far.
-                </>
-              )}
-              {phase === "catching" && (
-                <>
-                  Age {shownAge}. A graduated and earns more each year, so the gap is closing. {cross ? <>The lines cross at <strong className="font-semibold text-ink">{cross.toFixed(1)}</strong>.</> : "With these assumptions, A never catches up by 40."}
-                </>
-              )}
-              {phase === "after" && (
-                <>
-                  Age {shownAge}. A passed B at {cross!.toFixed(1)}: break-even. Everything above B&apos;s line from here is the return on the degree.
-                </>
-              )}
-            </motion.p>
-          </AnimatePresence>
-          <button type="button" onClick={() => setControlsOpen(true)} className="h-11 rounded-sm border border-rule-strong bg-surface px-4 text-small font-semibold text-ink lg:hidden">
-            Change cost, salary and raises
-          </button>
-          <div className="hidden gap-3 rounded-md border border-rule bg-surface p-3 sm:p-4 lg:grid">{controls}</div>
-          <BottomSheet open={controlsOpen} onOpenChange={setControlsOpen} title="Assumptions">
-            <div className="grid gap-4">{controls}</div>
-          </BottomSheet>
-        </div>
-
-        <div className="order-1 grid min-w-0 content-start gap-3 rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-5 lg:order-2 lg:col-span-8">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex flex-wrap gap-x-5 gap-y-1 text-caption text-ink-2">
-              <Key color="var(--trace-a)" label="A: college" />
-              <Key color="var(--trace-c)" dashed label="B: works from 18" />
-            </div>
-            <div className="flex items-center gap-2">
-              <SampleChip />
-              <SourceFootnote metric="Two-students teaching model" lineage={defaults.lineage} n={1} />
-            </div>
+    <div ref={viewRef} className="grid gap-5">
+      <div className="grid min-w-0 content-start gap-3 rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-5">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap gap-x-5 gap-y-1 text-caption text-ink-2">
+            <Key color="var(--trace-a)" label={defaults.pathLabel ? `College (${defaults.pathLabel})` : "College"} />
+            <Key color="var(--trace-c)" dashed label="Work immediately" />
           </div>
-          <Chart rows={rows} age={age} cross={cross} reduce={reduce} />
-          <dl className="grid grid-cols-3 gap-3 border-t border-rule pt-3">
-            <Stat label={`A at ${shownAge}`} value={row.a} />
-            <Stat label={`B at ${shownAge}`} value={row.b} />
-            <Stat label={gap < 0 ? "A is behind by" : "A is ahead by"} value={Math.abs(gap)} strong />
-          </dl>
-          <p className="hidden text-caption text-muted sm:block">
-            Opportunity cost of college here: {money(oc.directCost)} in costs plus {money(oc.foregoneEarnings)} in wages not earned = {money(oc.total)}. Teaching model: before taxes; borrowed money is repaid at 6.53% over 10 years; B&apos;s raise {pct(defaults.workerGrowth * 100, 1)} a year.
-          </p>
+          <div className="flex items-center gap-2">
+            <SampleChip />
+            <SourceFootnote metric="Two-paths teaching model" lineage={defaults.lineage} n={1} />
+          </div>
         </div>
+        <Chart rows={rows} age={age} cross={cross} reduce={reduce} />
+        <dl className="grid grid-cols-3 gap-3 border-t border-rule pt-3" aria-live="polite">
+          <Stat label={`College path at ${shownAge}`} value={row.a} />
+          <Stat label={`Working path at ${shownAge}`} value={row.b} />
+          <Stat label={gap < 0 ? "College is behind by" : "College is ahead by"} value={Math.abs(gap)} strong />
+        </dl>
+        <AgeRail age={shownAge} onPick={pick} cross={cross} />
       </div>
-    </ScrollScene>
+
+      <p className="max-w-[48rem] text-small text-ink-2">
+        While in school, you&apos;d give up about <strong className="font-semibold text-ink">{moneyCompact(oc.foregoneEarnings)}</strong> in wages on top of <strong className="font-semibold text-ink">{moneyCompact(oc.directCost)}</strong> in costs.{" "}
+        {cross ? <>College catches up at about age <strong className="font-semibold text-ink">{cross.toFixed(1)}</strong>.</> : "With these numbers, college doesn't catch up by 40."}{" "}
+        <span className="text-muted">Economists call this opportunity cost.</span>
+      </p>
+
+      <div className="rounded-md border border-rule bg-surface">
+        <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="give-up-assumptions" className="flex w-full items-center justify-between gap-3 p-4 text-left">
+          <span className="text-small font-bold text-ink">Adjust assumptions</span>
+          <ChevronDown className={cn("size-5 text-ink-2 transition-transform", open && "rotate-180")} aria-hidden />
+        </button>
+        {open && (
+          <div id="give-up-assumptions" className="grid gap-4 border-t border-rule p-4 md:grid-cols-2">
+            <GraduatedSlider size="sm" label="College cost per year" value={cost} onChange={setCost} min={0} max={80000} step={1000} format={moneyCompact} trace="a" />
+            <GraduatedSlider size="sm" label="Starting salary after college" value={salary} onChange={setSalary} min={30000} max={120000} step={1000} format={moneyCompact} trace="a" />
+            <GraduatedSlider size="sm" label="Pay if you work right away" value={wage} onChange={setWage} min={20000} max={60000} step={1000} format={moneyCompact} trace="ink" />
+            <GraduatedSlider size="sm" label="Yearly raise after college" value={growth} onChange={setGrowth} min={0} max={0.07} step={0.0025} format={(v) => pct(v * 100, 1)} trace="a" />
+            <GraduatedSlider size="sm" label="Student debt (repaid over 10 years)" value={Math.min(debt, cost * defaults.yearsInCollege)} onChange={setDebt} min={0} max={Math.max(1000, cost * defaults.yearsInCollege)} step={1000} format={moneyCompact} trace="a" />
+            <p className="self-end text-caption text-muted">Teaching model: before taxes; loans at 6.53% over 10 years; the working path gets a {pct(defaults.workerGrowth * 100, 1)} raise each year.</p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -150,7 +148,7 @@ function Chart({ rows, age, cross, reduce }: { rows: Array<{ age: number; a: num
 
   return (
     <div ref={wrapRef} className="min-w-0">
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block max-w-full" role="img" aria-label={`Cumulative money for two students from 18 to 40. ${cross ? `Student A catches up at age ${cross.toFixed(1)}.` : "Student A does not catch up by 40."}`}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="block max-w-full" role="img" aria-label={`Total money earned minus costs from 18 to 40, college vs. working right away. ${cross ? `College catches up at age ${cross.toFixed(1)}.` : "College does not catch up by 40."}`}>
         <defs>
           <clipPath id="ts-clip">
             <motion.rect x={M.l - 2} y={0} height={H} style={{ width: clipW }} />

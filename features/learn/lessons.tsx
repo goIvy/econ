@@ -149,7 +149,7 @@ export function CheaperCanWin({ cheap, pricey }: Pick<LessonData, "cheap" | "pri
       visual={(step) => (
         <div className="grid gap-4">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-small font-semibold text-ink">{step === 0 ? "Net price, 4 years" : step === 1 ? "Starting salary" : "Cumulative net value"}</p>
+            <p className="text-small font-semibold text-ink">{step === 0 ? "Net price, 4 years" : step === 1 ? "Starting salary" : "Total money earned minus costs"}</p>
             <SampleChip />
           </div>
           <AnimatePresence mode="wait" initial={false}>
@@ -172,7 +172,7 @@ export function CheaperCanWin({ cheap, pricey }: Pick<LessonData, "cheap" | "pri
               </motion.div>
             ) : (
               <motion.div key="lines" variants={crossfade} initial="hidden" animate="visible" exit="exit" className="grid gap-3">
-                <Chart height={[200, 280]} label={`Cumulative value: ${A} vs ${B}.`}>
+                <Chart height={[200, 280]} label={`Total money earned minus costs: ${A} vs ${B}.`}>
                   {(W, H) => {
                     const M = { t: 10, r: 12, b: 22, l: 52 };
                     const all = [...sa, ...sb];
@@ -242,7 +242,7 @@ export function OpportunityCostLesson({ opportunity }: Pick<LessonData, "opportu
     <Lesson
       slug="opportunity-cost"
       n={2}
-      title="What does opportunity cost really mean?"
+      title="What are you really giving up?"
       steps={steps}
       visual={(step) => (
         <div className="grid gap-4">
@@ -466,7 +466,7 @@ export function PurchasingPowerLesson({ cities }: Pick<LessonData, "cities">) {
     <Lesson
       slug="purchasing-power"
       n={5}
-      title="What does purchasing power mean?"
+      title="What can your salary actually buy?"
       steps={steps}
       visual={(step) => {
         const infl = step === 2 ? adjustForInflation(100000, years) / 100000 : 1;
