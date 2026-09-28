@@ -33,13 +33,15 @@ All text/background pairs below were measured against `--paper` and `--surface` 
 
 Paths are identified by **letter tag + color + line style**, never by color alone.
 
-| Token | Hex | Path | Line style | Contrast on paper |
-|---|---|---|---|---|
-| `--trace-a` | `#2456C8` | Path A (blue) | solid | 6.00 |
-| `--trace-b` | `#0A7468` | Path B (teal) | solid | 5.24 |
-| `--trace-c` | `#8A3F6E` | Path C | dashed 6/4 | 6.45 |
-| `--trace-d` | `#8C6512` | Path D | dotted 2/3 | 4.88 |
-| `--trace-e` | `#4F6378` | Path E | dash-dot | 5.74 |
+| Token | Hex | Path | Line style | White text on it | On paper |
+|---|---|---|---|---|---|
+| `--trace-a` | `#2456C8` | Path A (blue) | solid | 6.48 | 6.00 |
+| `--trace-b` | `#007F68` | Path B (teal) | solid | 4.96 | 4.59 |
+| `--trace-c` | `#B04A1B` | Path C (rust) | dashed 6/4 | 5.47 | 5.06 |
+| `--trace-d` | `#7A4FB5` | Path D (violet) | dotted 2/3 | 5.81 | 5.38 |
+| `--trace-e` | `#7A6800` | Path E (olive) | dash-dot | 5.52 | 5.11 |
+
+**Validated** with the dataviz skill's `validate_palette.js` on `--surface #F8F6F2` in this order: lightness band, chroma floor, adjacent CVD separation (worst ΔE 11.9), normal-vision floor, and contrast all PASS. With `--pairs all` a 5-series chart cannot separate every pair (rust↔olive under deuteranopia), which is expected past four series. That is why every path also carries its **letter tag, line style and direct end label**. Series text is never drawn in trace color. The original teal `#0A7468` and slate `#4F6378` failed the chroma floor and were replaced.
 
 Each trace has a 10% tint for fills and selected states: `--trace-a-tint: rgba(36,86,200,0.10)` and so on.
 
@@ -55,7 +57,7 @@ Signals always ship with an icon or word ("Lower", "Caution", "Risk"), never col
 
 ### Gradients (allowed in exactly three places)
 
-1. **Hero field:** `radial-gradient(60% 50% at 78% 30%, rgba(36,86,200,0.08), transparent 70%), radial-gradient(40% 40% at 90% 70%, rgba(10,116,104,0.07), transparent 70%)` over `--paper`.
+1. **Hero field:** `radial-gradient(60% 50% at 78% 30%, rgba(36,86,200,0.08), transparent 70%), radial-gradient(40% 40% at 90% 70%, rgba(0,127,104,0.07), transparent 70%)` over `--paper`.
 2. **Chart emphasis:** area under a trace, from `--trace-x` at 16% opacity to 0%.
 3. **CTA accent:** the closing CTA band may use the hero field recipe.
 
@@ -78,7 +80,7 @@ No monospace face. Readouts use Geist tabular numerals.
 
 | Token | Size (clamp) | Line-height | Weight | Family | Tracking |
 |---|---|---|---|---|---|
-| `--text-display` | `clamp(2.6rem, 6.2vw, 5.25rem)` | 0.98 | 750 | Schibsted | -0.03em |
+| `--text-display` | `clamp(2.5rem, 4.7vw, 4.25rem)` | 0.98 | 750 | Schibsted | -0.03em |
 | `--text-h1` | `clamp(2.1rem, 4.2vw, 3.5rem)` | 1.04 | 720 | Schibsted | -0.025em |
 | `--text-h2` | `clamp(1.7rem, 3vw, 2.5rem)` | 1.1 | 700 | Schibsted | -0.02em |
 | `--text-h3` | `clamp(1.2rem, 1.6vw, 1.45rem)` | 1.25 | 650 | Schibsted | -0.01em |
@@ -109,7 +111,7 @@ Rules:
 
 ### Breakpoints (mobile-first)
 
-`sm 375` (design floor) · `md 768` · `lg 1024` · `xl 1440`
+Tailwind defaults for utilities (`sm 640` · `md 768` · `lg 1024` · `xl 1280`). Every layout is verified at **375 / 768 / 1024 / 1440**, and 375 is the design floor.
 
 ### Radius
 

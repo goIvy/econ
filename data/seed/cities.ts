@@ -1,0 +1,61 @@
+/**
+ * DEMO DATA. Approximate metro-area price levels in the shape of BEA Regional
+ * Price Parities (all items, US = 100) and ACS median 1-bedroom rents, plus an
+ * approximate effective state + local income-tax rate. 50 metros.
+ *
+ * Columns: id, name, state, RPP, median 1BR rent / month, effective state+local tax rate
+ */
+export type CityRow = [string, string, string, number, number, number];
+
+export const CITY_ROWS: CityRow[] = [
+  ["sf", "San Francisco", "CA", 118.2, 2950, 0.068],
+  ["sj", "San Jose", "CA", 117.6, 2750, 0.066],
+  ["nyc", "New York", "NY", 115.9, 2600, 0.085],
+  ["sea", "Seattle", "WA", 113.0, 2150, 0],
+  ["bos", "Boston", "MA", 111.7, 2500, 0.05],
+  ["la", "Los Angeles", "CA", 112.8, 2250, 0.062],
+  ["sd", "San Diego", "CA", 112.5, 2300, 0.061],
+  ["dc", "Washington", "DC", 110.9, 2200, 0.06],
+  ["hnl", "Honolulu", "HI", 114.4, 2000, 0.072],
+  ["mia", "Miami", "FL", 108.3, 2150, 0],
+  ["den", "Denver", "CO", 107.2, 1750, 0.044],
+  ["chi", "Chicago", "IL", 103.8, 1650, 0.0495],
+  ["aus", "Austin", "TX", 101.2, 1550, 0],
+  ["dal", "Dallas", "TX", 101.0, 1450, 0],
+  ["hou", "Houston", "TX", 99.6, 1300, 0],
+  ["atl", "Atlanta", "GA", 101.3, 1600, 0.052],
+  ["phx", "Phoenix", "AZ", 101.4, 1450, 0.025],
+  ["phl", "Philadelphia", "PA", 103.9, 1600, 0.062],
+  ["pdx", "Portland", "OR", 105.2, 1600, 0.085],
+  ["msp", "Minneapolis", "MN", 103.1, 1450, 0.06],
+  ["sac", "Sacramento", "CA", 106.9, 1650, 0.058],
+  ["bal", "Baltimore", "MD", 104.2, 1550, 0.07],
+  ["ral", "Raleigh", "NC", 98.9, 1450, 0.045],
+  ["clt", "Charlotte", "NC", 98.8, 1450, 0.045],
+  ["nsh", "Nashville", "TN", 100.2, 1550, 0],
+  ["slc", "Salt Lake City", "UT", 100.6, 1350, 0.0465],
+  ["lv", "Las Vegas", "NV", 98.1, 1350, 0],
+  ["orl", "Orlando", "FL", 101.6, 1600, 0],
+  ["tpa", "Tampa", "FL", 101.0, 1650, 0],
+  ["det", "Detroit", "MI", 96.6, 1150, 0.055],
+  ["col", "Columbus", "OH", 95.3, 1150, 0.045],
+  ["pit", "Pittsburgh", "PA", 94.8, 1200, 0.05],
+  ["cle", "Cleveland", "OH", 93.9, 1050, 0.047],
+  ["cin", "Cincinnati", "OH", 94.4, 1100, 0.046],
+  ["stl", "St. Louis", "MO", 94.2, 1100, 0.05],
+  ["kc", "Kansas City", "MO", 94.9, 1150, 0.05],
+  ["ind", "Indianapolis", "IN", 94.9, 1150, 0.045],
+  ["mil", "Milwaukee", "WI", 96.1, 1150, 0.048],
+  ["sa", "San Antonio", "TX", 94.6, 1150, 0],
+  ["okc", "Oklahoma City", "OK", 91.2, 950, 0.04],
+  ["abq", "Albuquerque", "NM", 93.8, 1050, 0.04],
+  ["boi", "Boise", "ID", 97.9, 1350, 0.052],
+  ["ric", "Richmond", "VA", 99.1, 1350, 0.05],
+  ["nol", "New Orleans", "LA", 96.8, 1250, 0.035],
+  ["lou", "Louisville", "KY", 92.6, 1050, 0.06],
+  ["mem", "Memphis", "TN", 91.7, 1050, 0],
+  ["bhm", "Birmingham", "AL", 91.0, 1000, 0.045],
+  ["oma", "Omaha", "NE", 94.8, 1100, 0.045],
+  ["dsm", "Des Moines", "IA", 92.9, 1000, 0.043],
+  ["mad", "Madison", "WI", 98.5, 1350, 0.048],
+];
