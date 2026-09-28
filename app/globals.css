@@ -177,6 +177,11 @@
     mask-image: radial-gradient(ellipse 75% 70% at 72% 42%, #000 25%, transparent 78%);
   }
   .field-wash { background-image: var(--field-wash); }
+  /* Subtraction hatch (aid, interest): the one texture, 45°, in ink. */
+  .aid-hatch {
+    background-color: var(--surface);
+    background-image: repeating-linear-gradient(45deg, color-mix(in srgb, var(--ink) 38%, transparent) 0 1.5px, transparent 1.5px 6px);
+  }
 
   /* Axis rule: a divider carrying fine ticks every 8px, major every 40px */
   .axis-rule {

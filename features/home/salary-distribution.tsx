@@ -1,17 +1,21 @@
 "use client";
 
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { UserRound } from "lucide-react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { useMeasuredWidth } from "@/components/motion";
 import { SampleChip, SourceFootnote } from "@/components/ui/lineage";
 import { Segmented } from "@/components/ui/segmented";
-import { crossfade, revealViewport, tip, traceDraw, valueTween } from "@/lib/animations";
+import { crossfade, microSpring, revealViewport, traceDraw, valueTween } from "@/lib/animations";
 import { money, moneyCompact } from "@/lib/format";
+import { cn } from "@/lib/cn";
 import type { MajorRowData } from "./data";
 
-const W = 720;
-const H = 260;
-const PAD = { l: 16, r: 16, t: 20, b: 40 };
+const H = 310;
+const PAD = { l: 16, r: 16, t: 78, b: 40 };
+/** The graduate rides a track above the labels, with a stem down to the curve. */
+const TRACK_Y = 6;
 const X_MAX = 200000;
 
 /** Standard normal CDF (Abramowitz–Stegun) to turn a salary into a percentile. */
@@ -23,171 +27,178 @@ function normCdf(z: number) {
 }
 
 /**
- * Lognormal density fitted to the major's percentiles. The curve is a smooth
- * reading of five published points, labeled as such.
+ * Salary distribution explorer. A graduate marker walks the curve: hover,
+ * drag (touch too), arrow keys or the percentile buttons move it, and the
+ * readout says where that salary falls. Lognormal fitted to five published
+ * percentiles, labeled as such.
  */
 export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
   const [id, setId] = useState(majors[0].id);
-  const [hoverX, setHoverX] = useState<number | null>(null);
-  const reduce = useReducedMotion();
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, revealViewport);
-  const [width, setWidth] = useState(W);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([e]) => setWidth(Math.max(300, Math.round(e.contentRect.width))));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
   const m = majors.find((x) => x.id === id)!;
+  const [salary, setSalary] = useState(m.early.p50);
+  const [dragging, setDragging] = useState(false);
+  const reduce = useReducedMotion();
+  const [ref, width] = useMeasuredWidth<HTMLDivElement>(720);
+  const viewRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(viewRef, revealViewport);
+
   const mu = Math.log(m.early.p50);
   const sigma = Math.log(m.early.p90 / m.early.p50) / 1.2816;
   const innerW = width - PAD.l - PAD.r;
   const innerH = H - PAD.t - PAD.b;
   const sx = (v: number) => PAD.l + (v / X_MAX) * innerW;
+  const pdf = (v: number) => {
+    const z = (Math.log(v) - mu) / sigma;
+    return Math.exp((-z * z) / 2) / (v * sigma * Math.sqrt(2 * Math.PI));
+  };
 
-  const { d, area } = useMemo(() => {
+  const { d, area, peak } = useMemo(() => {
     const pts: Array<[number, number]> = [];
     let peak = 0;
     for (let i = 1; i <= 160; i++) {
       const v = (i / 160) * X_MAX;
-      const z = (Math.log(v) - mu) / sigma;
-      const y = Math.exp((-z * z) / 2) / (v * sigma * Math.sqrt(2 * Math.PI));
+      const y = pdf(v);
       peak = Math.max(peak, y);
       pts.push([v, y]);
     }
     const sy = (y: number) => PAD.t + innerH - (y / peak) * innerH * 0.92;
     const d = pts.map(([v, y], i) => `${i ? "L" : "M"}${sx(v).toFixed(1)},${sy(y).toFixed(1)}`).join(" ");
     const area = `${d} L${sx(X_MAX).toFixed(1)},${PAD.t + innerH} L${sx(pts[0][0]).toFixed(1)},${PAD.t + innerH} Z`;
-    return { d, area };
+    return { d, area, peak };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mu, sigma, width]);
+  const sy = (v: number) => PAD.t + innerH - (pdf(v) / peak) * innerH * 0.92;
 
+  const pctile = Math.max(1, Math.min(99, Math.round(normCdf((Math.log(salary) - mu) / sigma) * 100)));
   const percentiles: Array<[string, number]> = [["10th", m.early.p10], ["25th", m.early.p25], ["Median", m.early.p50], ["75th", m.early.p75], ["90th", m.early.p90]];
-  const hoverSalary = hoverX != null ? Math.max(1000, ((hoverX - PAD.l) / innerW) * X_MAX) : null;
-  const hoverPct = hoverSalary != null ? Math.round(normCdf((Math.log(hoverSalary) - mu) / sigma) * 100) : null;
 
-  const onMove = (e: React.PointerEvent<SVGRectElement>) => {
+  const fromPointer = (e: React.PointerEvent<SVGRectElement>) => {
     const r = (e.currentTarget.ownerSVGElement as SVGSVGElement).getBoundingClientRect();
-    setHoverX(((e.clientX - r.left) / r.width) * width);
+    const px = ((e.clientX - r.left) / r.width) * width;
+    setSalary(Math.round(Math.min(X_MAX * 0.98, Math.max(12000, ((px - PAD.l) / innerW) * X_MAX)) / 500) * 500);
   };
   const onKey = (e: React.KeyboardEvent) => {
-    const step = (5000 / X_MAX) * innerW;
     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
       e.preventDefault();
-      setHoverX((x) => Math.min(PAD.l + innerW, Math.max(PAD.l, (x ?? sx(m.early.p50)) + (e.key === "ArrowRight" ? step : -step))));
-    } else if (e.key === "Escape") setHoverX(null);
+      setSalary((s) => Math.min(X_MAX * 0.98, Math.max(12000, s + (e.key === "ArrowRight" ? 2500 : -2500))));
+    }
   };
 
   const options = majors.slice(0, 5).map((x) => ({ value: x.id, label: x.name.replace("Mechanical Engineering", "Mech. Eng.").replace("Computer Science", "Comp. Sci.") }));
+  const markerX = sx(salary);
+  const markerY = sy(salary);
+  const markerTr = dragging || reduce ? { duration: 0 } : ({ type: "spring", stiffness: 260, damping: 30 } as const);
 
   return (
     <div className="rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
-        <Segmented label="Major" value={id} onChange={setId} options={options} size="sm" wrap className="w-full md:w-auto md:min-w-[34rem]" />
+        <Segmented
+          label="Major"
+          value={id}
+          onChange={(v) => {
+            setId(v);
+            setSalary(majors.find((x) => x.id === v)!.early.p50);
+          }}
+          options={options}
+          size="sm"
+          wrap
+          className="w-full md:w-auto md:min-w-[34rem]"
+        />
         <div className="flex items-center gap-2">
           <SampleChip />
           <SourceFootnote metric={`${m.name} early-career earnings`} lineage={m.lineage} n={1} />
         </div>
       </div>
 
-      <div ref={ref} className="relative">
-        <svg width="100%" height={H} viewBox={`0 0 ${width} ${H}`} role="group" aria-roledescription="chart" aria-label={`Estimated distribution of early-career earnings for ${m.name}. Median ${money(m.early.p50)}; half of graduates earn between ${money(m.early.p25)} and ${money(m.early.p75)}.`}>
-          {/* middle half band */}
-          <motion.rect
-            initial={false}
-            animate={{ x: sx(m.early.p25), width: sx(m.early.p75) - sx(m.early.p25) }}
-            transition={valueTween(reduce)}
-            y={PAD.t}
-            height={innerH}
-            fill="color-mix(in srgb, var(--ink) 6%, transparent)"
-          />
-          <motion.path
-            key={`area-${id}`}
-            d={area}
-            variants={crossfade}
-            initial="hidden"
-            animate={inView || reduce ? "visible" : "hidden"}
-            fill="var(--ink)"
-            fillOpacity={0.06}
-          />
-          <motion.path
-            key={`line-${id}`}
-            d={d}
-            variants={traceDraw}
-            custom={0}
-            initial={reduce ? "visible" : "hidden"}
-            animate={inView || reduce ? "visible" : "hidden"}
-            fill="none"
-            stroke="var(--ink)"
-            strokeWidth={2}
-            strokeLinecap="round"
-          />
-          <line x1={PAD.l} x2={PAD.l + innerW} y1={PAD.t + innerH} y2={PAD.t + innerH} stroke="var(--rule-strong)" />
-          {[0, 50000, 100000, 150000, 200000].map((t) => (
-            <text key={t} x={sx(t)} y={H - 18} textAnchor={t === 0 ? "start" : t === X_MAX ? "end" : "middle"} className="tabular fill-muted text-[11px]">
-              {moneyCompact(t)}
-            </text>
-          ))}
-          <text x={PAD.l + innerW} y={H - 3} textAnchor="end" className="fill-muted text-[11px]">
-            Annual earnings, ages 22–27
-          </text>
-          {/* percentile ticks */}
-          {percentiles.map(([label, v], i) => {
-            const median = label === "Median";
-            return (
-              <motion.g key={label} initial={false} animate={{ x: sx(v) }} transition={valueTween(reduce)}>
-                <line x1={0} x2={0} y1={PAD.t + (median ? 0 : 30)} y2={PAD.t + innerH} stroke={median ? "var(--ink)" : "var(--ink-2)"} strokeWidth={median ? 1.5 : 1} strokeDasharray={median ? undefined : "2 3"} />
-                {(median || width >= 560) && (
-                  <text x={0} y={PAD.t + (median ? -6 : 24) - (i % 2 && !median ? 12 : 0)} textAnchor="middle" className={median ? "fill-ink text-[12px] font-semibold" : "fill-ink-2 text-[11px] font-medium"}>
-                    {label}
-                  </text>
-                )}
+      <div className="grid gap-5 lg:grid-cols-[1fr_240px]">
+        <div ref={viewRef} className="min-w-0">
+          <div ref={ref} className="relative min-w-0">
+            <svg width={width} height={H} viewBox={`0 0 ${width} ${H}`} className="block max-w-full" role="group" aria-roledescription="chart" aria-label={`Estimated distribution of early-career earnings for ${m.name}. Median ${money(m.early.p50)}; half of graduates earn between ${money(m.early.p25)} and ${money(m.early.p75)}.`}>
+              <motion.rect initial={false} animate={{ x: sx(m.early.p25), width: sx(m.early.p75) - sx(m.early.p25) }} transition={valueTween(reduce)} y={PAD.t} height={innerH} fill="color-mix(in srgb, var(--ink) 6%, transparent)" />
+              <motion.path key={`area-${id}`} d={area} variants={crossfade} initial="hidden" animate={inView || reduce ? "visible" : "hidden"} fill="var(--ink)" fillOpacity={0.06} />
+              <motion.path key={`line-${id}`} d={d} variants={traceDraw} custom={0} initial={reduce ? "visible" : "hidden"} animate={inView || reduce ? "visible" : "hidden"} fill="none" stroke="var(--ink)" strokeWidth={2} strokeLinecap="round" />
+              <line x1={PAD.l} x2={PAD.l + innerW} y1={PAD.t + innerH} y2={PAD.t + innerH} stroke="var(--rule-strong)" />
+              {[0, 50000, 100000, 150000, 200000].map((t) => (
+                <text key={t} x={sx(t)} y={H - 18} textAnchor={t === 0 ? "start" : t === X_MAX ? "end" : "middle"} className="tabular fill-muted text-[11px]">
+                  {moneyCompact(t)}
+                </text>
+              ))}
+              <text x={PAD.l + innerW} y={H - 3} textAnchor="end" className="fill-muted text-[11px]">
+                Annual earnings, ages 22–27
+              </text>
+              {percentiles.map(([label, v], i) => {
+                const median = label === "Median";
+                return (
+                  <motion.g key={label} initial={false} animate={{ x: sx(v) }} transition={valueTween(reduce)}>
+                    <line x1={0} x2={0} y1={PAD.t + (median ? 0 : 30)} y2={PAD.t + innerH} stroke={median ? "var(--ink)" : "var(--ink-2)"} strokeWidth={median ? 1.5 : 1} strokeDasharray={median ? undefined : "2 3"} />
+                    {(median || width >= 560) && (
+                      <text x={0} y={PAD.t + (median ? -6 : 24) - (i % 2 && !median ? 12 : 0)} textAnchor="middle" stroke="var(--surface)" strokeWidth={4} paintOrder="stroke" className={median ? "fill-ink text-[12px] font-semibold" : "fill-ink-2 text-[11px] font-medium"}>
+                        {label}
+                      </text>
+                    )}
+                  </motion.g>
+                );
+              })}
+
+              {/* the graduate */}
+              <motion.g initial={false} animate={{ x: markerX }} transition={markerTr} pointerEvents="none">
+                <motion.line x1={0} x2={0} y1={TRACK_Y + 26} initial={false} animate={{ y2: markerY }} transition={markerTr} stroke="var(--trace-a)" strokeWidth={1.5} />
+                <motion.circle r={5} cx={0} initial={false} animate={{ cy: markerY }} transition={markerTr} fill="var(--trace-a)" stroke="var(--surface)" strokeWidth={2} />
+                <g transform={`translate(-13,${TRACK_Y})`}>
+                  <rect width={26} height={26} rx={13} fill="var(--trace-a)" />
+                  <foreignObject width={26} height={26}>
+                    <div className="grid size-[26px] place-items-center text-on-ink">
+                      <UserRound className="size-4" aria-hidden />
+                    </div>
+                  </foreignObject>
+                </g>
               </motion.g>
-            );
-          })}
-          {hoverX != null && <line x1={hoverX} x2={hoverX} y1={PAD.t} y2={PAD.t + innerH} stroke="var(--ink)" strokeOpacity={0.4} pointerEvents="none" />}
-          <rect
-            x={PAD.l}
-            y={PAD.t}
-            width={innerW}
-            height={innerH}
-            fill="transparent"
-            className="cursor-crosshair outline-none focus-visible:[outline:2px_solid_var(--trace-a)]"
-            onPointerMove={onMove}
-            onPointerLeave={() => setHoverX(null)}
-            tabIndex={0}
-            role="slider"
-            aria-label="Explore the salary distribution"
-            aria-valuemin={0}
-            aria-valuemax={X_MAX}
-            aria-valuenow={Math.round(hoverSalary ?? m.early.p50)}
-            aria-valuetext={hoverSalary != null ? `${money(hoverSalary)} is about the ${hoverPct}th percentile` : "Use arrow keys to move along earnings"}
-            onKeyDown={onKey}
-            onBlur={() => setHoverX(null)}
-          />
-        </svg>
-        <AnimatePresence>
-          {hoverX != null && hoverSalary != null && (
-            <motion.div
-              variants={tip}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              className="pointer-events-none absolute top-2 rounded-sm border border-rule bg-surface px-3 py-2 shadow-2"
-              style={{ left: Math.min(hoverX + 12, width - 190) }}
-              aria-hidden
-            >
-              <p className="tabular text-small font-semibold text-ink">{money(Math.round(hoverSalary / 500) * 500)}</p>
-              <p className="text-caption text-muted">About the {ordinal(hoverPct!)} percentile</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+              <rect
+                x={PAD.l}
+                y={PAD.t}
+                width={innerW}
+                height={innerH}
+                fill="transparent"
+                className="cursor-ew-resize touch-pan-y outline-none focus-visible:[outline:2px_solid_var(--trace-a)]"
+                onPointerMove={(e) => (e.pointerType === "mouse" || dragging) && fromPointer(e)}
+                onPointerDown={(e) => {
+                  setDragging(true);
+                  e.currentTarget.setPointerCapture(e.pointerId);
+                  fromPointer(e);
+                }}
+                onPointerUp={() => setDragging(false)}
+                onPointerCancel={() => setDragging(false)}
+                tabIndex={0}
+                role="slider"
+                aria-label="Move the graduate along the salary distribution"
+                aria-valuemin={0}
+                aria-valuemax={X_MAX}
+                aria-valuenow={Math.round(salary)}
+                aria-valuetext={`${money(salary)}, about the ${ordinal(pctile)} percentile`}
+                onKeyDown={onKey}
+              />
+            </svg>
+          </div>
+        </div>
+
+        <div className="grid content-start gap-3 rounded-md bg-surface-sunk p-4">
+          <p className="text-caption text-muted">This graduate earns</p>
+          <p className="tabular text-h2 font-semibold tracking-[-0.02em] text-ink">{money(salary)}</p>
+          <p className="text-small text-ink-2" aria-live="polite">
+            About the <strong className="font-semibold text-ink">{ordinal(pctile)} percentile</strong>: more than {pctile}% of recent {m.name.toLowerCase()} graduates, less than {100 - pctile}%.
+          </p>
+          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Jump to a percentile">
+            {([["10th", m.early.p10], ["Median", m.early.p50], ["90th", m.early.p90]] as Array<[string, number]>).map(([label, v]) => (
+              <motion.button key={label} type="button" whileTap={{ scale: 0.95 }} transition={microSpring} onClick={() => setSalary(v)} className={cn("h-9 rounded-full border px-3 text-caption font-semibold", Math.abs(salary - v) < 300 ? "border-ink bg-ink text-on-ink" : "border-rule-strong bg-surface text-ink hover:border-ink")}>
+                {label} {moneyCompact(v)}
+              </motion.button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <dl className="mt-4 grid grid-cols-5 gap-2 border-t border-rule pt-4">
+      <dl className="mt-5 grid grid-cols-5 gap-2 border-t border-rule pt-4">
         {percentiles.map(([label, v]) => (
           <div key={label} className="grid gap-0.5">
             <dt className="text-caption text-muted">{label}</dt>
@@ -203,6 +214,7 @@ export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
 }
 
 function ordinal(n: number) {
-  const s = ["th", "st", "nd", "rd"], v = n % 100;
+  const s = ["th", "st", "nd", "rd"],
+    v = n % 100;
   return n + (s[(v - 20) % 10] || s[v] || s[0]);
 }

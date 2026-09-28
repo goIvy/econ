@@ -181,8 +181,31 @@ All variants live in `lib/animations.ts`. Every animation checks `useReducedMoti
 - **Enter/exit:** `AnimatePresence` wraps every conditional render (results, tabs, sheets, toasts, compare tray).
 - **Readout count-up:** 600ms ease-out from the previous value to the new value.
 - **Trace draw:** path length 0→1 over 900ms ease-out on first reveal. Later changes morph the data rather than redrawing.
-- **Signature moment:** in the hero, "Calculate My Path" counts the readouts up and draws trace A. "Compare another path" draws trace B, and the break-even crossing marker settles in last.
+- **Signature moment:** in the hero, three paths (A public, B private, C work from 18) leave the same point at age 18. A time head advances along them: it follows the cursor across the chart on desktop, follows scroll everywhere, and is draggable with an Age scrubber. Crossings appear only once the head passes them.
 - No infinite decorative loops. Skeleton shimmer only while loading.
+
+### 6.1 Interactive layer ("the instrument is alive")
+
+Motion here explains an economic idea or it doesn't ship. Each concept has one visual metaphor, used everywhere:
+
+| Concept | Metaphor | Where |
+|---|---|---|
+| Opportunity cost | Branching paths from one origin | Hero, two students, lessons |
+| Break-even | Two traces crossing, marked by the ink crossing marker | Two students, timeline, What-If |
+| Debt | Physical stack of $1,000 blocks; interest blocks hatched | Debt section |
+| Earnings growth / compounding | A curve that visibly accelerates | Timeline, lessons |
+| Risk / uncertainty | A spread of faint trajectories settling into a band | 1,000 Possible Futures |
+| Purchasing power | The same salary changing size across a map | Purchasing-power map |
+| Net price | A ledger that grows line by line, then aid slides in and subtracts | Net-cost story |
+
+- **Primitives:** `components/motion` (AnimatedNumber, MotionText, Tilt, usePointerParallax, useScrollScene/ScrollScene, useSteppedValue). Springs live in `lib/animations.ts` (`scrubSpring`, `numberSpring`, `parallaxSpring`, `tiltSpring`, `slotSpring`, `flipTransition`, `ledgerItem`, `block`).
+- **Separation:** components animate values; `lib/calc` computes them. No financial math inside a component beyond reading a precomputed series.
+- **Scroll scenes:** a sticky stage inside a section 2–3 viewports tall; scroll progress drives the explanation. Always pair with a visible control (steps, age stops or a scrubber) so the scene can be operated without scrolling. Under reduced motion a scene collapses to its final state at normal height.
+- **Cursor:** fine pointers only (`(hover: hover) and (pointer: fine)`). Tilt at most 2°; parallax at most 8px; heavy springs. Nothing essential depends on hover: every hover has a tap, focus or scrubber equivalent.
+- **Timing:** 150–600ms for UI transitions; value springs settle in under 500ms. User-started demonstrations ("Play repayment", "Run simulation") may run 1–6s and can be stopped or skipped.
+- **Performance:** animate transforms, opacity, clip widths and SVG attributes driven by motion values (no React render per frame). Hundreds of simulated lines draw on `<canvas>`, not SVG.
+- **Depth:** `--shadow-2`/`--shadow-3` and the 2° tilt are the only depth tools. Blur is limited to the enter recipe (4px) and the dimmed overlay behind sheets; no glass panels.
+- **Trace inks on the homepage:** A `--trace-a` public university, B `--trace-b` private university, C `--trace-c` (dashed) working from 18. The same letters mean the same paths in every section.
 
 ---
 

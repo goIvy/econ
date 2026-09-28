@@ -22,6 +22,7 @@ export function GraduatedSlider({
   ticks = 10,
   trace = "ink",
   className,
+  size = "md",
   description,
 }: {
   label: string;
@@ -36,6 +37,8 @@ export function GraduatedSlider({
   trace?: "a" | "b" | "c" | "d" | "e" | "ink";
   className?: string;
   description?: string;
+  /** sm hides the min/max row; lg is the tactile What-If size. */
+  size?: "sm" | "md" | "lg";
 }) {
   const id = useId();
   const [dragging, setDragging] = useState(false);
@@ -46,7 +49,7 @@ export function GraduatedSlider({
         <label htmlFor={id} className="text-caption font-medium text-muted">
           {label}
         </label>
-        <output htmlFor={id} className="tabular text-small font-semibold text-ink">
+        <output htmlFor={id} className={cn("tabular font-semibold text-ink", size === "lg" ? "text-h3" : "text-small")}>
           {format(value)}
         </output>
       </div>
@@ -60,11 +63,11 @@ export function GraduatedSlider({
         onPointerDown={() => setDragging(true)}
         onPointerUp={() => setDragging(false)}
         onPointerLeave={() => setDragging(false)}
-        className="relative flex h-8 touch-none select-none items-center"
+        className={cn("relative flex touch-none select-none items-center", size === "lg" ? "h-11" : "h-8")}
         aria-label={label}
         aria-describedby={description ? `${id}-d` : undefined}
       >
-        <Slider.Track className="relative h-2 grow overflow-hidden rounded-full bg-surface-sunk">
+        <Slider.Track className={cn("relative grow overflow-hidden rounded-full bg-surface-sunk", size === "lg" ? "h-3" : "h-2")}>
           <span
             aria-hidden
             className="pointer-events-none absolute inset-0"
@@ -77,7 +80,7 @@ export function GraduatedSlider({
         </Slider.Track>
         <Slider.Thumb
           aria-label={label}
-          className="relative block size-5 rounded-full border-2 border-on-ink bg-ink shadow-2 outline-offset-2 transition-transform hover:scale-110"
+          className={cn("relative block rounded-full border-2 border-on-ink bg-ink shadow-2 outline-offset-2 transition-transform hover:scale-110 active:scale-95", size === "lg" ? "size-7" : "size-5")}
           onFocus={() => setDragging(false)}
         >
           <AnimatePresence>
@@ -95,7 +98,7 @@ export function GraduatedSlider({
           </AnimatePresence>
         </Slider.Thumb>
       </Slider.Root>
-      <div className="flex justify-between text-[0.75rem] text-muted tabular" aria-hidden>
+      <div className={cn("flex justify-between text-[0.75rem] text-muted tabular", size === "sm" && "hidden")} aria-hidden>
         <span>{format(min)}</span>
         <span>{format(max)}</span>
       </div>

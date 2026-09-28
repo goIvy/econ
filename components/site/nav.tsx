@@ -16,7 +16,7 @@ export const NAV_LINKS = [
   { href: "/simulator", label: "Simulator" },
   { href: "/majors", label: "Majors" },
   { href: "/careers", label: "Careers" },
-  { href: "/research", label: "Research" },
+  { href: "/learn", label: "Learn" },
   { href: "/methodology", label: "Methodology" },
 ];
 

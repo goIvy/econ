@@ -3,7 +3,7 @@ import { Logo } from "./logo";
 
 const COLUMNS: Array<{ title: string; links: Array<[string, string]> }> = [
   { title: "Tools", links: [["/explore", "College search"], ["/compare", "Compare paths"], ["/simulator", "Cost & debt simulator"], ["/majors", "Majors"]] },
-  { title: "Research", links: [["/methodology", "Methodology"], ["/methodology#limitations", "Limitations"], ["/research", "Research lab"], ["/careers", "Careers"]] },
+  { title: "Research", links: [["/methodology", "Methodology"], ["/methodology#limitations", "Limitations"], ["/learn", "Learn the economics"], ["/research", "Research lab"], ["/careers", "Careers"]] },
   { title: "Get started", links: [["/get-started", "Set up your comparison"], ["/sign-in", "Sign in"]] },
 ];
 

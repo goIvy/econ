@@ -180,3 +180,36 @@ export const reducedEnter: Variants = {
 export function motionSafe(variants: Variants, reduce: boolean | null): Variants {
   return reduce ? reducedEnter : variants;
 }
+
+/* ------------------------------------------------------------------ interactive layer
+ * Springs for value-driven motion: scrubbers, cursor response, scroll scenes.
+ * Physics, not durations: they settle in ~150–500ms and never overshoot data.
+ */
+
+/** Smooths a scrubbed value (timeline head, scroll-driven age). */
+export const scrubSpring = { stiffness: 260, damping: 38, mass: 0.6 } as const;
+/** Numbers that follow a moving input. */
+export const numberSpring = { stiffness: 180, damping: 30, mass: 0.8 } as const;
+/** Cursor response: slow and heavy so it reads as depth, not as a toy. */
+export const parallaxSpring = { stiffness: 90, damping: 22, mass: 1 } as const;
+/** Card tilt: at most TILT_DEG degrees. */
+export const TILT_DEG = 2;
+export const tiltSpring = { stiffness: 200, damping: 24 } as const;
+/** Cards snapping into comparison slots. */
+export const slotSpring: Transition = { type: "spring", duration: 0.45, bounce: 0.12 };
+/** Card flip between front and back. */
+export const flipTransition: Transition = { type: "spring", duration: 0.55, bounce: 0 };
+
+/** A line item sliding into a ledger (net-cost story); negative items enter from the right. */
+export const ledgerItem: Variants = {
+  hidden: (negative: boolean = false) => ({ opacity: 0, x: negative ? 24 : -12, filter: "blur(3px)" }),
+  visible: { opacity: 1, x: 0, filter: "blur(0px)", transition: enterSpring },
+  exit: { opacity: 0, x: -8, transition: { duration: 0.15 } },
+};
+
+/** Blocks leaving or joining a stack (debt made physical). */
+export const block: Variants = {
+  hidden: { opacity: 0, scale: 0.4 },
+  visible: (i: number = 0) => ({ opacity: 1, scale: 1, transition: { type: "spring", duration: 0.35, bounce: 0, delay: Math.min(i, 30) * 0.008 } }),
+  exit: { opacity: 0, scale: 0.4, y: -10, transition: { duration: 0.2, ease: easeOutExpo } },
+};

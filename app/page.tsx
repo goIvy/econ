@@ -3,18 +3,25 @@ import { Footer } from "@/components/site/footer";
 import { AxisRule, Section, SectionHeading } from "@/components/site/section";
 import { ButtonLink } from "@/components/ui/button";
 import { Accordion } from "@/components/ui/accordion";
-import { Hero } from "@/features/home/hero";
-import { Tradeoffs } from "@/features/home/tradeoffs";
-import { TrueCost } from "@/features/home/true-cost";
-import { CareersTable } from "@/features/home/careers-table";
-import { BreakEvenStudy } from "@/features/home/break-even-study";
+import { HeroPaths } from "@/features/experience/hero-paths";
+import { compareCards, heroPaths, mapCities, netCostStory, pathPresets, twoStudentsDefaults } from "@/features/experience/data";
+import { FinancialTimeline } from "@/features/experience/financial-timeline";
+import { WhatIfLab } from "@/features/experience/what-if";
+import { DebtStack } from "@/features/experience/debt-stack";
+import { CompareStage } from "@/features/experience/compare-stage";
+import { PossibleFutures } from "@/features/experience/possible-futures";
+import { PurchasingMap } from "@/features/experience/purchasing-map";
+import { TwoStudents } from "@/features/experience/two-students";
+import { NetCostStory } from "@/features/experience/net-cost-story";
 import { SalaryDistribution } from "@/features/home/salary-distribution";
-import { CostOfLiving } from "@/features/home/cost-of-living";
 import { Transparency } from "@/features/home/transparency";
 import { MethodologyCredibility } from "@/features/home/methodology-credibility";
 import { Pricing } from "@/features/home/pricing";
-import { breakEvenStudy, citiesForTranslator, majorsTable, sampleComparison, trueCost } from "@/features/home/data";
-import { collegeOptions, majorOptions, getOutcome } from "@/services/data";
+import { majorsTable } from "@/features/home/data";
+import { LearnTeaser } from "@/features/learn/learn-teaser";
+import { LESSONS } from "@/features/learn/data";
+import { Concept } from "@/components/concepts/concept";
+import { getOutcome } from "@/services/data";
 import { money } from "@/lib/format";
 
 const FAQ = [
@@ -45,69 +52,108 @@ const FAQ = [
 ];
 
 export default function HomePage() {
-  const sample = sampleComparison();
-  const cost = trueCost("ucla");
+  const hero = heroPaths();
+  const presets = pathPresets();
+  const map = mapCities();
   const majors = majorsTable();
-  const study = breakEvenStudy();
-  const cities = citiesForTranslator();
   const berkeleyEcon = getOutcome("uc-berkeley", "economics")!;
 
   return (
     <>
       <Nav />
       <main id="main">
-        <Hero colleges={collegeOptions()} majors={majorOptions()} />
+        <HeroPaths pub={hero.public} priv={hero.private} />
+
+        <section id="sticker" aria-labelledby="h-sticker" className="relative">
+          <div className="mx-auto max-w-[1200px] px-4 md:px-8 xl:px-12">
+            <AxisRule />
+          </div>
+          <NetCostStory {...netCostStory()} />
+        </section>
+
+        <section id="opportunity-cost" aria-labelledby="h-oc" className="relative">
+          <div className="mx-auto max-w-[1200px] px-4 md:px-8 xl:px-12">
+            <AxisRule className="mb-16 md:mb-20" />
+            <SectionHeading id="h-oc" title="Two students, one decision">
+              Both are 18. Student A goes to college; Student B starts working. Scroll through the years and watch the gap between them: that gap is <Concept id="opportunity-cost">opportunity cost</Concept>, and where the lines cross is break-even.
+            </SectionHeading>
+          </div>
+          <TwoStudents {...twoStudentsDefaults()} />
+        </section>
+
+        <Section id="timeline" labelledBy="h-timeline">
+          <SectionHeading id="h-timeline" title="Your Financial Timeline">
+            Start at 18 and drag forward. Salary, debt, earnings and your overall position all read the same model at the age you choose. Press play to watch a whole path unfold.
+          </SectionHeading>
+          <div className="mt-10">
+            <FinancialTimeline presets={presets} />
+          </div>
+        </Section>
+
+        <Section id="what-if" labelledBy="h-whatif">
+          <SectionHeading id="h-whatif" title="The What-If Lab">
+            Drag, don&apos;t type. Every control re-runs the model instantly, and the note under the chart says what your last change actually did.
+          </SectionHeading>
+          <div className="mt-10">
+            <WhatIfLab presets={presets} />
+          </div>
+        </Section>
+
+        <Section id="debt" labelledBy="h-debt">
+          <SectionHeading id="h-debt" title="Debt you can see">
+            Every block is $1,000 you will pay back. Aid takes blocks away, a higher interest rate adds them, and repayment removes them one year at a time. What the payment means for your budget is your <Concept id="debt-burden">debt burden</Concept>.
+          </SectionHeading>
+          <div className="mt-10">
+            <DebtStack presets={presets} />
+          </div>
+        </Section>
 
         <Section id="compare" labelledBy="h-compare">
-          <SectionHeading id="h-compare" title="Tradeoffs, not rankings">
-            Three paths for the same California student. Each measure gets its own scale, so nothing collapses into a single score. Switch where Path C lives and watch what moves.
+          <SectionHeading id="h-compare" title="Put colleges side by side">
+            Pick up a college and drop it on the stage. Flip a card to see its debt, jobs and break-even. The comparison gives each measure its own scale and never names a winner.
           </SectionHeading>
-          <div className="mt-12">
-            <Tradeoffs campus={sample.campus} cHome={sample.cHome} />
+          <div className="mt-10">
+            <CompareStage cards={compareCards()} />
           </div>
-        </Section>
-
-        <Section id="true-cost" labelledBy="h-cost">
-          <SectionHeading id="h-cost" title="See the true cost">
-            Tuition is one line of seven. Residency and where you live can move the total more than the sticker price suggests.
-          </SectionHeading>
-          <div className="mt-12">
-            <TrueCost college={cost.college} combos={cost.combos} lineage={cost.lineage} />
-          </div>
-        </Section>
-
-        <Section id="careers" labelledBy="h-careers">
-          <SectionHeading id="h-careers" title="Compare careers and earnings">
-            A median hides half the story. Here is the range recent graduates actually earn, alongside how often they&apos;re out of work and how many go on to graduate school.
-          </SectionHeading>
-          <div className="mt-12">
-            <CareersTable rows={majors} />
-          </div>
-        </Section>
-
-        <Section id="break-even" labelledBy="h-breakeven">
-          <SectionHeading id="h-breakeven" title="When does it pay off?">
-            College costs tuition and four years of earnings you could have made. Cumulative value dips, then climbs. Move aid and residency to see where the lines cross.
-          </SectionHeading>
-          <div className="mt-12" />
-          <BreakEvenStudy levels={study.levels} out={study.out} label={study.label} state={study.state} />
         </Section>
 
         <Section id="salaries" labelledBy="h-salaries">
-          <SectionHeading id="h-salaries" title="Salaries are a range, not a promise">
-            Two graduates with the same degree can earn very different amounts. Hover or use the arrow keys along the curve to see where a salary falls.
+          <SectionHeading id="h-salaries" title="Graduates do not all earn the same amount">
+            A median is one point on a wide curve. Move the graduate along it (hover, drag, or use the arrow keys) to see where a salary falls, and why the <Concept id="expected-value">expected value</Concept> of a degree is a range, not a number.
           </SectionHeading>
-          <div className="mt-12">
+          <div className="mt-10">
             <SalaryDistribution majors={majors} />
           </div>
         </Section>
 
-        <Section id="cost-of-living" labelledBy="h-col">
-          <SectionHeading id="h-col" title="What is a salary worth elsewhere?">
-            A bigger paycheck in an expensive city can buy less than a smaller one somewhere else. This is purchasing power, adjusted with regional price levels.
+        <Section id="futures" labelledBy="h-futures">
+          <SectionHeading id="h-futures" title="1,000 Possible Futures">
+            A projection is one line; a life is not. Run the same path a thousand times with different salaries, job searches, graduation times and costs, and watch the futures settle into a range.
           </SectionHeading>
-          <div className="mt-12">
-            <CostOfLiving cities={cities} />
+          <div className="mt-10">
+            <PossibleFutures presets={presets} />
+          </div>
+        </Section>
+
+        <Section id="cost-of-living" labelledBy="h-col">
+          <SectionHeading id="h-col" title="The same salary, a different size">
+            A paycheck buys more in some cities than others: that&apos;s <Concept id="purchasing-power">purchasing power</Concept>. Hover a city (or tap it) to see the salary you&apos;d need there to live the way your salary lets you live now. All figures are <Concept id="real-income">real</Concept> 2024 dollars, so <Concept id="inflation">inflation</Concept> is already taken out.
+          </SectionHeading>
+          <div className="mt-10">
+            <PurchasingMap {...map} />
+          </div>
+        </Section>
+
+        <Section id="learn" labelledBy="h-learn">
+          <div className="grid gap-10 lg:grid-cols-12">
+            <div className="lg:col-span-4">
+              <SectionHeading id="h-learn" title="Learn the Economics">
+                Five short lessons you scroll through and play with. No jargon without a working example.
+              </SectionHeading>
+            </div>
+            <div className="lg:col-span-8">
+              <LearnTeaser lessons={LESSONS} />
+            </div>
           </div>
         </Section>
 
@@ -122,7 +168,7 @@ export default function HomePage() {
 
         <Section id="methodology" labelledBy="h-method">
           <SectionHeading id="h-method" title="How the math works, and where it stops">
-            The formulas are simple enough to check by hand. The limits matter as much as the math.
+            The formulas are simple enough to check by hand. The limits matter as much as the math. Future dollars are compared using <Concept id="npv">net present value</Concept>.
           </SectionHeading>
           <div className="mt-12">
             <MethodologyCredibility />

@@ -71,13 +71,19 @@ export interface ProjectionOptions {
   percentile?: "p10" | "p25" | "p50" | "p75" | "p90";
   /** Override annual real salary growth. */
   growthOverride?: number;
+  /** Use this starting salary instead of a named percentile (simulation draws). */
+  salaryOverride?: number;
+  /** Scale every annual cost line (simulation cost variation). Default 1. */
+  costMultiplier?: number;
+  /** Fraction of the first career year spent looking for work, 0–1. Default 0. */
+  jobSearchYears?: number;
 }
 
 export function projectPath(inputs: PathInputs, ctx: PathContext, opts: ProjectionOptions = {}): PathResult {
   const years = Math.max(1, inputs.yearsToGraduate);
   const horizonAge = opts.horizonAge ?? DEFAULT_HORIZON_AGE;
   const costLines = annualCostLines(ctx.college, inputs.residency, inputs.living, ctx.collegeCity);
-  const net = calculateNetCost(sumLines(costLines), years, inputs.funding);
+  const net = calculateNetCost(sumLines(costLines) * (opts.costMultiplier ?? 1), years, inputs.funding);
 
   const loanType = opts.loanType ?? "federal-unsubsidized";
   const loan = summarizeLoan(
@@ -86,8 +92,9 @@ export function projectPath(inputs: PathInputs, ctx: PathContext, opts: Projecti
   );
 
   const pct = opts.percentile ?? "p50";
-  const startingSalary = ctx.outcome.earlyCareer.value?.[pct] ?? ctx.major.earlyCareer.value?.[pct] ?? 0;
-  const midCareer = (ctx.outcome.midCareerMedian.value ?? ctx.major.midCareerMedian.value ?? startingSalary) * (startingSalary / (ctx.outcome.earlyCareer.value?.p50 || startingSalary || 1));
+  const startingSalary = opts.salaryOverride ?? ctx.outcome.earlyCareer.value?.[pct] ?? ctx.major.earlyCareer.value?.[pct] ?? 0;
+  const medianStart = ctx.outcome.earlyCareer.value?.p50 ?? ctx.major.earlyCareer.value?.p50 ?? startingSalary;
+  const midCareer = (ctx.outcome.midCareerMedian.value ?? ctx.major.midCareerMedian.value ?? startingSalary) * (startingSalary / (medianStart || startingSalary || 1));
   const employmentRate = (ctx.outcome.employmentRate.value ?? ctx.major.employmentRate.value ?? 95) / 100;
   const stateRate = (ctx.careerCity ?? ctx.collegeCity)?.stateTaxRate ?? 0.045;
 
@@ -112,7 +119,7 @@ export function projectPath(inputs: PathInputs, ctx: PathContext, opts: Projecti
       collegeOutlay = outlayPerYear;
     } else {
       const t = age - graduationAge;
-      earnings = (salaries[t] ?? 0) * employmentRate;
+      earnings = (salaries[t] ?? 0) * employmentRate * (t === 0 ? 1 - Math.min(1, Math.max(0, opts.jobSearchYears ?? 0)) : 1);
       loanPayment = t < repaymentYears ? monthly * 12 : 0;
     }
     const afterTaxEarnings = inCollege ? earnings : afterTax(earnings, stateRate);
