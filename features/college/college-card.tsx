@@ -65,7 +65,7 @@ export function CollegeCard({ c }: { c: CollegeCardData }) {
           title={disabled ? "You can compare up to 5 colleges. Remove one first." : undefined}
           className={cn(
             "inline-flex h-10 items-center justify-center gap-1.5 rounded-sm border px-4 text-small font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50",
-            on ? "border-trace-a bg-trace-a text-white" : "border-rule-strong bg-surface text-ink hover:border-ink",
+            on ? "border-trace-a bg-trace-a text-on-ink" : "border-rule-strong bg-surface text-ink hover:border-ink",
           )}
         >
           {on ? <Check className="size-4" aria-hidden /> : <Plus className="size-4" aria-hidden />}

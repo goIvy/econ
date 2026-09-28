@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Combobox, MultiCombobox, type ComboOption } from "@/components/ui/combobox";
-import { easeOutExpo, microSpring } from "@/lib/animations";
+import { easeOutExpo, enter, microSpring, motionSafe, stepSlide } from "@/lib/animations";
 import { money } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { CollegeMeta } from "@/features/comparison/compare-workspace";
@@ -27,6 +27,15 @@ interface Answers {
 
 const EMPTY: Answers = { goals: [], grade: null, colleges: [], majors: [], state: null, cityId: null, money: { scholarship: "", aid: "", family: "", loan: "", work: "", savings: "", home: false } };
 
+function loadSaved(): Answers {
+  try {
+    const saved = window.localStorage.getItem(STORE);
+    return saved ? { ...EMPTY, ...JSON.parse(saved) } : EMPTY;
+  } catch {
+    return EMPTY;
+  }
+}
+
 const STEPS = [
   { title: "What are you trying to compare?", hint: "Pick any that apply." },
   { title: "What grade are you in?", hint: "This helps us word things for you." },
@@ -41,17 +50,10 @@ export function Onboarding({ colleges, majors, states, cities }: { colleges: Col
   const reduce = useReducedMotion();
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState(1);
-  const [a, setA] = useState<Answers>(EMPTY);
+  // Rendered client-only (see OnboardingClient), so saved answers can seed state directly.
+  const [a, setA] = useState<Answers>(loadSaved);
   const [done, setDone] = useState(false);
 
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORE);
-      if (saved) setA({ ...EMPTY, ...JSON.parse(saved) });
-    } catch {
-      /* storage unavailable: start fresh */
-    }
-  }, []);
   useEffect(() => {
     try {
       localStorage.setItem(STORE, JSON.stringify(a));
@@ -85,15 +87,11 @@ export function Onboarding({ colleges, majors, states, cities }: { colleges: Col
     return picks.length ? `/compare?p=${picks.join(",")}${fParam}` : "/explore";
   }, [a, colleges]);
 
-  const variants = {
-    enter: (d: number) => (reduce ? { opacity: 0 } : { opacity: 0, x: d * 32, filter: "blur(4px)" }),
-    center: { opacity: 1, x: 0, filter: "blur(0px)", transition: { type: "spring" as const, duration: 0.45, bounce: 0 } },
-    exit: (d: number) => (reduce ? { opacity: 0 } : { opacity: 0, x: d * -24, filter: "blur(2px)", transition: { duration: 0.18 } }),
-  };
+  const variants = motionSafe(stepSlide, reduce);
 
   if (done) {
     return (
-      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ type: "spring", duration: 0.45, bounce: 0 }} className="mx-auto grid max-w-[40rem] gap-6 rounded-lg border border-rule bg-surface p-6 shadow-3 sm:p-8">
+      <motion.div variants={motionSafe(enter, reduce)} initial="hidden" animate="visible" className="mx-auto grid max-w-[40rem] gap-6 rounded-lg border border-rule bg-surface p-6 shadow-3 sm:p-8">
         <span className="grid size-10 place-items-center rounded-full bg-gain-tint text-gain">
           <Check className="size-5" aria-hidden />
         </span>
@@ -141,7 +139,7 @@ export function Onboarding({ colleges, majors, states, cities }: { colleges: Col
 
       <div className="relative min-h-[26rem]">
         <AnimatePresence mode="wait" custom={dir}>
-          <motion.section key={step} custom={dir} variants={variants} initial="enter" animate="center" exit="exit" aria-labelledby={`step-${step}`} className="grid gap-6">
+          <motion.section key={step} custom={dir} variants={variants} initial="hidden" animate="visible" exit="exit" aria-labelledby={`step-${step}`} className="grid gap-6">
             <div className="grid gap-2">
               <h2 id={`step-${step}`} className="text-h2 font-bold">{s.title}</h2>
               <p className="text-lede text-ink-2">{s.hint}</p>
@@ -210,10 +208,10 @@ function ChoiceGrid({ options, value, onChange, multiple }: { options: string[];
             whileTap={{ scale: 0.98 }}
             transition={microSpring}
             onClick={() => onChange(multiple ? (on ? value.filter((v) => v !== o) : [...value, o]) : on ? [] : [o])}
-            className={cn("flex min-h-14 items-center justify-between gap-3 rounded-md border px-4 text-left text-base font-medium transition-colors", on ? "border-ink bg-ink text-white" : "border-rule-strong bg-surface text-ink hover:border-ink")}
+            className={cn("flex min-h-14 items-center justify-between gap-3 rounded-md border px-4 text-left text-base font-medium transition-colors", on ? "border-ink bg-ink text-on-ink" : "border-rule-strong bg-surface text-ink hover:border-ink")}
           >
             {o}
-            <span className={cn("grid size-5 shrink-0 place-items-center border", multiple ? "rounded-[5px]" : "rounded-full", on ? "border-white bg-white text-ink" : "border-rule-strong")} aria-hidden>
+            <span className={cn("grid size-5 shrink-0 place-items-center border", multiple ? "rounded-[5px]" : "rounded-full", on ? "border-on-ink bg-on-ink text-ink" : "border-rule-strong")} aria-hidden>
               {on && <Check className="size-3.5" strokeWidth={3} />}
             </span>
           </motion.button>

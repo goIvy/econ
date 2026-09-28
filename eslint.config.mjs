@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored agent skills and the Python service are not app code.
+    ".claude/**",
+    "backend/**",
   ]),
 ]);
 

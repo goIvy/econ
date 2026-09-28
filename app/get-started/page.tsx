@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/site/nav";
-import { Onboarding } from "@/features/onboarding/onboarding";
+import { OnboardingClient } from "@/features/onboarding/onboarding-client";
 import type { CollegeMeta } from "@/features/comparison/compare-workspace";
 import { STATE_NAMES, listCities, listColleges, majorOptions } from "@/services/data";
 
@@ -21,7 +21,7 @@ export default function GetStartedPage() {
       <main id="main" className="relative isolate min-h-[calc(100dvh-var(--nav-h))] overflow-hidden px-4 py-12 md:px-8 md:py-16">
         <div aria-hidden className="measured-field field-fade pointer-events-none absolute inset-0 -z-10" />
         <h1 className="sr-only">Get started</h1>
-        <Onboarding colleges={colleges} majors={majorOptions().map((m) => ({ id: m.id, name: m.name, category: m.category }))} states={states} cities={cities} />
+        <OnboardingClient colleges={colleges} majors={majorOptions().map((m) => ({ id: m.id, name: m.name, category: m.category }))} states={states} cities={cities} />
       </main>
     </>
   );

@@ -11,12 +11,12 @@ import { useMedia } from "@/hooks/use-media";
 export function InfoTip({ label, children }: { label: string; children: React.ReactNode }) {
   const fine = useMedia("(hover: hover) and (pointer: fine)");
   const icon = (
-    <button type="button" aria-label={`What is ${label.toLowerCase()}?`} className="grid size-5 place-items-center rounded-full text-muted transition-colors hover:text-ink">
+    <button type="button" aria-label={`What is ${label.toLowerCase()}?`} className="relative grid size-5 place-items-center rounded-full text-muted transition-colors after:absolute after:-inset-[3px] after:content-[''] hover:text-ink">
       <Info className="size-3.5" aria-hidden />
     </button>
   );
   const body = (
-    <div className="z-50 max-w-[18rem] rounded-sm bg-ink px-3 py-2 text-caption leading-relaxed text-white shadow-3">{children}</div>
+    <div className="z-50 max-w-[18rem] rounded-sm bg-ink px-3 py-2 text-caption leading-relaxed text-on-ink shadow-3">{children}</div>
   );
   if (fine) {
     return (

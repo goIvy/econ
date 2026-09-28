@@ -6,7 +6,7 @@ import { SampleChip, SourceFootnote } from "@/components/ui/lineage";
 import { Segmented } from "@/components/ui/segmented";
 import { useCountUp } from "@/hooks/use-count-up";
 import type { CostKey, CostLine, NetCostBreakdown } from "@/lib/calc/cost";
-import { enterSpring } from "@/lib/animations";
+import { collapse, enterSpring } from "@/lib/animations";
 import { money, moneyCompact } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { FundingInputs, Lineage, LivingArrangement, Residency } from "@/types";
@@ -127,12 +127,12 @@ export function CostLedger({ lines, net, lineage, title }: { lines: CostLine[]; 
         <Row label="Estimated borrowing" value={net.borrowing} strong rule accent={net.borrowing > FEDERAL_DEPENDENT_LIMIT} />
         <AnimatePresence>
           {net.borrowing > FEDERAL_DEPENDENT_LIMIT && (
-            <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-3 overflow-hidden text-caption text-caution">
+            <motion.p variants={collapse} initial="hidden" animate="visible" exit="exit" className="mt-3 overflow-hidden text-caption text-caution">
               More than {money(FEDERAL_DEPENDENT_LIMIT)}, the federal Direct Loan limit for a dependent undergraduate over four years. The rest would need Parent PLUS or private loans.
             </motion.p>
           )}
           {net.surplus > 0 && net.borrowing === 0 && (
-            <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-3 overflow-hidden text-caption text-gain">
+            <motion.p variants={collapse} initial="hidden" animate="visible" exit="exit" className="mt-3 overflow-hidden text-caption text-gain">
               Your funding covers the full cost with {money(net.surplus)} to spare. Grant aid is capped at the cost of attendance.
             </motion.p>
           )}

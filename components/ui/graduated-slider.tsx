@@ -76,7 +76,7 @@ export function GraduatedSlider({
         </Slider.Track>
         <Slider.Thumb
           aria-label={label}
-          className="relative block size-5 rounded-full border-2 border-white bg-ink shadow-2 outline-offset-2 transition-transform hover:scale-110"
+          className="relative block size-5 rounded-full border-2 border-on-ink bg-ink shadow-2 outline-offset-2 transition-transform hover:scale-110"
           onFocus={() => setDragging(false)}
         >
           <AnimatePresence>
@@ -86,7 +86,7 @@ export function GraduatedSlider({
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className="tabular absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xs bg-ink px-2 py-1 text-caption font-semibold text-white"
+                className="tabular absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-xs bg-ink px-2 py-1 text-caption font-semibold text-on-ink"
               >
                 {format(value)}
               </motion.span>

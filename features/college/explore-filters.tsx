@@ -8,7 +8,7 @@ import { useEffect, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
 import { Segmented } from "@/components/ui/segmented";
-import { sheet } from "@/lib/animations";
+import { crossfade, overlay, sheet } from "@/lib/animations";
 import { moneyCompact } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
@@ -106,11 +106,13 @@ export function ExploreFilters({ states, majors, count }: { states: Option[]; ma
       />
       <ChipGroup label="Typical debt" value={get("maxDebt")} onChange={(v) => set("maxDebt", v)} options={DEBT_STEPS.map((n) => ({ value: String(n), label: `≤ ${moneyCompact(n)}` }))} />
       <ChipGroup label="Median earnings" value={get("minEarnings")} onChange={(v) => set("minEarnings", v)} options={EARN_STEPS.map((n) => ({ value: String(n), label: `≥ ${moneyCompact(n)}` }))} />
-      {active > 0 && (
-        <button type="button" onClick={reset} className="justify-self-start text-small font-semibold text-ink underline decoration-rule-strong underline-offset-4 hover:decoration-ink">
-          Clear {active} {active === 1 ? "filter" : "filters"}
-        </button>
-      )}
+      <AnimatePresence initial={false}>
+        {active > 0 && (
+          <motion.button key="clear" variants={crossfade} initial="hidden" animate="visible" exit="exit" type="button" onClick={reset} className="justify-self-start text-small font-semibold text-ink underline decoration-rule-strong underline-offset-4 hover:decoration-ink">
+            Clear {active} {active === 1 ? "filter" : "filters"}
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 
@@ -128,7 +130,7 @@ export function ExploreFilters({ states, majors, count }: { states: Option[]; ma
             {open && (
               <Dialog.Portal forceMount>
                 <Dialog.Overlay asChild forceMount>
-                  <motion.div className="fixed inset-0 z-50 bg-ink/30" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+                  <motion.div className="fixed inset-0 z-50 bg-ink/30" variants={overlay} initial="hidden" animate="visible" exit="exit" />
                 </Dialog.Overlay>
                 <Dialog.Content asChild forceMount>
                   <motion.div variants={sheet} initial="hidden" animate="visible" exit="exit" className="fixed inset-x-0 bottom-0 z-50 grid max-h-[88dvh] grid-rows-[auto_1fr_auto] rounded-t-lg border-t border-rule bg-surface shadow-3">
@@ -171,7 +173,7 @@ function ChipGroup({ label, value, onChange, options }: { label: string; value: 
               onClick={() => onChange(on ? null : o.value)}
               className={cn(
                 "tabular rounded-full border px-3 py-1.5 text-small font-medium transition-colors",
-                on ? "border-ink bg-ink text-white" : "border-rule-strong bg-surface text-ink-2 hover:border-ink hover:text-ink",
+                on ? "border-ink bg-ink text-on-ink" : "border-rule-strong bg-surface text-ink-2 hover:border-ink hover:text-ink",
               )}
             >
               {o.label}

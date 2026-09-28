@@ -1,8 +1,8 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
-import { enterSpring } from "@/lib/animations";
+import { enterSpring, tip } from "@/lib/animations";
 import { money, moneyCompact } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { SalaryPercentiles } from "@/types";
@@ -75,11 +75,13 @@ export function PercentileStrip({
             );
           })}
         </div>
-        {hover && (
-          <div className="pointer-events-none absolute -top-9 z-10 -translate-x-1/2 whitespace-nowrap rounded-xs bg-ink px-2 py-1 text-caption font-semibold text-white" style={{ left: x(p[hover]) }}>
-            {money(p[hover])} · {KEYS.find(([k]) => k === hover)![1]}
-          </div>
-        )}
+        <AnimatePresence>
+          {hover && (
+            <motion.div key="tip" variants={tip} initial="hidden" animate="visible" exit="exit" className="pointer-events-none absolute -top-9 z-10 -translate-x-1/2 whitespace-nowrap rounded-xs bg-ink px-2 py-1 text-caption font-semibold text-on-ink" style={{ left: x(p[hover]) }}>
+              {money(p[hover])} · {KEYS.find(([k]) => k === hover)![1]}
+            </motion.div>
+          )}
+        </AnimatePresence>
         <div aria-hidden className="absolute inset-x-0 bottom-0 flex justify-between text-[0.6875rem] text-muted tabular">
           {[0, max / 4, max / 2, (3 * max) / 4, max].map((v) => (
             <span key={v}>{moneyCompact(v)}</span>

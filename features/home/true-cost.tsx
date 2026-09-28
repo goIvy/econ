@@ -7,7 +7,7 @@ import { SampleChip, SourceFootnote } from "@/components/ui/lineage";
 import { Segmented } from "@/components/ui/segmented";
 import { useCountUp } from "@/hooks/use-count-up";
 import { calculateNetCost, sumLines, type CostKey, type CostLine } from "@/lib/calc/cost";
-import { enterSpring } from "@/lib/animations";
+import { collapse, enterSpring } from "@/lib/animations";
 import { money, moneyCompact } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { Lineage } from "@/types";
@@ -112,7 +112,7 @@ export function TrueCost({
           <LedgerRow label="Estimated borrowing" value={net.borrowing} strong rule accent={net.borrowing > 40000 ? "caution" : undefined} />
           <AnimatePresence>
             {net.borrowing > 27000 && (
-              <motion.p initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="mt-3 overflow-hidden text-caption text-caution">
+              <motion.p variants={collapse} initial="hidden" animate="visible" exit="exit" className="mt-3 overflow-hidden text-caption text-caution">
                 Above $27,000, the most a dependent undergraduate can borrow in federal Direct Loans over four years. The rest would need Parent PLUS or private loans, usually at higher rates.
               </motion.p>
             )}

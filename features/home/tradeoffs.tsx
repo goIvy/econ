@@ -1,11 +1,10 @@
 "use client";
 
-import { motion, useInView, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import { useMemo, useRef, useState } from "react";
 import { PathTag, SampleChip, SourceFootnote, TRACE_VAR } from "@/components/ui/lineage";
 import { Segmented } from "@/components/ui/segmented";
-import { RevealGroup, RevealItem } from "@/components/ui/reveal";
-import { enterSpring, revealViewport } from "@/lib/animations";
+import { crossfade, enterSpring, revealViewport } from "@/lib/animations";
 import { money, pct } from "@/lib/format";
 import type { Lineage } from "@/types";
 import type { SamplePath } from "./data";
@@ -56,24 +55,26 @@ export function Tradeoffs({ campus, cHome }: { campus: SamplePath[]; cHome: Samp
   return (
     <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
       <div className="grid content-start gap-6 lg:col-span-4">
-        <RevealGroup className="grid gap-4">
+        <div className="grid gap-4">
           {paths.map((p) => (
-            <RevealItem key={p.key} className="grid gap-2 border-t border-rule pt-4">
+            <div key={p.key} className="grid gap-2 border-t border-rule pt-4">
               <p className="flex items-center gap-2 font-display text-[1.05rem] font-semibold">
                 <PathTag trace={p.key} /> {p.label}
               </p>
               <p className="text-caption text-muted">{p.key === "c" ? cHomeSpec(living, p) : p.spec}</p>
               <ul className="grid gap-1 text-small text-ink-2">
-                {tradeoffsFor(p, paths).map((t) => (
-                  <li key={t} className="flex gap-2">
-                    <span aria-hidden className="mt-[0.6em] h-px w-3 shrink-0 bg-rule-strong" />
-                    {t}
-                  </li>
-                ))}
+                <AnimatePresence initial={false} mode="popLayout">
+                  {tradeoffsFor(p, paths).map((t) => (
+                    <motion.li key={t} layout variants={crossfade} initial="hidden" animate="visible" exit="exit" className="flex gap-2">
+                      <span aria-hidden className="mt-[0.6em] h-px w-3 shrink-0 bg-rule-strong" />
+                      {t}
+                    </motion.li>
+                  ))}
+                </AnimatePresence>
               </ul>
-            </RevealItem>
+            </div>
           ))}
-        </RevealGroup>
+        </div>
         <Segmented
           label="Path C living arrangement"
           value={living}
@@ -148,7 +149,7 @@ function StripRow({ metric, paths, n }: { metric: (typeof METRICS)[number]; path
                 style={{ zIndex: 3 - i }}
               >
                 <span
-                  className="grid size-6 place-items-center rounded-full border-2 border-surface text-[0.6875rem] font-bold text-white shadow-1"
+                  className="grid size-6 place-items-center rounded-full border-2 border-surface text-[0.6875rem] font-bold text-on-ink shadow-1"
                   style={{ background: TRACE_VAR[p.key] }}
                   title={`${p.label}: ${metric.fmt(v)}`}
                 >

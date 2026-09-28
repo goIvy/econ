@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-mot
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SampleChip, SourceFootnote } from "@/components/ui/lineage";
 import { Segmented } from "@/components/ui/segmented";
-import { easeOutExpo, revealViewport } from "@/lib/animations";
+import { crossfade, easeOutExpo, revealViewport, tip, traceDraw } from "@/lib/animations";
 import { money, moneyCompact } from "@/lib/format";
 import type { MajorRowData } from "./data";
 
@@ -93,7 +93,7 @@ export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
       </div>
 
       <div ref={ref} className="relative">
-        <svg width="100%" height={H} viewBox={`0 0 ${width} ${H}`} role="img" aria-label={`Estimated distribution of early-career earnings for ${m.name}. Median ${money(m.early.p50)}; half of graduates earn between ${money(m.early.p25)} and ${money(m.early.p75)}.`}>
+        <svg width="100%" height={H} viewBox={`0 0 ${width} ${H}`} role="group" aria-roledescription="chart" aria-label={`Estimated distribution of early-career earnings for ${m.name}. Median ${money(m.early.p50)}; half of graduates earn between ${money(m.early.p25)} and ${money(m.early.p75)}.`}>
           {/* middle half band */}
           <motion.rect
             initial={false}
@@ -106,18 +106,19 @@ export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
           <motion.path
             key={`area-${id}`}
             d={area}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: inView || reduce ? 1 : 0 }}
-            transition={{ duration: reduce ? 0 : 0.5, delay: reduce ? 0 : 0.3 }}
+            variants={crossfade}
+            initial="hidden"
+            animate={inView || reduce ? "visible" : "hidden"}
             fill="var(--trace-a)"
             fillOpacity={0.1}
           />
           <motion.path
             key={`line-${id}`}
             d={d}
-            initial={{ pathLength: reduce ? 1 : 0 }}
-            animate={{ pathLength: inView || reduce ? 1 : 0 }}
-            transition={{ duration: reduce ? 0 : 0.9, ease: easeOutExpo }}
+            variants={traceDraw}
+            custom={0}
+            initial={reduce ? "visible" : "hidden"}
+            animate={inView || reduce ? "visible" : "hidden"}
             fill="none"
             stroke="var(--trace-a)"
             strokeWidth={2}
@@ -168,10 +169,10 @@ export function SalaryDistribution({ majors }: { majors: MajorRowData[] }) {
         <AnimatePresence>
           {hoverX != null && hoverSalary != null && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.12 }}
+              variants={tip}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               className="pointer-events-none absolute top-2 rounded-sm border border-rule bg-surface px-3 py-2 shadow-2"
               style={{ left: Math.min(hoverX + 12, width - 190) }}
               aria-hidden

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>college-value-lab motion audit — 2026-09-28</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: oklch(0.18 0.006 255); --ink-2: oklch(0.22 0.007 255); --line: oklch(0.32 0.008 255);
+    --paper: oklch(0.96 0.003 255); --paper-dim: oklch(0.74 0.006 255); --paper-mute: oklch(0.6 0.008 255);
+    --crit: oklch(0.655 0.185 25); --imp: oklch(0.805 0.125 78); --opp: oklch(0.745 0.135 152);
+    --t-good: oklch(0.745 0.135 152); --t-mid: oklch(0.805 0.125 78); --t-slow: oklch(0.655 0.185 25);
+    --accent: var(--paper); --accent-soft: var(--paper-dim);
+    --display: "Familjen Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --sans: "Public Sans", ui-sans-serif, system-ui, sans-serif;
+    --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    --bg: var(--ink); --fg: var(--paper); --border: var(--line); --loop-dim: var(--paper-mute);
+  }
+  :root:has(#theme-light:checked) {
+    --ink: oklch(0.98 0.003 255); --ink-2: oklch(0.955 0.004 255); --line: oklch(0.86 0.006 255);
+    --paper: oklch(0.2 0.008 255); --paper-dim: oklch(0.4 0.008 255); --paper-mute: oklch(0.52 0.008 255);
+    --crit: oklch(0.55 0.19 25); --imp: oklch(0.62 0.13 70); --opp: oklch(0.55 0.13 152);
+    --t-good: oklch(0.6 0.13 152); --t-mid: oklch(0.68 0.12 75); --t-slow: oklch(0.56 0.18 25);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ink); color: var(--paper); font: 15px/1.6 var(--sans); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 32px 20px 80px; }
+  .theme-switch { display: flex; justify-content: flex-end; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg label { font: 500 12px var(--mono); padding: 4px 12px; border-radius: 999px; cursor: pointer; color: var(--paper-dim); }
+  .seg input:checked + label { background: var(--paper); color: var(--ink); }
+  .seg input:focus-visible + label { outline: 2px solid var(--paper); outline-offset: 2px; }
+  .mono-label { font: 500 11px/1.2 var(--mono); letter-spacing: .08em; color: var(--paper-mute); }
+  h1.title { font: 700 clamp(28px, 4vw, 42px)/1.1 var(--display); margin: 10px 0 12px; letter-spacing: -.01em; }
+  .lede { color: var(--paper-dim); max-width: 70ch; margin: 0; }
+  .meta-row { margin-top: 10px; font: 12px var(--mono); color: var(--paper-mute); }
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .stat { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; color: inherit; text-decoration: none; min-width: 120px; }
+  .stat b { font: 700 24px var(--display); display: block; }
+  .stat span { font: 12px var(--mono); color: var(--paper-dim); }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+  .dot.crit { background: var(--crit); } .dot.imp { background: var(--imp); } .dot.opp { background: var(--opp); }
+  section { margin-top: 48px; }
+  h2 { font: 600 20px/1.2 var(--display); margin: 6px 0 14px; }
+  .assessment p { font: 500 19px/1.5 var(--display); max-width: 70ch; margin: 8px 0 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font: 500 11px var(--mono); color: var(--paper-mute); letter-spacing: .06em; }
+  tr { transition: border-color .2s ease; }
+  .chip { font: 500 11px var(--mono); border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; color: var(--paper-dim); margin-left: 6px; }
+  .timing svg { width: 100%; height: auto; }
+  .timing .zone-good { fill: var(--t-good); opacity: .14; } .timing .zone-mid { fill: var(--t-mid); opacity: .14; } .timing .zone-slow { fill: var(--t-slow); opacity: .14; }
+  .timing .axis { stroke: var(--line); } .timing text { fill: var(--paper-dim); font: 11px var(--mono); }
+  .timing .pt { fill: var(--paper); } .timing .pt-label { fill: var(--ink); font: 600 10px var(--mono); }
+  .keys { columns: 2; font: 13px var(--sans); color: var(--paper-dim); padding-left: 18px; }
+  .lens-sec { border: 1px solid var(--line); border-radius: 14px; padding: 22px; margin-top: 18px; }
+  .lens-sec h3 { font: 600 18px var(--display); margin: 0; }
+  .lens-block { margin-top: 16px; }
+  .lens-block h4 { font: 500 11px var(--mono); letter-spacing: .08em; color: var(--paper-mute); margin: 0 0 8px; }
+  .lens-list { margin: 0; padding-left: 0; list-style: none; }
+  .lens-list li { margin: 6px 0; padding-left: 22px; position: relative; color: var(--paper-dim); }
+  .lens-list.good li::before { content: "✓"; position: absolute; left: 0; color: var(--opp); }
+  .lens-list.opp li::before { content: "💡"; position: absolute; left: 0; font-size: 12px; }
+  code, .file { font: 12px var(--mono); color: var(--paper); }
+  .finding-row { border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 10px 0; display: grid; gap: 14px; grid-template-columns: 1fr 260px; transition: border-color .2s ease; }
+  .finding-row:hover { border-color: var(--paper-mute); }
+  @media (max-width: 760px) { .finding-row { grid-template-columns: 1fr; } .keys { columns: 1; } }
+  .finding-row h5 { margin: 0 0 6px; font: 600 15px var(--display); }
+  .finding-row p { margin: 4px 0; color: var(--paper-dim); font-size: 14px; }
+  .status { font: 600 11px var(--mono); color: var(--opp); }
+  .lens-take { margin-top: 16px; font-style: italic; color: var(--paper-dim); }
+  .demo-card { border: 1px solid var(--line); border-radius: 10px; background: var(--ink-2); display: grid; grid-template-rows: 1fr auto; min-height: 170px; }
+  .demo-stage { position: relative; display: grid; place-items: center; overflow: hidden; padding: 14px; }
+  .demo-cap { font: 11px var(--mono); color: var(--loop-dim); border-top: 1px solid var(--line); padding: 6px 10px; display: flex; justify-content: space-between; }
+  .ghost-line { height: 8px; border-radius: 4px; background: var(--paper-mute); opacity: .5; }
+  /* ---- per-finding demos: 0% → 66% motion, 66% → 100% hold, 3s loop ---- */
+  .demo-card-1__stage { display: grid; gap: 8px; width: 80%; }
+  .demo-card-1__motion-target { height: 10px; border-radius: 4px; background: var(--paper); animation: motion-1-uniform 3s cubic-bezier(.16,1,.3,1) infinite; }
+  .demo-card-1__motion-target:nth-child(2) { animation-delay: .12s; width: 80%; } .demo-card-1__motion-target:nth-child(3) { animation-delay: .24s; width: 60%; }
+  @keyframes motion-1-uniform { 0% { opacity: 0; transform: translateY(8px); filter: blur(4px); } 30%, 100% { opacity: 1; transform: none; filter: blur(0); } }
+  .demo-card-2__motion-target { width: 70%; height: 46px; border: 1px solid var(--paper-mute); border-radius: 8px; overflow: hidden; animation: motion-2-collapse 3s cubic-bezier(.16,1,.3,1) infinite; }
+  @keyframes motion-2-collapse { 0% { height: 0; opacity: 0; } 40%, 100% { height: 46px; opacity: 1; } }
+  .demo-card-3__stage { display: flex; gap: 6px; }
+  .demo-card-3__motion-target { width: 22px; height: 22px; border-radius: 6px; background: var(--paper); animation: motion-3-stagger 3s cubic-bezier(.16,1,.3,1) infinite; }
+  .demo-card-3__motion-target:nth-child(2) { animation-delay: .06s; } .demo-card-3__motion-target:nth-child(3) { animation-delay: .12s; } .demo-card-3__motion-target:nth-child(4) { animation-delay: .18s; }
+  @keyframes motion-3-stagger { 0% { opacity: 0; transform: translateY(8px); } 30%, 100% { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { [class*="__motion-target"] { animation: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="theme-switch"><div class="seg" role="radiogroup" aria-label="Theme">
+    <input type="radio" name="theme" id="theme-dark" checked><label for="theme-dark">Dark</label>
+    <input type="radio" name="theme" id="theme-light"><label for="theme-light">Light</label>
+  </div></div>
+
+  <header>
+    <div class="mono-label">MOTION AUDIT · DESIGN-MOTION-PRINCIPLES</div>
+    <h1 class="title">college-value-lab: calm instrument, one orchestrated moment</h1>
+    <p class="lede">College Value Lab is a marketing homepage plus research-grade calculators for students and families. Motion should read as a precise instrument responding, not a page performing.</p>
+    <div class="meta-row">Next.js 16 · React 19 · Framer Motion 13 · weighting set by the brief: Jakub primary, Jhey secondary</div>
+    <div class="stats">
+      <a class="stat" href="#rec-crit"><b>1</b><span><i class="dot crit"></i>Critical</span></a>
+      <a class="stat" href="#rec-imp"><b>3</b><span><i class="dot imp"></i>Important</span></a>
+      <a class="stat" href="#rec-opp"><b>4</b><span><i class="dot opp"></i>Opportunities</span></a>
+      <a class="stat" href="#rec-crit"><b>4 / 4</b><span>Critical + Important fixed</span></a>
+    </div>
+  </header>
+
+  <section class="assessment">
+    <div class="mono-label">OVERALL</div>
+    <p>The instrument moments are the strength: trace lines draw, readouts count, markers slide along their scales, and the break-even point settles in last. The first pass diluted that by giving every heading and paragraph the same blur-rise entrance and staggering three lists on one page. Those are now removed. Motion lives where the data changes, the hero keeps its single orchestrated entrance, and every variant sits in one file.</p>
+  </section>
+
+  <section>
+    <div class="mono-label">01 · LENS SUMMARY</div>
+    <h2>How each lens reads it</h2>
+    <table>
+      <thead><tr><th>LENS</th><th>VERDICT</th><th>ONE-LINE READ</th></tr></thead>
+      <tbody>
+        <tr><td>Jakub Krehel<span class="chip">Primary</span></td><td><i class="dot opp"></i>Strong (after fixes)</td><td>Subtle springs (bounce 0), subtler exits, motion only where values change.</td></tr>
+        <tr><td>Jhey Tompkins<span class="chip">Secondary</span></td><td><i class="dot imp"></i>Mixed</td><td>One real delight moment (break-even settle); room for one more on first calculation.</td></tr>
+        <tr><td>Emil Kowalski<span class="chip">Selective: forms, nav</span></td><td><i class="dot opp"></i>Strong</td><td>Filters, pickers, nav and keyboard chart reading are fast or instant.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="timing">
+    <div class="mono-label">02 · WHERE THE TIMINGS LAND</div>
+    <h2>Duration budget</h2>
+    <svg viewBox="0 0 660 300" role="img" aria-label="Animation durations plotted from 0 to 1000 milliseconds">
+      <rect class="zone-good" x="40" y="20" width="57" height="240"/><rect class="zone-good" x="97" y="20" width="114" height="240"/>
+      <rect class="zone-mid" x="211" y="20" width="114" height="240"/><rect class="zone-slow" x="325" y="20" width="315" height="240"/>
+      <line class="axis" x1="40" x2="640" y1="260" y2="260"/>
+      <text x="40" y="280">0</text><text x="92" y="280">100</text><text x="200" y="280">300</text><text x="314" y="280">500</text><text x="600" y="280">1000ms</text>
+      <g><circle class="pt" cx="108" cy="60" r="11"/><text class="pt-label" x="104" y="64">1</text></g>
+      <g><circle class="pt" cx="154" cy="95" r="11"/><text class="pt-label" x="150" y="99">2</text></g>
+      <g><circle class="pt" cx="211" cy="130" r="11"/><text class="pt-label" x="207" y="134">3</text></g>
+      <g><circle class="pt" cx="268" cy="165" r="11"/><text class="pt-label" x="264" y="169">4</text></g>
+      <g><circle class="pt" cx="296" cy="95" r="11"/><text class="pt-label" x="292" y="99">5</text></g>
+      <g><circle class="pt" cx="382" cy="200" r="11"/><text class="pt-label" x="378" y="204">6</text></g>
+      <g><circle class="pt" cx="553" cy="130" r="11"/><text class="pt-label" x="549" y="134">7</text></g>
+      <g><circle class="pt" cx="600" cy="60" r="11"/><text class="pt-label" x="596" y="64">8</text></g>
+    </svg>
+    <ol class="keys">
+      <li>Hover tooltips, 120ms fade</li>
+      <li>Crossfades (tabs, swaps), 200ms</li>
+      <li>Micro springs (buttons, toggles, tray), 300ms</li>
+      <li>Disclosures and sheets, 400ms spring</li>
+      <li>Default enter (hero, results), 450ms spring</li>
+      <li>Readout count-up, 600ms ease-out</li>
+      <li>Trace line draw, 900ms ease-out</li>
+      <li>Break-even marker settle, 500ms after a 900ms delay</li>
+    </ol>
+    <p class="lede"><b>What's off:</b> nothing in the utility band. The two long ones (6 and 7) run only when a result changes, and 8 is the signature moment. All three retarget cleanly if inputs change mid-flight.</p>
+  </section>
+
+  <section>
+    <div class="mono-label">03 · PRIMARY LENS</div>
+    <div class="lens-sec">
+      <h3>Jakub Krehel — Production Polish <span class="chip">Primary</span></h3>
+      <div class="lens-block"><h4>WHAT'S WORKING WELL</h4>
+        <ul class="lens-list good">
+          <li>Brief's enter recipe (opacity + 8px + 4px blur, spring 0.45 / bounce 0) kept for the hero and result panels only: <span class="file">lib/animations.ts › enter</span></li>
+          <li>Exits are shorter and quieter than entrances (120–220ms, smaller travel): <span class="file">enter.exit, collapse.exit, pop.exit</span></li>
+          <li>Values change in place: readouts count from the previous value, strip markers glide to new positions, lines morph instead of redrawing: <span class="file">hooks/use-count-up.ts, features/home/tradeoffs.tsx</span></li>
+          <li>Cards lift with shadow on interaction instead of scale: <span class="file">components/ui/button.tsx, features/college/college-card.tsx</span></li>
+        </ul>
+      </div>
+      <div class="lens-block"><h4>ISSUES TO ADDRESS</h4>
+        <div class="finding-row">
+          <div><h5><i class="dot crit"></i>Critical: uniform blur-rise on every heading and paragraph</h5>
+            <p>Every <code>SectionHeading</code>, the methodology, pricing, FAQ and CTA blocks used the same <code>Reveal</code> (opacity, translateY 8, blur 4px). That is 10+ identical entrances per page, blurring text on first paint.</p>
+            <p><b>Fix applied:</b> static text now renders instantly; <code>components/ui/reveal.tsx</code> was removed. Scroll-triggered motion remains only inside instruments (<code>useInView</code> in strips, curves, gauges, waffle).</p>
+            <p class="status">FIXED</p></div>
+          <div class="demo-card"><div class="demo-stage"><div class="demo-card-1__stage"><div class="demo-card-1__motion-target"></div><div class="demo-card-1__motion-target"></div><div class="demo-card-1__motion-target"></div></div></div><div class="demo-cap"><span>before: every block</span><span>3s loop</span></div></div>
+        </div>
+        <div class="finding-row">
+          <div><h5><i class="dot imp"></i>Important: conditional UI appearing without transition</h5>
+            <p>Nine state-driven renders snapped in: the Compare-another-path button, hero error banner, program fallback banner, in-school interest note, filter reset, simulator debt section, compare chart, percentile tooltip and tradeoff statements.</p>
+            <p><b>Fix applied:</b> wrapped in <code>AnimatePresence</code> with <code>collapse</code>, <code>crossfade</code>, <code>pop</code> or <code>tip</code>.</p>
+            <p class="status">FIXED</p></div>
+          <div class="demo-card"><div class="demo-stage"><div class="demo-card-2__motion-target"></div></div><div class="demo-cap"><span>after: collapse</span><span>3s loop</span></div></div>
+        </div>
+        <div class="finding-row">
+          <div><h5><i class="dot imp"></i>Important: motion defined inline in 20 components</h5>
+            <p>49 inline <code>initial</code>/<code>animate</code>/<code>exit</code> objects drifted from the system (four different collapse timings).</p>
+            <p><b>Fix applied:</b> all moved to named variants in <code>lib/animations.ts</code> (<code>collapse</code>, <code>overlay</code>, <code>tip</code>, <code>growWidth</code>, <code>cellIn</code>, <code>stepSlide</code>, <code>row</code>, <code>endDot</code>). Zero inline definitions remain.</p>
+            <p class="status">FIXED</p></div>
+          <div class="demo-card"><div class="demo-stage"><div class="demo-card-2__motion-target"></div></div><div class="demo-cap"><span>one collapse, everywhere</span><span>3s loop</span></div></div>
+        </div>
+      </div>
+      <div class="lens-block"><h4>OPPORTUNITIES</h4>
+        <ul class="lens-list opp">
+          <li>Shorten the count-up to about 400ms while a slider is actively dragging, and keep 600ms for button-triggered recalculation: <span class="file">hooks/use-count-up.ts</span></li>
+        </ul>
+      </div>
+      <p class="lens-take">Through Jakub's lens: polish now has hierarchy. The page is quiet until a number changes, and then the change itself is what moves.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="mono-label">04 · SECONDARY LENS</div>
+    <div class="lens-sec">
+      <h3>Jhey Tompkins — Experimentation &amp; Delight <span class="chip">Secondary</span></h3>
+      <div class="lens-block"><h4>WHAT'S WORKING WELL</h4>
+        <ul class="lens-list good">
+          <li>The break-even marker settles in with a small spring (bounce 0.15) after the lines finish drawing. It's the one intentional delight, and it's earned: <span class="file">lib/animations.ts › markerSettle</span></li>
+          <li>The employment waffle fills one graduate at a time when scrolled into view, a data story rather than decoration: <span class="file">features/outcomes/outcomes-panel.tsx</span></li>
+        </ul>
+      </div>
+      <div class="lens-block"><h4>ISSUES TO ADDRESS</h4>
+        <div class="finding-row">
+          <div><h5><i class="dot imp"></i>Important: stagger on three lists in one view</h5>
+            <p>The hero stagger, tradeoff statements and the data-sources list all staggered on the homepage, so the stagger stopped reading as a moment.</p>
+            <p><b>Fix applied:</b> the hero (and the mobile menu, which appears alone) keep stagger; the other lists render in place.</p>
+            <p class="status">FIXED</p></div>
+          <div class="demo-card"><div class="demo-stage"><div class="demo-card-3__stage"><div class="demo-card-3__motion-target"></div><div class="demo-card-3__motion-target"></div><div class="demo-card-3__motion-target"></div><div class="demo-card-3__motion-target"></div></div></div><div class="demo-cap"><span>keep for hero only</span><span>3s loop</span></div></div>
+        </div>
+      </div>
+      <div class="lens-block"><h4>OPPORTUNITIES</h4>
+        <ul class="lens-list opp">
+          <li>When "Compare another path" adds trace B, briefly highlight where A and B diverge (a 400ms tint sweep along the gap) before the crossing marker lands: <span class="file">components/charts/trace-chart.tsx</span></li>
+          <li>Onboarding completion could draw a tiny preview trace of the first path instead of a static check mark: <span class="file">features/onboarding/onboarding.tsx</span></li>
+        </ul>
+      </div>
+      <p class="lens-take">Through Jhey's lens: delight is rationed well. There's room for one more moment on the first comparison, and no more than that.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="mono-label">05 · SELECTIVE LENS</div>
+    <div class="lens-sec">
+      <h3>Emil Kowalski — Restraint &amp; Speed <span class="chip">Selective: forms, nav</span></h3>
+      <div class="lens-block"><h4>WHAT'S WORKING WELL</h4>
+        <ul class="lens-list good">
+          <li>Keyboard reading of charts (arrow keys) moves the crosshair instantly with no animation: <span class="file">trace-chart.tsx › onKey</span></li>
+          <li>Filters update results through URL transitions with no per-card entrance; the result list only reflows with <code>layout</code>.</li>
+          <li>No bounce on utility actions: dropdowns, sheets, toggles and dialogs all use bounce 0.</li>
+        </ul>
+      </div>
+      <div class="lens-block"><h4>OPPORTUNITIES</h4>
+        <ul class="lens-list opp">
+          <li>Info tooltips: delay the first one, then show subsequent ones instantly within the same hover session: <span class="file">components/ui/info-tip.tsx</span></li>
+        </ul>
+      </div>
+      <p class="lens-take">Through Emil's lens: the high-frequency surfaces (filters, pickers, keyboard) stay out of the way.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="mono-label">06 · RECOMMENDATIONS</div>
+    <h2 id="rec-crit"><i class="dot crit"></i>Critical</h2>
+    <table><tbody><tr><td>Remove uniform entrances from static text</td><td class="file">section.tsx, page.tsx, pricing.tsx, methodology-credibility.tsx</td><td class="status">Fixed</td></tr></tbody></table>
+    <h2 id="rec-imp"><i class="dot imp"></i>Important</h2>
+    <table><tbody>
+      <tr><td>AnimatePresence on 9 conditional renders</td><td class="file">hero-instrument, major-panel, debt-model, explore-filters, simulator, compare-workspace, percentile-strip, tradeoffs</td><td class="status">Fixed</td></tr>
+      <tr><td>Consolidate 49 inline motion definitions into lib/animations.ts</td><td class="file">20 components</td><td class="status">Fixed</td></tr>
+      <tr><td>Limit stagger to the hero</td><td class="file">tradeoffs.tsx, transparency.tsx</td><td class="status">Fixed</td></tr>
+    </tbody></table>
+    <h2 id="rec-opp"><i class="dot opp"></i>Opportunities</h2>
+    <table><tbody>
+      <tr><td>Faster count-up during slider drag</td><td class="file">hooks/use-count-up.ts</td><td>Open</td></tr>
+      <tr><td>Divergence sweep when trace B is added</td><td class="file">components/charts/trace-chart.tsx</td><td>Open</td></tr>
+      <tr><td>Preview trace on onboarding completion</td><td class="file">features/onboarding/onboarding.tsx</td><td>Open</td></tr>
+      <tr><td>Tooltip first-delay, then instant</td><td class="file">components/ui/info-tip.tsx</td><td>Open</td></tr>
+    </tbody></table>
+  </section>
+
+  <section>
+    <div class="mono-label">07 · ACCESSIBILITY</div>
+    <h2>Reduced motion</h2>
+    <p class="lede">Verified: <code>MotionConfig reducedMotion="user"</code> disables transform animation globally; <code>motionSafe()</code> swaps entrances to a 150ms opacity crossfade; the count-up shows the final value directly; trace lines, strips, gauges and the waffle render in their final state; no infinite loops besides loading skeletons.</p>
+  </section>
+</div>
+</body>
+</html>

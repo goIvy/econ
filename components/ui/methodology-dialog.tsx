@@ -6,7 +6,7 @@ import { BookOpen, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { LIMITATIONS, METHODOLOGIES } from "@/data/methodologies";
-import { pop } from "@/lib/animations";
+import { overlay, pop } from "@/lib/animations";
 import { cn } from "@/lib/cn";
 
 /**
@@ -26,7 +26,7 @@ export function MethodologyDialog({ ids, label = "How this is calculated", class
         {open && (
           <Dialog.Portal forceMount>
             <Dialog.Overlay asChild forceMount>
-              <motion.div className="fixed inset-0 z-50 bg-ink/35" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+              <motion.div className="fixed inset-0 z-50 bg-ink/35" variants={overlay} initial="hidden" animate="visible" exit="exit" />
             </Dialog.Overlay>
             <div className="fixed inset-0 z-50 grid place-items-end sm:place-items-center sm:p-6">
               <Dialog.Content asChild forceMount>

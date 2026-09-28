@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Reveal } from "@/components/ui/reveal";
 import { LIMITATIONS } from "@/data/methodologies";
 
 const FORMULAS: Array<{ name: string; formula: string; plain: string }> = [
@@ -29,7 +28,7 @@ const FORMULAS: Array<{ name: string; formula: string; plain: string }> = [
 export function MethodologyCredibility() {
   return (
     <div className="grid gap-12 lg:grid-cols-12">
-      <Reveal className="lg:col-span-7">
+      <div className="lg:col-span-7">
         <dl className="grid gap-0 border-t border-ink/30">
           {FORMULAS.map((f) => (
             <div key={f.name} className="grid gap-1 border-b border-rule py-5 md:grid-cols-[11rem_1fr] md:gap-6">
@@ -44,8 +43,8 @@ export function MethodologyCredibility() {
         <Link href="/methodology" className="mt-6 inline-block text-small font-semibold text-ink underline decoration-rule-strong underline-offset-4 hover:decoration-ink">
           Read the full methodology
         </Link>
-      </Reveal>
-      <Reveal delay={0.1} className="lg:col-span-5">
+      </div>
+      <div className="lg:col-span-5">
         <div className="rounded-lg bg-ink p-6 text-surface sm:p-8">
           <p className="font-display text-h3 font-semibold text-surface">What this can&apos;t tell you</p>
           <ul className="mt-5 grid gap-3">
@@ -57,7 +56,7 @@ export function MethodologyCredibility() {
             ))}
           </ul>
         </div>
-      </Reveal>
+      </div>
     </div>
   );
 }

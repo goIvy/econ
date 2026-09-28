@@ -15,10 +15,8 @@ export function useCountUp(target: number, opts: { from?: number; enabled?: bool
   const enabled = opts.enabled ?? true;
 
   useEffect(() => {
-    if (!enabled) return;
-    if (reduce) {
+    if (!enabled || reduce) {
       prev.current = target;
-      setValue(target);
       return;
     }
     const controls = animate(prev.current, target, {
@@ -30,5 +28,7 @@ export function useCountUp(target: number, opts: { from?: number; enabled?: bool
     return () => controls.stop();
   }, [target, reduce, enabled]);
 
+  // Under reduced motion (or before enabling) show the target directly: no animation, no extra render.
+  if (reduce || !enabled) return target;
   return value;
 }

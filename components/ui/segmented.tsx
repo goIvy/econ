@@ -62,7 +62,7 @@ export function Segmented<T extends string>({
               className={cn(
                 "relative z-0 flex flex-1 flex-col items-center justify-center rounded-[7px] px-3 text-center outline-offset-1 transition-colors", wrap && "basis-[30%] md:basis-0",
                 size === "md" ? "min-h-10 py-1.5" : "min-h-8 py-1",
-                active ? "text-white" : "text-ink-2 hover:text-ink",
+                active ? "text-on-ink" : "text-ink-2 hover:text-ink",
                 o.disabled && "opacity-40",
               )}
             >
@@ -76,7 +76,7 @@ export function Segmented<T extends string>({
               )}
               <span className={cn("font-semibold leading-tight", size === "md" ? "text-small" : "text-caption")}>{o.label}</span>
               {o.hint && (
-                <span className={cn("tabular text-[0.75rem] leading-tight", active ? "text-white/80" : "text-muted")}>{o.hint}</span>
+                <span className={cn("tabular text-[0.75rem] leading-tight", active ? "text-on-ink/80" : "text-muted")}>{o.hint}</span>
               )}
             </RadioGroup.Item>
           );

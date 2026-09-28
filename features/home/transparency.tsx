@@ -1,7 +1,6 @@
 "use client";
 
 import { LineageBody, SourceFootnote } from "@/components/ui/lineage";
-import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { SOURCES } from "@/data/sources";
 import type { Lineage, SourceId } from "@/types";
 
@@ -40,20 +39,20 @@ export function Transparency({ specimen }: { specimen: { label: string; value: s
 
       <div>
         <p className="mb-4 font-display text-h3 font-semibold">Built on public data</p>
-        <RevealGroup stagger={0.04} className="grid border-t border-rule sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid border-t border-rule sm:grid-cols-2 lg:grid-cols-3">
           {STRIP.map((s) => {
             const src = SOURCES[s.id];
             return (
-              <RevealItem key={s.id} className="grid gap-0.5 border-b border-rule py-4 sm:pr-6">
+              <div key={s.id} className="grid gap-0.5 border-b border-rule py-4 sm:pr-6">
                 <p className="text-small font-semibold text-ink">
                   {src.name}
                   <span className="font-normal text-muted"> · {src.publisher}</span>
                 </p>
                 <p className="text-caption text-ink-2">{s.what}</p>
-              </RevealItem>
+              </div>
             );
           })}
-        </RevealGroup>
+        </div>
       </div>
     </div>
   );

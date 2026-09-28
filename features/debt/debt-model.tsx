@@ -1,5 +1,9 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
+
+import { collapse } from "@/lib/animations";
+
 import { useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { GraduatedSlider } from "@/components/ui/graduated-slider";
@@ -77,11 +81,13 @@ export function DebtModel({ defaultPrincipal, yearsInSchool = 4 }: { defaultPrin
           <Readout label="Total repayment" value={s.totalRepayment} format={money} lineage={MODEL} footnote={3} />
           <Readout label="Years to payoff" value={s.payoffYears} format={(n) => n.toFixed(0)} lineage={MODEL} footnote={4} />
         </dl>
-        {s.inSchoolInterest > 0 && (
-          <p className="text-caption text-muted">
-            Includes {money(s.inSchoolInterest)} of interest that builds up during {yearsInSchool} years of school and a six-month grace period.
-          </p>
-        )}
+        <AnimatePresence initial={false}>
+          {s.inSchoolInterest > 0 && (
+            <motion.p key="isi" variants={collapse} initial="hidden" animate="visible" exit="exit" className="overflow-hidden text-caption text-muted">
+              Includes {money(s.inSchoolInterest)} of interest that builds up during {yearsInSchool} years of school and a six-month grace period.
+            </motion.p>
+          )}
+        </AnimatePresence>
         <figure className="grid gap-3">
           <figcaption className="flex items-center gap-2 text-caption text-ink-2">
             <LineKey trace="a" /> Remaining balance by year of repayment

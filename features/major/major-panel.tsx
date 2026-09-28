@@ -1,11 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { AlertTriangle } from "lucide-react";
 import { PercentileStrip } from "@/components/charts/percentile-strip";
 import { Readout } from "@/components/ui/readout";
 import { SampleChip, SourceFootnote } from "@/components/ui/lineage";
-import { enterSpring } from "@/lib/animations";
+import { collapse, growWidth } from "@/lib/animations";
 import { money, pct } from "@/lib/format";
 import type { CollegeMajorOutcome, Major, Occupation } from "@/types";
 
@@ -23,14 +23,16 @@ export function MajorPanel({ bundle, collegeName }: { bundle: MajorBundle; colle
   const mid = outcome?.midCareerMedian.value ?? major.midCareerMedian.value;
   return (
     <div className="grid gap-8">
+      <AnimatePresence initial={false}>
       {outcome?.isFallback && (
-        <div className="flex gap-3 rounded-md border border-caution/30 bg-caution-tint p-4 text-small text-caution" role="note">
+        <motion.div key={`fb-${major.id}`} variants={collapse} initial="hidden" animate="visible" exit="exit" className="flex gap-3 overflow-hidden rounded-md border border-caution/30 bg-caution-tint p-4 text-small text-caution" role="note">
           <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
           <p>
             <strong className="font-semibold">No field-of-study salary data is available for this program{collegeName ? ` at ${collegeName}` : ""}.</strong> Showing the national earnings for {major.name}, adjusted to this institution&apos;s earnings level. Try viewing institution-wide outcomes on the Earnings tab too.
           </p>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="grid content-start gap-3 lg:col-span-7">
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -100,7 +102,7 @@ export function MajorPanel({ bundle, collegeName }: { bundle: MajorBundle; colle
               <li key={ind.industry} className="grid grid-cols-[9rem_1fr] items-center gap-3">
                 <span className="truncate text-small text-ink-2">{ind.industry}</span>
                 <span className="flex items-center gap-2">
-                  <motion.span className="block h-[14px] rounded-r-[4px] bg-trace-b" initial={{ width: 0 }} animate={{ width: `${ind.share * 150}%` }} transition={enterSpring} style={{ maxWidth: "80%" }} />
+                  <motion.span className="block h-[14px] rounded-r-[4px] bg-trace-b" variants={growWidth} custom={`${Math.min(80, ind.share * 150)}%`} initial="hidden" animate="visible" />
                   <span className="tabular text-caption font-semibold text-ink">{pct(ind.share * 100)}</span>
                 </span>
               </li>

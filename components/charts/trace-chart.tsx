@@ -1,8 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { crossfade, easeOutExpo, markerSettle } from "@/lib/animations";
+import { useEffect, useId, useRef, useState } from "react";
+import { collapse, crossfade, easeOutExpo, endDot, markerSettle, tip } from "@/lib/animations";
 import { moneyCompact, money } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { LineKey, TRACE_DASH, TRACE_VAR, type TraceKey } from "@/components/ui/lineage";
@@ -99,15 +99,12 @@ export function TraceChart({
   const yMin = yTicks[0];
   const yMax = yTicks[yTicks.length - 1];
 
-  const sx = useCallback((x: number) => M.left + ((x - xMin) / (xMax - xMin || 1)) * innerW, [xMin, xMax, innerW]);
-  const sy = useCallback((y: number) => M.top + (1 - (y - yMin) / (yMax - yMin || 1)) * innerH, [yMin, yMax, innerH]);
+  const sx = (x: number) => M.left + ((x - xMin) / (xMax - xMin || 1)) * innerW;
+  const sy = (y: number) => M.top + (1 - (y - yMin) / (yMax - yMin || 1)) * innerH;
 
-  const xTicks = useMemo(() => {
-    const step = compact ? 6 : 3;
-    const out: number[] = [];
-    for (let x = Math.ceil(xMin / step) * step; x <= xMax; x += step) out.push(x);
-    return out;
-  }, [xMin, xMax, compact]);
+  const xTicks: number[] = [];
+  const xStep = compact ? 6 : 3;
+  for (let x = Math.ceil(xMin / xStep) * xStep; x <= xMax; x += xStep) xTicks.push(x);
 
   const paths = series.map((s) => ({
     ...s,
@@ -115,7 +112,7 @@ export function TraceChart({
   }));
 
   // End labels: sorted by y, nudged apart with leader lines when they'd collide.
-  const endLabels = useMemo(() => {
+  const endLabels = (() => {
     if (compact) return [];
     const items = series.map((s) => {
       const last = s.points[s.points.length - 1];
@@ -124,7 +121,7 @@ export function TraceChart({
     items.sort((a, b) => a.lineY - b.lineY);
     for (let i = 1; i < items.length; i++) if (items[i].y - items[i - 1].y < 30) items[i].y = items[i - 1].y + 30;
     return items;
-  }, [series, sy, compact]);
+  })();
 
   const onMove = (e: React.PointerEvent<SVGRectElement>) => {
     const rect = (e.currentTarget.ownerSVGElement as SVGSVGElement).getBoundingClientRect();
@@ -171,7 +168,8 @@ export function TraceChart({
           width="100%"
           height={height}
           viewBox={`0 0 ${width} ${height}`}
-          role="img"
+          role="group"
+          aria-roledescription="chart"
           aria-label={`${title}. ${summary}`}
           className="block overflow-visible"
         >
@@ -247,9 +245,12 @@ export function TraceChart({
               return (
                 <motion.circle
                   key={`${s.id}-end`}
-                  initial={{ opacity: 0, cx: sx(last.x), cy: sy(last.y) }}
-                  animate={{ opacity: 1, cx: sx(last.x), cy: sy(last.y) }}
-                  transition={{ duration: reduce ? 0 : 0.4, delay: reduce ? 0 : 0.8 }}
+                  cx={sx(last.x)}
+                  cy={sy(last.y)}
+                  variants={endDot}
+                  custom={reduce ? 0 : 0.8}
+                  initial="hidden"
+                  animate="visible"
                   r={4.5}
                   fill={TRACE_VAR[s.trace]}
                   stroke="var(--surface)"
@@ -277,16 +278,16 @@ export function TraceChart({
           {/* break-even marker */}
           <AnimatePresence>
             {drawn && marker && (
-              <motion.g key={`${marker.x.toFixed(2)}`} initial="hidden" animate="visible" exit={{ opacity: 0 }} custom={reduce ? 0 : 0.9} variants={reduce ? crossfade : markerSettle} style={{ originX: `${sx(marker.x)}px`, originY: `${sy(marker.y)}px` }}>
+              <motion.g key={`${marker.x.toFixed(2)}`} initial="hidden" animate="visible" exit="exit" custom={reduce ? 0 : 0.9} variants={reduce ? crossfade : markerSettle} style={{ originX: `${sx(marker.x)}px`, originY: `${sy(marker.y)}px` }}>
                 <line x1={sx(marker.x)} x2={sx(marker.x)} y1={M.top} y2={M.top + innerH} stroke="var(--ink)" strokeWidth={1} />
                 <circle cx={sx(marker.x)} cy={sy(marker.y)} r={6} fill="var(--surface)" stroke="var(--ink)" strokeWidth={2} />
                 <circle cx={sx(marker.x)} cy={sy(marker.y)} r={2.5} fill="var(--ink)" />
                 <g transform={`translate(${Math.min(sx(marker.x) + 8, M.left + innerW - 150)}, ${M.top + innerH - 44})`}>
                   <rect width={150} height={36} rx={8} fill="var(--ink)" />
-                  <text x={10} y={15} className="fill-white text-[11px] font-semibold">
+                  <text x={10} y={15} className="fill-on-ink text-[11px] font-semibold">
                     {marker.label}
                   </text>
-                  <text x={10} y={28} className="fill-white/75 text-[10px]">
+                  <text x={10} y={28} className="fill-on-ink/75 text-[10px]">
                     Estimate, not a prediction
                   </text>
                 </g>
@@ -336,10 +337,11 @@ export function TraceChart({
           {hx != null && (
             <motion.div
               key="tip"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1, left: tipOnLeft ? tipLeft - 12 : tipLeft + 12 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.12 }}
+              variants={tip}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              style={{ left: tipOnLeft ? tipLeft - 12 : tipLeft + 12 }}
               className={cn("pointer-events-none absolute top-3 z-10 min-w-44 rounded-sm border border-rule bg-surface p-3 shadow-2", tipOnLeft && "-translate-x-full")}
               aria-hidden
             >
@@ -367,7 +369,7 @@ export function TraceChart({
       {caption}
       <AnimatePresence initial={false}>
         {showTable && (
-          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+          <motion.div variants={collapse} initial="hidden" animate="visible" exit="exit" className="overflow-hidden">
             <div className="max-h-72 overflow-auto rounded-sm border border-rule">
               <table className="w-full text-small">
                 <caption className="sr-only">{title}</caption>

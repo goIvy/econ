@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Accordion as A } from "radix-ui";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { microSpring } from "@/lib/animations";
+import { collapse, microSpring } from "@/lib/animations";
 
 /** Accordion with animated height; content exits through AnimatePresence. */
 export function Accordion({ items }: { items: Array<{ q: string; a: React.ReactNode }> }) {
@@ -28,10 +28,10 @@ export function Accordion({ items }: { items: Array<{ q: string; a: React.ReactN
               {isOpen && (
                 <A.Content forceMount asChild>
                   <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+                    variants={collapse}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
                     className="overflow-hidden"
                   >
                     <div className="measure pb-6 text-body text-ink-2">{it.a}</div>

@@ -8,7 +8,7 @@ import { useState } from "react";
 import type { Confidence, Lineage } from "@/types";
 import { SOURCES } from "@/data/sources";
 import { getMethodology } from "@/data/methodologies";
-import { pop, sheet } from "@/lib/animations";
+import { overlay, pop, sheet } from "@/lib/animations";
 import { cn } from "@/lib/cn";
 import { useMedia } from "@/hooks/use-media";
 
@@ -105,7 +105,7 @@ export function SourceFootnote({ metric, lineage, n, className }: { metric: stri
     <button
       type="button"
       className={cn(
-        "tabular inline-flex h-[1.15rem] min-w-[1.15rem] -translate-y-[0.35em] items-center justify-center rounded-[4px] border border-rule-strong bg-surface px-1 align-baseline text-[0.625rem] font-semibold leading-none text-ink-2 transition-colors hover:border-ink hover:text-ink",
+        "tabular relative inline-flex h-[1.15rem] min-w-[1.15rem] -translate-y-[0.35em] items-center justify-center rounded-[4px] border border-rule-strong bg-surface px-1 align-baseline text-[0.625rem] font-semibold leading-none text-ink-2 transition-colors after:absolute after:-inset-[5px] after:content-[''] hover:border-ink hover:text-ink",
         className,
       )}
       aria-label={`View source for ${metric}`}
@@ -146,7 +146,7 @@ export function SourceFootnote({ metric, lineage, n, className }: { metric: stri
         {open && (
           <Dialog.Portal forceMount>
             <Dialog.Overlay asChild forceMount>
-              <motion.div className="fixed inset-0 z-50 bg-ink/30" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+              <motion.div className="fixed inset-0 z-50 bg-ink/30" variants={overlay} initial="hidden" animate="visible" exit="exit" />
             </Dialog.Overlay>
             <Dialog.Content asChild forceMount>
               <motion.div
@@ -187,7 +187,7 @@ export function PathTag({ trace, className, size = "md" }: { trace: TraceKey; cl
   return (
     <span
       className={cn(
-        "inline-grid shrink-0 place-items-center rounded-xs font-sans font-bold leading-none text-white",
+        "inline-grid shrink-0 place-items-center rounded-xs font-sans font-bold leading-none text-on-ink",
         size === "md" ? "size-[22px] text-[0.8125rem]" : "size-[18px] text-[0.6875rem]",
         className,
       )}

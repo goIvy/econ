@@ -4,7 +4,7 @@ import { motion, useInView, useReducedMotion } from "framer-motion";
 import { useRef } from "react";
 import { InfoTip } from "@/components/ui/info-tip";
 import { SampleChip, SourceFootnote } from "@/components/ui/lineage";
-import { enterSpring, revealViewport } from "@/lib/animations";
+import { cellIn, growWidth, revealViewport } from "@/lib/animations";
 import { pct } from "@/lib/format";
 import type { College, Major } from "@/types";
 
@@ -79,7 +79,7 @@ function Gauge({ label, value, lineage }: { label: string; value: number | null;
       </p>
       <p className="tabular text-readout font-semibold text-ink">{pct(value)}</p>
       <div className="relative h-3 overflow-hidden rounded-full bg-surface-sunk" role="img" aria-label={`${label}: ${pct(value)}`}>
-        <motion.div className="h-full rounded-full bg-trace-a" initial={{ width: 0 }} animate={{ width: inView || reduce ? `${value ?? 0}%` : 0 }} transition={enterSpring} />
+        <motion.div className="h-full rounded-full bg-trace-a" variants={growWidth} custom={`${value ?? 0}%`} initial={reduce ? "visible" : "hidden"} animate={inView || reduce ? "visible" : "hidden"} />
         {[25, 50, 75].map((t) => (
           <span key={t} aria-hidden className="absolute inset-y-0 w-px bg-surface" style={{ left: `${t}%` }} />
         ))}
@@ -106,10 +106,11 @@ function Waffle({ segments }: { segments: Array<{ label: string; value: number; 
             <motion.span
               key={i}
               className="block size-3.5 rounded-[3px] sm:size-4"
-              style={{ background: s.color, backgroundImage: s.hatch ? "repeating-linear-gradient(45deg, transparent 0 2px, rgba(255,255,255,.45) 2px 3px)" : undefined }}
-              initial={{ opacity: reduce ? 1 : 0, scale: reduce ? 1 : 0.6 }}
-              animate={inView || reduce ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.25, delay: reduce ? 0 : i * 0.006 }}
+              style={{ background: s.color, backgroundImage: s.hatch ? "repeating-linear-gradient(45deg, transparent 0 2px, color-mix(in srgb, var(--on-ink) 45%, transparent) 2px 3px)" : undefined }}
+              variants={cellIn}
+              custom={reduce ? 0 : i}
+              initial={reduce ? "visible" : "hidden"}
+              animate={inView || reduce ? "visible" : "hidden"}
             />
           );
         })}
@@ -117,7 +118,7 @@ function Waffle({ segments }: { segments: Array<{ label: string; value: number; 
       <ul className="grid gap-2">
         {segments.map((s) => (
           <li key={s.label} className="flex items-start gap-2 text-small text-ink-2">
-            <span aria-hidden className="mt-1 size-3.5 shrink-0 rounded-[3px]" style={{ background: s.color, backgroundImage: s.hatch ? "repeating-linear-gradient(45deg, transparent 0 2px, rgba(255,255,255,.45) 2px 3px)" : undefined }} />
+            <span aria-hidden className="mt-1 size-3.5 shrink-0 rounded-[3px]" style={{ background: s.color, backgroundImage: s.hatch ? "repeating-linear-gradient(45deg, transparent 0 2px, color-mix(in srgb, var(--on-ink) 45%, transparent) 2px 3px)" : undefined }} />
             <span>
               <strong className="tabular font-semibold text-ink">{Math.round(s.value)} in 100</strong> {s.label.toLowerCase()}
             </span>

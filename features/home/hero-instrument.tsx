@@ -11,7 +11,7 @@ import { Segmented } from "@/components/ui/segmented";
 import { TraceChart, type TraceSeries } from "@/components/charts/trace-chart";
 import { useCountUp } from "@/hooks/use-count-up";
 import { crossing, usePath } from "@/hooks/use-path";
-import { crossfade, enter, motionSafe } from "@/lib/animations";
+import { collapse, crossfade, enter, motionSafe, pop } from "@/lib/animations";
 import { money, moneyCompact } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { PathResponse } from "@/lib/api/path-response";
@@ -139,10 +139,10 @@ export function HeroInstrument({ colleges, majors }: { colleges: CollegeOption[]
           {comparing && (
             <motion.div
               key="b"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ type: "spring", duration: 0.45, bounce: 0 }}
+              variants={collapse}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               className="overflow-hidden"
             >
               <div className="border-t border-dashed border-rule pt-5">
@@ -165,11 +165,15 @@ export function HeroInstrument({ colleges, majors }: { colleges: CollegeOption[]
           <Button onClick={calculate} size="lg" disabled={loading} aria-describedby="demo-assumptions">
             {loading ? "Calculating…" : "Calculate My Path"}
           </Button>
-          {!comparing && dataA && (
-            <Button variant="secondary" size="lg" onClick={startCompare}>
-              <Plus className="size-4" aria-hidden /> Compare another path
-            </Button>
-          )}
+          <AnimatePresence>
+            {!comparing && dataA && (
+              <motion.span key="cmp" variants={pop} initial="hidden" animate="visible" exit="exit">
+                <Button variant="secondary" size="lg" onClick={startCompare}>
+                  <Plus className="size-4" aria-hidden /> Compare another path
+                </Button>
+              </motion.span>
+            )}
+          </AnimatePresence>
           <AnimatePresence>
             {stale && !loading && (
               <motion.span variants={crossfade} initial="hidden" animate="visible" exit="exit" className="text-caption font-medium text-caution" role="status">
@@ -192,12 +196,14 @@ export function HeroInstrument({ colleges, majors }: { colleges: CollegeOption[]
             <ResultsSkeleton key="sk" />
           ) : (
             <motion.div key="res" variants={motionSafe(enter, reduce)} initial="hidden" animate="visible" className={cn("grid gap-6 transition-opacity", (loading || stale) && "opacity-60")}>
-              {(runA.status === "error" || runB.status === "error") && (
-                <p className="flex items-start gap-2 rounded-sm bg-risk-tint px-3 py-2 text-small text-risk" role="alert">
-                  <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden />
-                  {runA.error ?? runB.error}
-                </p>
-              )}
+              <AnimatePresence initial={false}>
+                {(runA.status === "error" || runB.status === "error") && (
+                  <motion.p key="err" variants={collapse} initial="hidden" animate="visible" exit="exit" className="flex items-start gap-2 overflow-hidden rounded-sm bg-risk-tint px-3 py-2 text-small text-risk" role="alert">
+                    <AlertCircle className="mt-0.5 size-4 shrink-0" aria-hidden />
+                    {runA.error ?? runB.error}
+                  </motion.p>
+                )}
+              </AnimatePresence>
               <Readouts a={dataA} b={dataB} />
               <TraceChart
                 title="Cumulative net value by age"
@@ -286,7 +292,7 @@ function Readouts({ a, b }: { a: PathResponse; b: PathResponse | null }) {
     return (
       <dl className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3">
         {rows.map((r, i) => (
-          <HeroReadout key={r.label} label={r.label} value={r.get(a)} fmt={r.fmt} unit={r.unit} lineage={r.lineage(a)} n={i + 1} emphasis={i === 0} />
+          <HeroReadout key={r.label} label={r.label} value={r.get(a)} fmt={r.fmt} unit={r.unit} lineage={r.lineage(a)} n={i + 1} />
         ))}
       </dl>
     );
@@ -331,10 +337,10 @@ function CountCell({ value, fmt }: { value: number | null; fmt: (n: number) => s
   return value == null ? <span className="text-small text-muted">After {HERO_HORIZON}</span> : <span className="tabular text-[1.0625rem] font-semibold text-ink">{fmt(v)}</span>;
 }
 
-function HeroReadout({ label, value, fmt, unit, lineage, n, emphasis }: { label: string; value: number | null; fmt: (n: number) => string; unit?: string; lineage: PathResponse["lineage"]["model"]; n: number; emphasis?: boolean }) {
+function HeroReadout({ label, value, fmt, unit, lineage, n }: { label: string; value: number | null; fmt: (n: number) => string; unit?: string; lineage: PathResponse["lineage"]["model"]; n: number }) {
   const v = useCountUp(value ?? 0, { enabled: value != null });
   return (
-    <div className={cn("grid content-start gap-1", )}>
+    <div className="grid content-start gap-1">
       <dt className="text-caption font-medium text-muted">{label}</dt>
       <dd className="flex items-baseline gap-1">
         {value == null ? (

@@ -10,7 +10,7 @@ import { MethodologyDialog } from "@/components/ui/methodology-dialog";
 import { CostControls, CostLedger } from "@/features/cost/cost-model";
 import { DebtModel } from "@/features/debt/debt-model";
 import { usePath } from "@/hooks/use-path";
-import { crossfade } from "@/lib/animations";
+import { crossfade, enter } from "@/lib/animations";
 import { money } from "@/lib/format";
 import type { FundingInputs, LivingArrangement, Residency } from "@/types";
 import type { CollegeMeta } from "@/features/comparison/compare-workspace";
@@ -128,15 +128,17 @@ export function Simulator({ colleges, majors, tuition }: { colleges: CollegeMeta
         </section>
       </div>
 
+      <AnimatePresence>
       {d && offered && (
-        <section aria-labelledby="debt-h" className="grid gap-6 border-t border-rule pt-10">
+        <motion.section key="debt" variants={enter} initial="hidden" animate="visible" exit="exit" aria-labelledby="debt-h" className="grid gap-6 border-t border-rule pt-10">
           <div className="grid max-w-[44rem] gap-2">
             <h2 id="debt-h" className="text-h2 font-bold">Debt calculator</h2>
             <p className="text-lede text-ink-2">Starts from the borrowing estimated above. Change the rate, loan type or term to see how payments and interest move.</p>
           </div>
           <DebtModel key={Math.round(d.net.borrowing)} defaultPrincipal={d.net.borrowing} />
-        </section>
+        </motion.section>
       )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -14,7 +14,7 @@ import { MethodologyDialog } from "@/components/ui/methodology-dialog";
 import { Segmented } from "@/components/ui/segmented";
 import { crossing } from "@/hooks/use-path";
 import { specKey, usePaths, type PathSpec } from "@/hooks/use-paths";
-import { enter, microSpring } from "@/lib/animations";
+import { enter, row } from "@/lib/animations";
 import { money, moneyCompact, pct } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import type { PathResponse } from "@/lib/api/path-response";
@@ -193,7 +193,7 @@ export function CompareWorkspace({
           <tbody>
             <AnimatePresence initial={false}>
               {sorted.map((r) => (
-                <motion.tr key={specKey(r.spec) + r.i} layout transition={microSpring} initial={{ opacity: 0 }} animate={{ opacity: r.res.status === "loading" ? 0.55 : 1 }} exit={{ opacity: 0 }} className="border-b border-rule last:border-b-0">
+                <motion.tr key={specKey(r.spec) + r.i} layout variants={row} custom={r.res.status === "loading"} initial="hidden" animate="visible" exit="exit" className="border-b border-rule last:border-b-0">
                   <th scope="row" className="px-4 py-3 text-left font-normal">
                     <span className="flex items-start gap-2.5">
                       <PathTag trace={r.trace} />
@@ -272,16 +272,18 @@ export function CompareWorkspace({
         )}
       </AnimatePresence>
 
+      <AnimatePresence>
       {paths.length > 0 && (
-        <section aria-labelledby="cum-h" className="rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
+        <motion.section key="chart" variants={enter} initial="hidden" animate="visible" exit="exit" aria-labelledby="cum-h" className="rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
           <h2 id="cum-h" className="mb-4 text-h3 font-semibold">Cumulative net value</h2>
           <TraceChart title="Cumulative net value by path" series={series} marker={marker} band={{ from: 18, to: 22, label: "College" }} summary={summary} height={340} />
           <p className="mt-3 text-caption text-muted">
             Assumes {money(FUNDING.familyPerYear)}/yr family contribution{FUNDING.savings > 0 ? `, ${money(FUNDING.savings)} in savings` : ""} and {money(FUNDING.workPerYear)}/yr from work for every path. Debt is repaid over 10 years at the federal rate.
             {FUNDING.plannedLoan > 0 && ` You planned to borrow up to ${money(FUNDING.plannedLoan)}; paths whose estimated debt is higher would need more aid or a different plan.`}
           </p>
-        </section>
+        </motion.section>
       )}
+      </AnimatePresence>
     </div>
   );
 }

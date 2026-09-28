@@ -153,7 +153,7 @@ function ResidencyPills({ value, onChange, state }: { value: Residency; onChange
   return (
     <div role="radiogroup" aria-label={`Residency (${state})`} className="flex items-center gap-1 rounded-sm border border-rule bg-surface-sunk p-1">
       {(["resident", "nonresident"] as const).map((r) => (
-        <button key={r} role="radio" aria-checked={value === r} onClick={() => onChange(r)} className={cn("relative h-9 rounded-[7px] px-3 text-small font-semibold transition-colors", value === r ? "text-white" : "text-ink-2 hover:text-ink")}>
+        <button key={r} role="radio" aria-checked={value === r} onClick={() => onChange(r)} className={cn("relative h-9 rounded-[7px] px-3 text-small font-semibold transition-colors", value === r ? "text-on-ink" : "text-ink-2 hover:text-ink")}>
           {value === r && <motion.span layoutId="res-pill" transition={microSpring} className="absolute inset-0 -z-0 rounded-[7px] bg-ink" />}
           <span className="relative">{r === "resident" ? `${state} resident` : "Non-resident"}</span>
         </button>

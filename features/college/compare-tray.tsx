@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { PathTag, TRACE_KEYS } from "@/components/ui/lineage";
 import { COMPARE_MAX, useCompareList } from "@/hooks/use-compare-list";
-import { sheet } from "@/lib/animations";
+import { pop, sheet } from "@/lib/animations";
 
 /** Fixed tray listing queued colleges, with the path to /compare. */
 export function CompareTray({ names }: { names: Record<string, string> }) {
@@ -29,7 +29,7 @@ export function CompareTray({ names }: { names: Record<string, string> }) {
             <ul className="flex min-w-0 flex-1 flex-wrap gap-2">
               <AnimatePresence initial={false}>
                 {ids.map((id, i) => (
-                  <motion.li key={id} layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }}>
+                  <motion.li key={id} layout variants={pop} initial="hidden" animate="visible" exit="exit">
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-rule bg-paper py-1 pl-1.5 pr-1 text-small text-ink">
                       <PathTag trace={TRACE_KEYS[i]} size="sm" />
                       <span className="max-w-[10rem] truncate">{names[id] ?? id}</span>

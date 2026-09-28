@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Menu, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ButtonLink } from "@/components/ui/button";
-import { enter, microSpring, staggerParent } from "@/lib/animations";
+import { collapse, enter, microSpring, staggerParent } from "@/lib/animations";
 import { cn } from "@/lib/cn";
 import { Logo } from "./logo";
 
@@ -48,7 +48,7 @@ export function Nav() {
         scrolled ? "border-rule shadow-1" : "border-transparent",
       )}
     >
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-sm focus:bg-ink focus:px-3 focus:py-2 focus:text-white">
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-sm focus:bg-ink focus:px-3 focus:py-2 focus:text-on-ink">
         Skip to content
       </a>
       <div className="mx-auto flex h-[var(--nav-h)] max-w-[1200px] items-center gap-6 px-4 md:px-8 xl:px-12">
@@ -102,10 +102,11 @@ export function Nav() {
           <motion.nav
             id="mobile-nav"
             aria-label="Main"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "calc(100dvh - var(--nav-h))" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ type: "spring", duration: 0.4, bounce: 0 }}
+            variants={collapse}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            style={{ maxHeight: "calc(100dvh - var(--nav-h))" }}
             className="overflow-y-auto border-t border-rule bg-paper lg:hidden"
           >
             <motion.ul variants={staggerParent(0.04, 0.05)} initial="hidden" animate="visible" className="grid gap-1 px-4 py-4">

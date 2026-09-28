@@ -3,7 +3,6 @@ import { Footer } from "@/components/site/footer";
 import { AxisRule, Section, SectionHeading } from "@/components/site/section";
 import { ButtonLink } from "@/components/ui/button";
 import { Accordion } from "@/components/ui/accordion";
-import { Reveal } from "@/components/ui/reveal";
 import { Hero } from "@/features/home/hero";
 import { Tradeoffs } from "@/features/home/tradeoffs";
 import { TrueCost } from "@/features/home/true-cost";
@@ -142,16 +141,15 @@ export default function HomePage() {
             <div className="lg:col-span-4">
               <SectionHeading id="h-faq" title="Questions families ask" />
             </div>
-            <Reveal className="lg:col-span-8">
+            <div className="lg:col-span-8">
               <Accordion items={FAQ} />
-            </Reveal>
+            </div>
           </div>
         </Section>
 
         <section aria-labelledby="h-cta" className="relative isolate overflow-hidden border-t border-rule">
-          <div aria-hidden className="measured-field pointer-events-none absolute inset-0 -z-10 opacity-70" />
           <div aria-hidden className="field-wash pointer-events-none absolute inset-0 -z-10" />
-          <Reveal className="mx-auto grid max-w-[1200px] justify-items-start gap-6 px-4 py-24 md:px-8 md:py-32 xl:px-12">
+          <div className="mx-auto grid max-w-[1200px] justify-items-start gap-6 px-4 py-24 md:px-8 md:py-32 xl:px-12">
             <h2 id="h-cta" className="max-w-[18ch] text-h1 font-bold">
               Run the paths you&apos;re actually choosing between.
             </h2>
@@ -164,7 +162,7 @@ export default function HomePage() {
                 Compare Colleges
               </ButtonLink>
             </div>
-          </Reveal>
+          </div>
         </section>
       </main>
       <Footer />

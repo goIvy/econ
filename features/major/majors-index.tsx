@@ -5,7 +5,7 @@ import { ChevronDown, Search } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Segmented } from "@/components/ui/segmented";
 import { SampleChip } from "@/components/ui/lineage";
-import { microSpring } from "@/lib/animations";
+import { collapse, microSpring } from "@/lib/animations";
 import { money, moneyCompact, pct } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { MajorPanel, type MajorBundle } from "./major-panel";
@@ -83,7 +83,7 @@ export function MajorsIndex({ bundles }: { bundles: MajorBundle[] }) {
                 </button>
                 <AnimatePresence initial={false}>
                   {isOpen && (
-                    <motion.div id={`major-${m.id}`} initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ type: "spring", duration: 0.45, bounce: 0 }} className="overflow-hidden">
+                    <motion.div id={`major-${m.id}`} variants={collapse} initial="hidden" animate="visible" exit="exit" className="overflow-hidden">
                       <div className={cn("border-t border-rule bg-paper px-4 py-6 sm:px-6")}>
                         <p className="measure mb-6 text-small text-ink-2">{m.blurb} National figures for bachelor&apos;s degree holders; open a college to see its program-level data.</p>
                         <MajorPanel bundle={b} />

@@ -88,6 +88,59 @@ export const markerSettle: Variants = {
   }),
 };
 
+/** Height-collapse for disclosures, notes and banners that appear in place. */
+export const collapse: Variants = {
+  hidden: { height: 0, opacity: 0 },
+  visible: { height: "auto", opacity: 1, transition: { type: "spring", duration: 0.4, bounce: 0 } },
+  exit: { height: 0, opacity: 0, transition: { duration: 0.2, ease: easeOutExpo } },
+};
+
+/** Dim overlay behind dialogs and sheets. */
+export const overlay: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.2 } },
+  exit: { opacity: 0, transition: { duration: 0.15 } },
+};
+
+/** Hover tooltips: fast fade only (they follow the pointer, so no travel). */
+export const tip: Variants = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.12 } },
+  exit: { opacity: 0, transition: { duration: 0.08 } },
+};
+
+/** Bars that grow to their value; pass the target width as `custom`. */
+export const growWidth: Variants = {
+  hidden: { width: 0 },
+  visible: (width: string) => ({ width, transition: enterSpring }),
+};
+
+/** Waffle cells fill in sequence; pass the cell index as `custom`. */
+export const cellIn: Variants = {
+  hidden: { opacity: 0, scale: 0.6 },
+  visible: (i: number) => ({ opacity: 1, scale: 1, transition: { duration: 0.25, delay: i * 0.006 } }),
+};
+
+/** Onboarding steps slide in the direction of travel; pass +1 / -1 as `custom`. */
+export const stepSlide: Variants = {
+  hidden: (dir: number) => ({ opacity: 0, x: dir * 32, filter: "blur(4px)" }),
+  visible: { opacity: 1, x: 0, filter: "blur(0px)", transition: enterSpring },
+  exit: (dir: number) => ({ opacity: 0, x: dir * -24, filter: "blur(2px)", transition: { duration: 0.18 } }),
+};
+
+/** Table rows: fade in, dim while their data reloads (`custom` = loading). */
+export const row: Variants = {
+  hidden: { opacity: 0 },
+  visible: (loading: boolean = false) => ({ opacity: loading ? 0.55 : 1, transition: { duration: 0.2 } }),
+  exit: { opacity: 0, transition: { duration: 0.15 } },
+};
+
+/** End-of-line dots appear after the trace finishes drawing. */
+export const endDot: Variants = {
+  hidden: { opacity: 0 },
+  visible: (delay: number = 0.8) => ({ opacity: 1, transition: { duration: 0.4, delay } }),
+};
+
 /** Count-up duration for readouts (ms). */
 export const COUNT_UP_MS = 600;
 

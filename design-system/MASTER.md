@@ -22,6 +22,8 @@ All text/background pairs below were measured against `--paper` and `--surface` 
 | `--surface` | `#FFFFFF` | Cards, instrument panels, inputs | — |
 | `--surface-sunk` | `#F1EEE7` | Wells, table stripes, track of sliders | — |
 | `--ink` | `#10213A` | Primary text, axes, primary button fill | 14.96 |
+| `--ink-hover` | `#1B3152` | Primary button hover | — |
+| `--on-ink` | `#FFFFFF` | Text and marks on ink or trace fills (= surface) | — |
 | `--ink-2` | `#3E4C63` | Secondary text, body copy on long reads | 8.04 |
 | `--muted` | `#5B677A` | Captions, units, axis labels, footnotes | 5.31 |
 | `--rule` | `#DDD8CE` | Borders, dividers (non-text) | 1.32 |

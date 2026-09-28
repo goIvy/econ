@@ -1,6 +1,5 @@
 import { Check, Minus } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
-import { Reveal } from "@/components/ui/reveal";
 
 /**
  * PLACEHOLDER PRICING. No prices have been decided (PRODUCT.md). The tiers
@@ -23,7 +22,7 @@ const FEATURES: Array<[string, [boolean, boolean, boolean]]> = [
 
 export function Pricing() {
   return (
-    <Reveal>
+    <div>
       <div className="mb-6 flex items-start gap-3 rounded-md border border-caution/30 bg-caution-tint px-4 py-3 text-small text-caution" role="note">
         <span className="font-semibold">Placeholder pricing, not final.</span>
         <span>Tiers and prices haven&apos;t been decided. This table shows structure only.</span>
@@ -87,6 +86,6 @@ export function Pricing() {
           </tbody>
         </table>
       </div>
-    </Reveal>
+    </div>
   );
 }

@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Popover } from "radix-ui";
 import { Check, ChevronsUpDown, X } from "lucide-react";
 import { useId, useState } from "react";
-import { pop } from "@/lib/animations";
+import { collapse, pop } from "@/lib/animations";
 import { cn } from "@/lib/cn";
 
 export interface ComboOption {
@@ -164,7 +164,7 @@ export function MultiCombobox({
                 onSelect={() => onChange(on ? values.filter((v) => v !== o.value) : [...values, o.value])}
                 className="flex cursor-pointer items-center gap-3 rounded-xs px-2.5 py-2 text-small text-ink data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-40 data-[selected=true]:bg-surface-sunk"
               >
-                <span className={cn("grid size-4 shrink-0 place-items-center rounded-[4px] border", on ? "border-ink bg-ink text-white" : "border-rule-strong bg-surface")} aria-hidden>
+                <span className={cn("grid size-4 shrink-0 place-items-center rounded-[4px] border", on ? "border-ink bg-ink text-on-ink" : "border-rule-strong bg-surface")} aria-hidden>
                   {on && <Check className="size-3" strokeWidth={3} />}
                 </span>
                 <span className="min-w-0 flex-1">
@@ -179,9 +179,10 @@ export function MultiCombobox({
       <AnimatePresence initial={false}>
         {values.length > 0 && (
           <motion.ul
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
+            variants={collapse}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
             className="flex flex-wrap gap-2"
             aria-label={`Selected ${label.toLowerCase()}`}
           >
