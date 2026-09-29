@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
+import "@designcodeio/threeui/style.css";
 import "./globals.css";
 
 /** Editorial display serif for headlines (Instrument Serif, OFL, via @fontsource files). */

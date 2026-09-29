@@ -17,6 +17,8 @@ const eslintConfig = defineConfig([
     "backend/**",
     // img2threejs pipeline evidence (generator output, not app code).
     ".img2threejs/**",
+    // Vendored ThreeUI adapter code (MIT), kept as published.
+    "features/threeui/vendor/**",
   ]),
 ]);
 

@@ -1,7 +1,8 @@
 "use client";
 
 import { AnimatePresence, animate, motion, useMotionValue, useSpring, useTransform, type AnimationPlaybackControls, type MotionValue } from "framer-motion";
-import { Pause, Play, RotateCcw } from "@/components/ui/icons";
+import dynamic from "next/dynamic";
+import { Pause, RotateCcw } from "@/components/ui/icons";
 import { Slider } from "radix-ui";
 import { useEffect, useRef, useState } from "react";
 import { AnimatedNumber, useMeasuredWidth, useSteppedValue } from "@/components/motion";
@@ -17,6 +18,11 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/cn";
 import { HORIZON, PATH_DASH, PATH_VAR, pathNo, useScenario, type Future } from "@/features/scenario/store";
 
+
+const LiquidMetalButton = dynamic(() => import("@designcodeio/threeui/components/LiquidMetalButton").then((m) => m.LiquidMetalButton), {
+  ssr: false,
+  loading: () => <span aria-hidden className="block size-full rounded-full bg-[#070708]" />,
+});
 const START = 18;
 /** Play runs 18 → 40 in ten seconds. */
 const PLAY_SECONDS = 10;
@@ -93,10 +99,19 @@ export function BreakEvenExplorer() {
 
         <div className="grid gap-4 sm:grid-cols-[auto_1fr] sm:items-center">
           <div className="flex gap-2">
-            <Button onClick={play} aria-pressed={playing} className="gap-2">
-              {playing ? <Pause className="size-4" aria-hidden /> : <Play className="size-4" aria-hidden />}
-              {playing ? "Pause" : "Play my future"}
-            </Button>
+            {playing ? (
+              <Button onClick={play} aria-pressed className="h-[72px] gap-2 px-6">
+                <Pause className="size-4" aria-hidden /> Pause
+              </Button>
+            ) : (
+              <span className="flex items-center gap-3">
+                {/* ThreeUI liquid-metal play control (MIT); the label below names it for sighted users. */}
+                <span className="relative block size-[88px] shrink-0 overflow-hidden rounded-full">
+                  <LiquidMetalButton variant="play" rendering="colored" diameter={88} strokeWidth={3} text="Play my future" onClick={play} />
+                </span>
+                <span className="text-small font-medium text-ink">Play my future</span>
+              </span>
+            )}
             <Button variant="quiet" onClick={() => { stop(); target.set(START); }} aria-label="Back to 18">
               <RotateCcw className="size-4" aria-hidden />
             </Button>

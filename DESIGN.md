@@ -4,7 +4,19 @@
 >
 > Design read: **an overhaul of a consumer decision tool.** Dials: variance 7, motion 7, density 4.
 
-## 0. v4 update: cinematic editorial
+## 0. v5 update: light, with ThreeUI moments
+
+The owner found the dark default confusing, so the site is **light only** (no theme switch). The cinematic serif typography, white-on-ink pills and inset rounded stages stay. Five ThreeUI components (MIT, `@designcodeio/threeui` 1.2.0) carry the "wow" moments, each fitted to the site:
+
+- **Hero: Gallery** (Three.js r149, pinned as `three149`). Sixteen curved panels on a vertical rail over the paper grid. The bundled photographs are replaced with plates drawn from real college paths, and the inside faces use a mirrored texture so plate type never reads backwards (`features/threeui/college-gallery.tsx`).
+- **"Why this exists": SylvaLivingWorldScene** behind a frosted panel. Its authored font is served from `/inner-green-assets/` with a CORS header, because the scene runs in an opaque-origin iframe.
+- **"Every college is a path": TextPathStudies globe study** in light mode, with the continents written in our own phrase (`features/threeui/college-globe.tsx`; the adapter is vendored under `features/threeui/vendor/`).
+- **"Play my future": LiquidMetalButton** (play variant, 88px) in the payoff chart.
+- **Sign-off: SemanticBloom** drawing "College Value Lab" above the footer.
+
+Not used: OrbGallery, AshenPress and GetStartedButton (not in the published package), GalleryHeading (its headline is fixed to another product's copy), Sketchbook, TempleNight, Landscape, WarpField and AnimatedTopDock (off-brand for a light college site, or duplicating the nav).
+
+## 0b. v4 update: cinematic editorial
 
 Restyled after an owner-supplied reference reel of cinematic hero templates. What changed from v3 (everything below still applies unless it says otherwise):
 

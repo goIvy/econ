@@ -485,22 +485,12 @@
   }
 }
 
+
 @layer components {
-  .statement-canvas {
-    background: color-mix(in srgb, var(--paper) 55%, #000);
-    box-shadow: 0 0 0 1px var(--rule);
+  /* The quiet paper grid behind the hero (matches ThreeUI Gallery's authored ground). */
+  .paper-grid {
+    background-color: #f1f1ef;
+    background-image: radial-gradient(rgba(13, 13, 13, 0.13) 1px, transparent 1px);
+    background-size: 28px 28px;
   }
-  :root[data-theme="light"] .statement-canvas { background: #e9e9ec; }
-  .drift-a { animation: drift-a 22s var(--ease-premium) infinite alternate; }
-  .drift-b { animation: drift-b 26s var(--ease-premium) infinite alternate; }
-  .drift-c { animation: drift-c 30s var(--ease-premium) infinite alternate; }
-  @keyframes drift-a { to { transform: translate3d(18%, 12%, 0) scale(1.1); } }
-  @keyframes drift-b { to { transform: translate3d(-14%, -10%, 0) scale(0.92); } }
-  @keyframes drift-c { to { transform: translate3d(10%, -18%, 0) scale(1.15); } }
-  @media (prefers-reduced-motion: reduce) {
-    .drift-a, .drift-b, .drift-c { animation: none; }
-  }
-}
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) .statement-canvas { background: #e9e9ec; }
 }

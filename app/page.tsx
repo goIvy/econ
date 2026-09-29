@@ -9,6 +9,8 @@ import { Hero } from "@/features/start/hero";
 import { FinalCta } from "@/features/start/final-cta";
 import { Statement } from "@/features/start/statement";
 import { PopularPaths } from "@/features/start/popular-paths";
+import { GlobeSection } from "@/features/start/globe-section";
+import { Wordmark } from "@/features/start/wordmark";
 import { Results } from "@/features/results/results";
 import { Compare } from "@/features/results/compare";
 import { StickySummary } from "@/features/results/sticky-summary";
@@ -69,6 +71,7 @@ export default function HomePage() {
             <Compare />
           </Chapter>
 
+          <GlobeSection />
           <PopularPaths />
           <Statement />
 
@@ -108,6 +111,7 @@ export default function HomePage() {
           </Chapter>
 
           <FinalCta />
+          <Wordmark />
         </main>
         <StickySummary />
       </ScenarioProvider>
