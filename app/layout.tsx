@@ -33,19 +33,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0a0c",
-  colorScheme: "dark light",
+  themeColor: "#f4f4f5",
+  colorScheme: "light",
 };
-
-/** Dark is the default. Applies a saved Light or System choice before first paint (no flash). */
-const THEME_SCRIPT = `try{var t=localStorage.getItem("cvl-theme");if(t==="light")document.documentElement.dataset.theme="light";else if(t==="system")delete document.documentElement.dataset.theme}catch(e){}`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-theme="dark" className={`${GeistSans.variable} ${GeistMono.variable} ${serif.variable}`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
-      </head>
+    <html lang="en" data-theme="light" className={`${GeistSans.variable} ${GeistMono.variable} ${serif.variable}`}>
       <body className="min-h-dvh overflow-x-clip bg-paper text-ink">
         <Providers>{children}</Providers>
       </body>

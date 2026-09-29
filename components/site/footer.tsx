@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Logo } from "./logo";
-import { ThemeSwitch } from "./theme-switch";
 
 const COLUMNS: Array<{ title: string; links: Array<[string, string]> }> = [
   { title: "Start", links: [["/#starter", "Build your path"], ["/compare", "Compare colleges"], ["/saved", "Saved comparisons"]] },
@@ -42,7 +41,6 @@ export function Footer() {
               Privacy
             </Link>
           </p>
-          <ThemeSwitch />
         </div>
       </div>
     </footer>

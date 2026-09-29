@@ -3,13 +3,12 @@ import { PageShell } from "@/components/site/page-shell";
 
 export const metadata: Metadata = {
   title: "Privacy",
-  description: "What College Value Lab stores: your saved comparisons and theme choice, in your own browser. No accounts, no tracking.",
+  description: "What College Value Lab stores: your saved comparisons, in your own browser. No accounts, no tracking.",
 };
 
 const POINTS: Array<[string, string]> = [
   ["No accounts", "You never sign up or log in. There is nothing to create, and nothing about you on a server."],
   ["Saved comparisons stay in your browser", "When you save a comparison, it is kept in this browser's local storage. Clearing your browser data removes it."],
-  ["Your theme choice", "If you pick Light or Dark, that single setting is stored the same way. \"System\" stores nothing."],
   ["Calculations run on your device", "Costs, debt and projections are calculated in your browser from the data shipped with the page."],
 ];
 
