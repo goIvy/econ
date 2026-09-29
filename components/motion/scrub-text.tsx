@@ -3,16 +3,24 @@
 import { useEffect, useRef } from "react";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/cn";
+import type { BlurPart } from "./blur-words";
 
 /**
  * A sentence that lights up word by word as it scrolls through the viewport
  * (GSAP ScrollTrigger, scrubbed). Screen readers get the plain sentence;
  * under reduced motion every word is simply shown at full strength.
  */
-export function ScrubText({ text, className }: { text: string; className?: string }) {
+export function ScrubText({ text, parts, className }: { text?: string; parts?: BlurPart[]; className?: string }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const reduce = useReducedMotion();
-  const words = text.split(" ");
+  // Plain text, or parts where { em } words are set in italic.
+  const segs: Array<{ w: string; em: boolean }> = (parts ?? [text ?? ""]).flatMap((p) =>
+    (typeof p === "string" ? p : p.em)
+      .split(" ")
+      .filter(Boolean)
+      .map((w) => ({ w, em: typeof p !== "string" })),
+  );
+  const plain = segs.map((x) => x.w).join(" ");
 
   useEffect(() => {
     if (reduce || !ref.current) return;
@@ -39,12 +47,20 @@ export function ScrubText({ text, className }: { text: string; className?: strin
 
   return (
     <p ref={ref} className={cn("text-pretty", className)}>
-      <span className="sr-only">{text}</span>
+      <span className="sr-only">{plain}</span>
       <span aria-hidden>
-        {words.map((w, i) => (
-          <span key={i} data-w className="inline-block whitespace-pre">
-            {w}
-            {i < words.length - 1 ? " " : ""}
+        {segs.map(({ w, em }, i) => (
+          <span key={i}>
+            {em ? (
+              <em data-w className="inline-block">
+                {w}
+              </em>
+            ) : (
+              <span data-w className="inline-block">
+                {w}
+              </span>
+            )}
+            {i < segs.length - 1 ? " " : ""}
           </span>
         ))}
       </span>

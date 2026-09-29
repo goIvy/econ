@@ -45,7 +45,7 @@ export function Results({ advanced }: { advanced: React.ReactNode }) {
               </span>
               {personal ? "Your result" : "Example result"}
             </p>
-            <h2 id="your-path-h" tabIndex={-1} className="text-[clamp(2.25rem,5vw,4rem)] font-semibold leading-[0.95] tracking-[-0.05em] outline-none text-balance">
+            <h2 id="your-path-h" tabIndex={-1} className="text-[clamp(2.8rem,6.4vw,5.4rem)] leading-[0.92] tracking-[-0.015em] outline-none text-balance">
               {f.ctx.college.shortName}
             </h2>
             <p className="text-lede text-ink-2">

@@ -1,8 +1,19 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+import localFont from "next/font/local";
 import { Providers } from "@/components/providers";
 import "./globals.css";
+
+/** Editorial display serif for headlines (Instrument Serif, OFL, via @fontsource files). */
+const serif = localFont({
+  variable: "--font-instrument-serif",
+  display: "swap",
+  src: [
+    { path: "../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2", weight: "400", style: "normal" },
+    { path: "../node_modules/@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2", weight: "400", style: "italic" },
+  ],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://collegevaluelab.com"),
@@ -22,19 +33,16 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4f4f5" },
-    { media: "(prefers-color-scheme: dark)", color: "#0e0f12" },
-  ],
-  colorScheme: "light dark",
+  themeColor: "#0a0a0c",
+  colorScheme: "dark light",
 };
 
-/** Applies a saved Light/Dark choice before first paint (no flash). "System" stores nothing. */
-const THEME_SCRIPT = `try{var t=localStorage.getItem("cvl-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`;
+/** Dark is the default. Applies a saved Light or System choice before first paint (no flash). */
+const THEME_SCRIPT = `try{var t=localStorage.getItem("cvl-theme");if(t==="light")document.documentElement.dataset.theme="light";else if(t==="system")delete document.documentElement.dataset.theme}catch(e){}`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`} suppressHydrationWarning>
+    <html lang="en" data-theme="dark" className={`${GeistSans.variable} ${GeistMono.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>

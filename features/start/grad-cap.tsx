@@ -18,7 +18,7 @@ import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeom
  *
  * Stylized, not exact: a single image cannot show the underside or the back.
  */
-export function GradCap({ tossKey = 0, className }: { tossKey?: number; className?: string }) {
+export function GradCap({ tossKey = 0, className, orbit = false }: { tossKey?: number; className?: string; orbit?: boolean }) {
   const mountRef = useRef<HTMLDivElement>(null);
   const tossRef = useRef<(() => void) | null>(null);
   const firstToss = useRef(tossKey);
@@ -41,8 +41,14 @@ export function GradCap({ tossKey = 0, className }: { tossKey?: number; classNam
     const scene = new THREE.Scene();
     // Reference camera: elevated ~28 deg, looking down at the board's 3/4 view.
     const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 50);
-    camera.position.set(0, 1.08, 2.85);
-    camera.lookAt(0, 0.1, 0);
+    // With the orbit the camera pulls back so the rings have room to sweep across the stage.
+    if (orbit) {
+      camera.position.set(0, 0.95, 4.0);
+      camera.lookAt(0, 0.12, 0);
+    } else {
+      camera.position.set(0, 1.08, 2.85);
+      camera.lookAt(0, 0.1, 0);
+    }
 
     // ------------------------------------------------------------ materials
     const felt = new THREE.MeshStandardMaterial({ color: "#1d1e23", roughness: 0.78, metalness: 0 });
@@ -154,6 +160,81 @@ export function GradCap({ tossKey = 0, className }: { tossKey?: number; classNam
     shadow.position.y = -0.2;
     scene.add(shadow);
 
+    // ------------------------------------------------------------ orbit
+    // Three tilted rings of glowing particles sweep around the cap, plus faint dust.
+    // Points (one draw call per ring), soft round sprites, additive on dark.
+    const sprite = document.createElement("canvas");
+    sprite.width = sprite.height = 64;
+    const spx = sprite.getContext("2d")!;
+    const sg = spx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    sg.addColorStop(0, "rgba(255,255,255,1)");
+    sg.addColorStop(0.25, "rgba(255,255,255,0.75)");
+    sg.addColorStop(1, "rgba(255,255,255,0)");
+    spx.fillStyle = sg;
+    spx.fillRect(0, 0, 64, 64);
+    const spriteTex = new THREE.CanvasTexture(sprite);
+    const orbitGroup = new THREE.Group();
+    orbitGroup.position.y = 0.16;
+    orbitGroup.rotation.set(0.18, 0, 0.32);
+    const rings: THREE.Points[] = [];
+    const orbitGeos: THREE.BufferGeometry[] = [];
+    const orbitMats: THREE.PointsMaterial[] = [];
+    // Deterministic noise so the orbit looks the same on every visit.
+    let seed = 7;
+    const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+    const gauss = () => Math.sqrt(-2 * Math.log(rand() + 1e-9)) * Math.cos(2 * Math.PI * rand());
+    const palette = [new THREE.Color("#eef2ff"), new THREE.Color("#ffffff"), new THREE.Color("#f08a55"), new THREE.Color("#ffd29a")];
+    const makePoints = (count: number, place: (i: number, v: THREE.Vector3) => void, size: number) => {
+      const positions = new Float32Array(count * 3);
+      const cols = new Float32Array(count * 3);
+      const v = new THREE.Vector3();
+      const col = new THREE.Color();
+      for (let i = 0; i < count; i++) {
+        place(i, v);
+        positions.set([v.x, v.y, v.z], i * 3);
+        const r = rand();
+        col.copy(palette[r < 0.55 ? 0 : r < 0.8 ? 1 : r < 0.93 ? 2 : 3]).multiplyScalar(0.45 + Math.pow(rand(), 3) * 1.6);
+        cols.set([col.r, col.g, col.b], i * 3);
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute("color", new THREE.BufferAttribute(cols, 3));
+      const mat = new THREE.PointsMaterial({ size, map: spriteTex, vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true });
+      orbitGeos.push(geo);
+      orbitMats.push(mat);
+      return new THREE.Points(geo, mat);
+    };
+    if (orbit) {
+      scene.add(orbitGroup);
+      [
+        { radius: 0.98, width: 0.045, count: 2600, size: 0.036 },
+        { radius: 1.3, width: 0.1, count: 4200, size: 0.03 },
+        { radius: 1.7, width: 0.06, count: 2600, size: 0.028 },
+      ].forEach((band) => {
+        const ring = makePoints(
+          band.count,
+          (_, v) => {
+            const a = rand() * Math.PI * 2;
+            // Denser, brighter arcs: bunch angles a little so the ring reads as streaks.
+            const r = band.radius + gauss() * band.width + Math.sin(a * 3) * 0.03;
+            v.set(Math.cos(a) * r, gauss() * 0.018, Math.sin(a) * r * 0.92);
+          },
+          band.size,
+        );
+        rings.push(ring);
+        orbitGroup.add(ring);
+      });
+      const dust = makePoints(
+        700,
+        (_, v) => {
+          v.set((rand() - 0.5) * 7, (rand() - 0.5) * 3.2, (rand() - 0.5) * 3 - 0.6);
+        },
+        0.012,
+      );
+      scene.add(dust);
+      rings.push(dust);
+    }
+
     // ------------------------------------------------------------ lighting
     const key = new THREE.DirectionalLight("#ffffff", 2.2);
     key.position.set(-2, 3, 2.5);
@@ -174,6 +255,13 @@ export function GradCap({ tossKey = 0, className }: { tossKey?: number; classNam
       rim.intensity = dark ? 2.0 : 1.1;
       fill.intensity = dark ? 0.9 : 0.7;
       shadowMat.opacity = dark ? 0.9 : 0.45;
+      // Light theme: glowing (additive) points vanish on a pale ground, so draw them as ember ink.
+      orbitMats.forEach((m) => {
+        m.blending = dark ? THREE.AdditiveBlending : THREE.NormalBlending;
+        m.color.set(dark ? "#ffffff" : "#c4531f");
+        m.opacity = dark ? 1 : 0.75;
+        m.needsUpdate = true;
+      });
     };
     applyTheme();
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
@@ -244,6 +332,15 @@ export function GradCap({ tossKey = 0, className }: { tossKey?: number; classNam
       // The drop hangs off the +z edge: swing around x (toward/away) and z (side to side).
       hang.rotation.x = sway + Math.sin(t * 1.6) * 0.04;
       hang.rotation.z = Math.sin(t * 1.2) * 0.05;
+      if (orbit) {
+        // Rings turn at different speeds (inner fastest); the whole orbit leans toward the pointer.
+        rings[0].rotation.y = t * 0.32;
+        rings[1].rotation.y = -t * 0.2;
+        rings[2].rotation.y = t * 0.12;
+        rings[3].rotation.y = t * 0.02;
+        orbitGroup.rotation.x += (0.18 + pointer.y * 0.08 - orbitGroup.rotation.x) * 0.04;
+        orbitGroup.rotation.z += (0.32 - pointer.x * 0.08 - orbitGroup.rotation.z) * 0.04;
+      }
       renderer.render(scene, camera);
     };
 
@@ -262,6 +359,7 @@ export function GradCap({ tossKey = 0, className }: { tossKey?: number; classNam
 
     if (reduce) {
       cap.rotation.set(base.pitch, base.yaw, 0);
+      rings.forEach((r, i) => (r.rotation.y = i * 0.9));
       renderer.render(scene, camera);
       const rerender = () => renderer.render(scene, camera);
       themeObserver.disconnect();
@@ -293,14 +391,16 @@ export function GradCap({ tossKey = 0, className }: { tossKey?: number; classNam
       mq.removeEventListener("change", applyTheme);
       window.removeEventListener("pointermove", onPointer);
       [boardGeo, skullGeo, buttonGeo, cordTopGeo, cordDropGeo, headGeo, bullionGeo, shadowGeo].forEach((g) => g.dispose());
-      [felt, feltInner, satin, bullionMat, shadowMat].forEach((m) => m.dispose());
+      [felt, feltInner, satin, bullionMat, shadowMat, ...orbitMats].forEach((m) => m.dispose());
+      orbitGeos.forEach((g) => g.dispose());
       shadowTex.dispose();
+      spriteTex.dispose();
       renderer.dispose();
       renderer.domElement.remove();
       tossRef.current = null;
     }
     return cleanup;
-  }, []);
+  }, [orbit]);
 
   // A new tossKey (e.g. after "See my college path") throws the cap.
   useEffect(() => {

@@ -83,20 +83,20 @@
  * data-theme on <html> before first paint.
  */
 :root[data-theme="dark"] {
-  --paper: #0e0f12;
-  --surface: #17181c;
-  --surface-sunk: #121316;
+  --paper: #0a0a0c;
+  --surface: #141417;
+  --surface-sunk: #0f0f12;
   --shell: rgba(255, 255, 255, 0.035);
   --ink: #f2f2f3;
   --ink-hover: #ffffff;
-  --on-ink: #0e0f12;
+  --on-ink: #0a0a0c;
   --ink-2: rgba(242, 242, 243, 0.8);
   --muted: rgba(242, 242, 243, 0.6);
   --rule: rgba(255, 255, 255, 0.08);
   --rule-strong: rgba(255, 255, 255, 0.16);
   --grid: rgba(255, 255, 255, 0.03);
   --grid-major: rgba(255, 255, 255, 0.055);
-  --glass: rgba(14, 15, 18, 0.74);
+  --glass: rgba(16, 16, 19, 0.62);
   --hairline-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
   --accent: #e06a2b;
@@ -133,20 +133,20 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #0e0f12;
-    --surface: #17181c;
-    --surface-sunk: #121316;
+    --paper: #0a0a0c;
+    --surface: #141417;
+    --surface-sunk: #0f0f12;
     --shell: rgba(255, 255, 255, 0.035);
     --ink: #f2f2f3;
     --ink-hover: #ffffff;
-    --on-ink: #0e0f12;
+    --on-ink: #0a0a0c;
     --ink-2: rgba(242, 242, 243, 0.8);
     --muted: rgba(242, 242, 243, 0.6);
     --rule: rgba(255, 255, 255, 0.08);
     --rule-strong: rgba(255, 255, 255, 0.16);
     --grid: rgba(255, 255, 255, 0.03);
     --grid-major: rgba(255, 255, 255, 0.055);
-    --glass: rgba(14, 15, 18, 0.74);
+    --glass: rgba(16, 16, 19, 0.62);
     --hairline-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
     --accent: #e06a2b;
@@ -226,6 +226,7 @@
   --color-glass: var(--glass);
 
   --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
 
@@ -255,10 +256,10 @@
   --text-display--letter-spacing: -0.05em;
   --text-section: clamp(2.25rem, 4.6vw, 4rem);
   --text-section--line-height: 1;
-  --text-section--letter-spacing: -0.045em;
+  --text-section--letter-spacing: -0.015em;
   --text-h1: clamp(2.4rem, 4.6vw, 4rem);
   --text-h1--line-height: 1;
-  --text-h1--letter-spacing: -0.04em;
+  --text-h1--letter-spacing: -0.015em;
   --text-h2: clamp(1.75rem, 3vw, 2.6rem);
   --text-h2--line-height: 1.06;
   --text-h2--letter-spacing: -0.03em;
@@ -304,6 +305,23 @@
     font-weight: 650;
     text-wrap: balance;
     color: var(--ink);
+  }
+  /* Page and section titles are editorial serif (one weight; never faux-bold).
+     Italic <em> marks the one idea each title is about. */
+  h1, h2 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-synthesis: none;
+  }
+  h1 em, h2 em, .serif em {
+    font-style: italic;
+    background: linear-gradient(100deg, var(--ink) 10%, var(--accent-ink) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    /* Room for italic overhang and descenders, which background-clip would cut. */
+    padding: 0 0.08em 0.14em 0;
+    margin-bottom: -0.14em;
   }
   p { text-wrap: pretty; }
 
@@ -442,4 +460,47 @@
     background: var(--surface);
     box-shadow: 0 0 0 1px var(--rule), var(--hairline-inset), var(--shadow-2);
   }
+}
+
+@layer components {
+  /* The hero stage: near-black with a warm horizon glow (dark), soft zinc with the same glow (light). */
+  .hero-canvas {
+    background:
+      radial-gradient(60% 45% at 50% 78%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 70%),
+      radial-gradient(40% 30% at 50% 100%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+      linear-gradient(to bottom, color-mix(in srgb, var(--paper) 40%, #000), var(--paper));
+    box-shadow: 0 0 0 1px var(--rule), var(--hairline-inset);
+  }
+  :root[data-theme="light"] .hero-canvas {
+    background:
+      radial-gradient(60% 45% at 50% 78%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+      linear-gradient(to bottom, #fafafa, var(--paper));
+  }
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .hero-canvas {
+    background:
+      radial-gradient(60% 45% at 50% 78%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+      linear-gradient(to bottom, #fafafa, var(--paper));
+  }
+}
+
+@layer components {
+  .statement-canvas {
+    background: color-mix(in srgb, var(--paper) 55%, #000);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+  :root[data-theme="light"] .statement-canvas { background: #e9e9ec; }
+  .drift-a { animation: drift-a 22s var(--ease-premium) infinite alternate; }
+  .drift-b { animation: drift-b 26s var(--ease-premium) infinite alternate; }
+  .drift-c { animation: drift-c 30s var(--ease-premium) infinite alternate; }
+  @keyframes drift-a { to { transform: translate3d(18%, 12%, 0) scale(1.1); } }
+  @keyframes drift-b { to { transform: translate3d(-14%, -10%, 0) scale(0.92); } }
+  @keyframes drift-c { to { transform: translate3d(10%, -18%, 0) scale(1.15); } }
+  @media (prefers-reduced-motion: reduce) {
+    .drift-a, .drift-b, .drift-c { animation: none; }
+  }
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) .statement-canvas { background: #e9e9ec; }
 }

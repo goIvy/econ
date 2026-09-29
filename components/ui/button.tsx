@@ -13,15 +13,15 @@ type Size = "md" | "lg" | "sm";
 
 /*
  * Buttons are full pills (the shape rule: every control is a pill).
- * Primary carries the single accent and means "continue / calculate /
- * compare / run". `trail` nests an arrow in its own circle that nudges
+ * Primary is a bright ink pill (white on the dark default) and means
+ * "continue / calculate / compare / run". `trail` nests an arrow in its own circle that nudges
  * up-right on hover (button-in-button).
  */
 const base =
   "group/btn inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-full font-sans font-semibold transition-[background-color,color,box-shadow,filter] duration-300 disabled:cursor-not-allowed disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-on-accent shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_10px_24px_-12px_var(--accent)] hover:brightness-[1.07]",
+  primary: "bg-ink text-on-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.5),0_12px_30px_-14px_color-mix(in_srgb,var(--ink)_55%,transparent)] hover:bg-ink-hover",
   secondary: "bg-surface text-ink ring-1 ring-rule-strong shadow-1 hover:ring-[color-mix(in_srgb,var(--ink)_35%,transparent)]",
   tertiary: "rounded-xs text-ink underline decoration-rule-strong underline-offset-4 hover:decoration-ink",
   quiet: "text-ink-2 hover:bg-surface-sunk hover:text-ink",
@@ -42,7 +42,7 @@ function Trail({ size, variant }: { size: Size; variant: Variant }) {
       className={cn(
         "ml-1 grid shrink-0 place-items-center rounded-full transition-transform duration-500 ease-[var(--ease-premium)] group-hover/btn:-translate-y-px group-hover/btn:translate-x-0.5 group-hover/btn:scale-105",
         trailDot[size],
-        variant === "primary" ? "bg-[color-mix(in_srgb,var(--on-accent)_12%,transparent)]" : "bg-surface-sunk",
+        variant === "primary" ? "bg-on-ink text-ink" : "bg-surface-sunk",
       )}
     >
       <ArrowUpRight className="size-4" />

@@ -110,7 +110,7 @@ export function CollegeHero(p: CollegeHeroProps) {
           <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
             <div className="grid content-start gap-4 lg:col-span-5">
               <ViewTransition name={`college-name-${p.id}`}>
-                <h1 id="college-title" className="text-[clamp(2.4rem,5vw,4rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-balance">
+                <h1 id="college-title" className="text-[clamp(2.8rem,6vw,4.8rem)] leading-[0.92] tracking-[-0.015em] text-balance">
                   {p.name}
                 </h1>
               </ViewTransition>

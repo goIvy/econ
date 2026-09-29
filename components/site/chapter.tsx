@@ -43,7 +43,7 @@ export function Chapter({
       <div ref={ref} className="mx-auto max-w-[1200px] px-4 py-16 md:px-8 md:py-24">
         <div className={cn("grid gap-6", aside && "lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-12")}>
           <div className="grid max-w-[56rem] gap-4">
-            <motion.h2 {...rise(STAGGER.heading)} id={`${id}-h`} className="text-section font-semibold text-balance">
+            <motion.h2 {...rise(STAGGER.heading)} id={`${id}-h`} className="text-[clamp(2.5rem,5.2vw,4.6rem)] leading-[0.98] text-balance">
               {index && (
                 <span aria-hidden className="tabular mr-3 inline-block translate-y-[-0.35em] align-middle font-mono text-[0.8125rem] font-medium tracking-[0.08em] text-accent-ink">
                   {index}

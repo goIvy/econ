@@ -5,27 +5,24 @@ import { Segmented } from "@/components/ui/segmented";
 
 type Choice = "system" | "light" | "dark";
 
-/** System / Light / Dark. "System" follows the device; the others persist in this browser. */
+/** Dark (default) / Light / System. Light and System persist in this browser; Dark stores nothing. */
 export function ThemeSwitch() {
-  const [choice, setChoice] = useState<Choice>("system");
+  const [choice, setChoice] = useState<Choice>("dark");
   useEffect(() => {
     try {
       const t = localStorage.getItem("cvl-theme");
       // Reading a browser-only value after mount is the documented way to avoid a hydration mismatch.
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (t === "light" || t === "dark") setChoice(t);
+      if (t === "light" || t === "system") setChoice(t);
     } catch {}
   }, []);
   const pick = (c: Choice) => {
     setChoice(c);
     try {
-      if (c === "system") {
-        localStorage.removeItem("cvl-theme");
-        delete document.documentElement.dataset.theme;
-      } else {
-        localStorage.setItem("cvl-theme", c);
-        document.documentElement.dataset.theme = c;
-      }
+      if (c === "dark") localStorage.removeItem("cvl-theme");
+      else localStorage.setItem("cvl-theme", c);
+      if (c === "system") delete document.documentElement.dataset.theme;
+      else document.documentElement.dataset.theme = c;
     } catch {}
   };
   return (
@@ -36,9 +33,9 @@ export function ThemeSwitch() {
       onChange={pick}
       className="w-[15rem]"
       options={[
-        { value: "system", label: "System" },
-        { value: "light", label: "Light" },
         { value: "dark", label: "Dark" },
+        { value: "light", label: "Light" },
+        { value: "system", label: "System" },
       ]}
     />
   );

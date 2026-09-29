@@ -1,8 +1,21 @@
-# Design System: College Value Lab (v3)
+# Design System: College Value Lab (v4, cinematic)
 
 > Written in the Stitch semantic format (`stitch-utilities:taste-design` / `design-md`) so it can seed Google Stitch screens. `design-system/MASTER.md` holds the token-level engineering rules; `app/globals.css` is the implementation. `.stitch/SITE.md` is the site constitution and `.stitch/prompts.md` holds ready-to-use Stitch prompts.
 >
 > Design read: **an overhaul of a consumer decision tool.** Dials: variance 7, motion 7, density 4.
+
+## 0. v4 update: cinematic editorial
+
+Restyled after an owner-supplied reference reel of cinematic hero templates. What changed from v3 (everything below still applies unless it says otherwise):
+
+- **Dark by default.** Near-black canvas (#0A0A0C), surface #141417. Light and System remain in the footer switch.
+- **Editorial serif titles.** Page and section titles are Instrument Serif (one weight, no faux bold), with one italic idea per title shown in a soft ink-to-ember gradient ("See what college *is really worth*", "Four choices. *No guesswork.*"). UI, numbers and body stay in Geist.
+- **Inset cinematic stages.** The hero, the "why this exists" statement and the final call to action sit in rounded (36px) inset canvases with a warm horizon glow.
+- **Hero:** a "New" badge pill, a centred serif headline that resolves out of a blur word by word, a pill college search with a round white arrow button (it opens the path builder with the college filled in and focuses Major), and the 3D cap inside three orbiting rings of glowing particles.
+- **Primary buttons** are bright ink pills (white on dark) with the arrow in its own circle. Ember stays the accent for focus rings, italics, data and progress.
+- **Statement:** a frosted glass panel over drifting light and a fan of decorative future-curves; the sentence lights up word by word as it scrolls.
+- **Popular paths gallery:** filter pills (All / Public / Private) over cards with generated light-trail art and the college name set large in serif; "Try this path" loads the real numbers.
+- Anti-patterns updated: a centred hero and gradient text on the one italic idea are now allowed (owner's reference); everything else in section 7 stands.
 
 ## 1. Visual Theme & Atmosphere
 
