@@ -92,10 +92,8 @@ export function ScenarioProvider({
         setLoading(i);
         const ctx = await load(next.collegeId, next.majorId);
         setLoading(null);
-        if (!ctx) {
-          setError("That college doesn't offer this major in our data.");
-          return false;
-        }
+        // Callers show their own message; the shared error belongs to "Add a college".
+        if (!ctx) return false;
       }
       // Private colleges have one tuition; keep residency meaningful only for publics.
       setPaths((ps) => ps.map((p, j) => (j === i ? next : p)));

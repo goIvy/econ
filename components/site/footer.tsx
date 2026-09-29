@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Logo } from "./logo";
 
 const COLUMNS: Array<{ title: string; links: Array<[string, string]> }> = [
-  { title: "Tools", links: [["/explore", "College search"], ["/compare", "Compare paths"], ["/simulator", "Cost & debt simulator"], ["/majors", "Majors"]] },
-  { title: "Research", links: [["/methodology", "Methodology"], ["/methodology#limitations", "Limitations"], ["/learn", "Learn the economics"], ["/research", "Research lab"], ["/careers", "Careers"]] },
-  { title: "Get started", links: [["/get-started", "Set up your comparison"], ["/sign-in", "Sign in"]] },
+  { title: "Start", links: [["/#starter", "Build your path"], ["/compare", "Compare colleges"], ["/saved", "Saved comparisons"]] },
+  { title: "Explore", links: [["/explore", "Colleges"], ["/majors", "Majors"], ["/learn", "Learn the economics"]] },
+  { title: "Data", links: [["/methodology", "How it's calculated"], ["/methodology#limitations", "Limitations"], ["/research", "Research"]] },
 ];
 
 export function Footer() {

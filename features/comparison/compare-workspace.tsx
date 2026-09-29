@@ -4,8 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowDown, ArrowUp, Bookmark, BookmarkCheck, Check, ChevronDown, Link2, Pencil, Plus, Trash2 } from "lucide-react";
 import { useSaved } from "@/hooks/use-saved";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { FuturesIntro } from "./futures-intro";
+import { useEffect, useMemo, useState } from "react";
 import { TraceChart, type TraceSeries } from "@/components/charts/trace-chart";
 import { Button } from "@/components/ui/button";
 import { Combobox, type ComboOption } from "@/components/ui/combobox";
@@ -38,7 +37,7 @@ export interface CompareFunding {
   familyPerYear: number;
   workPerYear: number;
   savings: number;
-  /** What the family plans to borrow in total (from onboarding); shown for reference. */
+  /** What the family plans to borrow in total, if given; shown for reference. */
   plannedLoan: number;
 }
 
@@ -61,18 +60,13 @@ export function CompareWorkspace({
   majors,
   initial,
   funding: FUNDING,
-  intro = false,
 }: {
   colleges: CollegeMeta[];
   majors: Array<{ id: string; name: string; category: string }>;
   initial: PathSpec[];
   funding: CompareFunding;
-  /** Arrived from onboarding: play the personalized intro first. */
-  intro?: boolean;
 }) {
   const pathname = usePathname();
-  const [showIntro, setShowIntro] = useState(intro && initial.length > 0);
-  const endIntro = useCallback(() => setShowIntro(false), []);
   const [paths, setPaths] = useState<PathSpec[]>(initial);
   const [editing, setEditing] = useState<number | "new" | null>(initial.length === 0 ? "new" : null);
   const [more, setMore] = useState(false);
@@ -172,15 +166,6 @@ export function CompareWorkspace({
 
   return (
     <div className="grid min-w-0 grid-cols-1 gap-8">
-      <AnimatePresence initial={false}>
-        {showIntro && (
-          <FuturesIntro
-            key="intro"
-            onDone={endIntro}
-            paths={paths.map((p) => ({ college: byId.get(p.collegeId)?.shortName ?? p.collegeId, major: majors.find((m) => m.id === p.majorId)?.name ?? p.majorId }))}
-          />
-        )}
-      </AnimatePresence>
 
       <AnimatePresence initial={false}>
         {paths.length === 0 && (

@@ -47,6 +47,20 @@ export function Hero() {
               See an example
             </Button>
           </motion.div>
+          <motion.ol variants={item} aria-label="How it works" className="mt-4 grid max-w-[36rem] gap-3 border-t border-rule pt-6 sm:grid-cols-3">
+            {[
+              ["Pick", "a college, a major and residency"],
+              ["See", "cost, debt, pay and when it pays off"],
+              ["Compare", "with other colleges side by side"],
+            ].map(([verb, rest], i) => (
+              <li key={verb} className="flex gap-3 sm:grid sm:gap-1.5">
+                <span className="tabular grid size-7 shrink-0 place-items-center rounded-full border border-rule-strong text-caption font-bold text-ink">{i + 1}</span>
+                <span className="text-small text-ink-2">
+                  <span className="font-semibold text-ink">{verb}</span> {rest}
+                </span>
+              </li>
+            ))}
+          </motion.ol>
         </motion.div>
         <motion.div initial={reduce ? false : { opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: DUR.large, ease: EASE.smooth, delay: 0.25 }}>
           <StarterCard />

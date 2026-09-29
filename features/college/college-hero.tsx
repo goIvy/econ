@@ -41,8 +41,10 @@ export function CollegeHero(p: CollegeHeroProps) {
   };
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Only when nothing interactive has focus: tabs, radios, sliders and lists use arrows themselves.
       const t = e.target as HTMLElement;
-      if (t.closest("input, textarea, [role=slider], [contenteditable]")) return;
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if (t !== document.body && t.closest("input, textarea, select, button, a, [role], [contenteditable], [tabindex]")) return;
       if (e.key === "ArrowRight") go("next");
       if (e.key === "ArrowLeft") go("prev");
     };

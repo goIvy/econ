@@ -10,18 +10,18 @@ The site has one obvious journey: **pick a college, a major and residency, add a
 
 | Area | Where |
 |---|---|
-| Hero with a starter card (college, major, residency, optional aid → "See my college path") | `features/start/` |
-| Results: five numbers (net cost, expected debt, early-career pay, employment, break-even), "What this means", details and "View calculation" on demand, **Simple / Advanced** switch, **Guided view** (cost → debt → jobs → salary → long-term value) | `features/results/results.tsx` |
-| Advanced analysis: assumptions (What-If), salary range by major, where graduates are a year later, how every number is made | `app/page.tsx` → `features/chapters/` |
+| Hero with a 3-step "how it works" and a starter card (college, major, residency, optional aid → "See my college path"); the card follows changes made anywhere else and says when edits are not applied yet | `features/start/` |
+| Results: five numbers (net cost, expected debt, early-career pay, employment, break-even), "What this means" with the next two actions, details and "View calculation" on demand | `features/results/results.tsx` |
+| Advanced analysis (one expandable panel): change the assumptions, and how every number is made | `app/page.tsx` → `features/chapters/` |
 | Compare: add a college in one click (search or samples), five numbers side by side, "Show more"; swipe on phones | `features/results/compare.tsx` |
 | Sticky "Your path" summary (slim bar on desktop, expandable bar on phones) | `features/results/sticky-summary.tsx` |
-| Cost (sticker price − grants = net cost, "Where does the money go?"), What you give up, Break-even, Possible futures (1,000-run simulation), 3 featured lessons, data transparency | `features/chapters/` |
+| Cost (sticker price − grants = net cost, "Where does the money go?"), Payoff (the head start of working from 18, break-even, play/scrub timeline), Possible futures (1,000-run simulation), 3 featured lessons, data transparency | `features/chapters/` |
 | College detail: live hero (follows the major/residency you pick), breadcrumbs, tabs: Overview, Cost, Career outcomes, Majors, Research | `/college/[id]`, `features/college/` |
 | Learn: scroll lessons, "What your salary can actually buy" map, 8 quick experiments | `/learn` |
-| Explore, full comparison table, saved comparisons, research, methodology | `/explore`, `/compare`, `/saved`, `/research`, `/methodology` |
+| Explore, majors, full comparison table, saved comparisons, research, methodology | `/explore`, `/majors`, `/compare`, `/saved`, `/research`, `/methodology` |
 | FastAPI + PostgreSQL service, 29-table schema | `backend/` |
 
-Every number carries a badge (DATA, ESTIMATE or SIMULATION) and a source. Plain words first, the economics term second ("What you give up. Economists call this opportunity cost.").
+Every number carries a badge (DATA, ESTIMATE or SIMULATION) and a source. Old links to the retired onboarding, simulator, careers and sign-in pages redirect into this flow. Plain words first, the economics term second ("What you give up. Economists call this opportunity cost.").
 
 ## Run it
 
@@ -62,8 +62,8 @@ backend/      FastAPI + SQLAlchemy + pytest
 
 ## Quality checks run
 
-- Full journey (college → major → residency → aid → results → guided view → advanced → add/remove/compare) scripted at 390px and 1440px: no console errors, warnings or hydration issues, in dev and production
-- axe-core: 0 violations on 13 routes at 375px and 1440px, plus the opened states (details, Advanced, Guided, dropdowns, simulation)
+- Full journey (college → major → residency → aid → results → details → advanced → payoff playback → add/remove/compare → simulation) scripted at 390px and 1440px: no console errors, warnings or hydration issues, in dev and production
+- axe-core: 0 violations on every route at 375px and 1440px, plus the opened states (details, advanced analysis, dropdowns, simulation)
 - No horizontal overflow at 375 / 390 / 430 / 768 / 1024 / 1440 on every route
 - Keyboard-only journey works; `prefers-reduced-motion` leaves nothing hidden and the simulation completes instantly
 - The same path shows the same numbers on the homepage, its compare section and `/compare`

@@ -53,7 +53,7 @@ function parse(sp: Record<string, string | string[] | undefined>): PathSpec[] {
   return out;
 }
 
-/** `?f=family.work.savings.plannedLoan` from onboarding; defaults otherwise. */
+/** `?f=family.work.savings.plannedLoan` (optional funding assumptions); defaults otherwise. */
 function parseFunding(sp: Record<string, string | string[] | undefined>) {
   const raw = typeof sp.f === "string" ? sp.f.split(".").map((v) => Number(v)) : [];
   const ok = (n: number | undefined, max: number) => (n != null && Number.isFinite(n) && n >= 0 && n <= max ? Math.round(n) : undefined);
@@ -80,7 +80,7 @@ export default async function ComparePage(props: PageProps<"/compare">) {
       wide
     >
       <Suspense>
-        <CompareWorkspace colleges={colleges} majors={majors} initial={initial} funding={funding} intro={sp.intro === "1"} />
+        <CompareWorkspace colleges={colleges} majors={majors} initial={initial} funding={funding} />
       </Suspense>
     </PageShell>
   );

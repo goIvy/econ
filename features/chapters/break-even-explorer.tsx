@@ -12,7 +12,7 @@ import { breakEvenYears } from "@/features/scenario/facts";
 import { clamp, linear, linePath, ticks, valueAt } from "@/components/charts/scale";
 import { snapshotAt } from "@/lib/calc";
 import { DUR, EASE, scrubSpring } from "@/lib/animations";
-import { money, moneyCompact } from "@/lib/format";
+import { moneyCompact } from "@/lib/format";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/cn";
 import { HORIZON, PATH_DASH, PATH_VAR, pathNo, useScenario, type Future } from "@/features/scenario/store";
@@ -31,6 +31,8 @@ export function BreakEvenExplorer() {
   const pair = futures.filter((f) => f.index < Math.min(2, count));
   const mine = pair[0];
   const beYears = breakEvenYears(mine);
+  const gradIdx = Math.max(0, Math.round(mine.result.graduationAge) - START);
+  const headStart = Math.max(0, (baselineSeries[gradIdx] ?? 0) - (mine.series[gradIdx] ?? 0));
   const reduce = useReducedMotion();
   const target = useMotionValue(22);
   const age = useSpring(target, scrubSpring);
@@ -57,8 +59,13 @@ export function BreakEvenExplorer() {
       <div className="grid gap-2" aria-live="polite">
         <p className="text-small font-semibold text-ink-2">Estimated break-even for {mine.ctx.college.shortName} {mine.ctx.major.name}</p>
         <p className="text-[clamp(2.25rem,5.5vw,4.25rem)] font-extrabold leading-none tracking-[-0.045em] text-ink">{beYears == null ? "Not by age 40" : `${beYears.toFixed(1)} years after graduation`}</p>
-        <p className="flex flex-wrap items-center gap-2 text-small text-muted">
-          <DataKindChip kind="projected" /> The point where total earnings recover the extra cost of this path, compared with working from 18.
+        <p className="max-w-[48rem] text-small text-ink-2">
+          By graduation, someone who started working at 18 is about <strong className="font-semibold text-ink">{moneyCompact(headStart)}</strong> ahead of you, counting their pay and your costs.{" "}
+          {beYears == null ? "With these numbers, your higher pay doesn't close that gap by age 40." : `Your higher pay closes that gap about ${beYears.toFixed(1)} years after graduation.`}{" "}
+          <span className="text-muted">Economists call the part you give up opportunity cost.</span>
+        </p>
+        <p className="flex items-center gap-2 text-caption text-muted">
+          <DataKindChip kind="projected" /> After taxes and loan payments, in 2024 dollars.
         </p>
       </div>
       <div className="grid gap-6 rounded-lg border border-rule bg-surface p-4 shadow-3 sm:p-6">
@@ -223,44 +230,39 @@ function BreakEvenMarker({ f, i, age, x, y, W }: { f: Future; i: number; age: Mo
   );
 }
 
+/** At the scrubbed age: how far ahead of (or behind) working from 18, plus pay and debt left. */
 function Readouts({ f, age, baseline }: { f: Future; age: number; baseline: Parameters<typeof snapshotAt>[1] }) {
   const s = snapshotAt(f.result, baseline, age);
-  const past = f.breakEven != null && age >= f.breakEven;
-  const rows: Array<[string, number]> = [
-    ["Salary", s.salary],
-    ["Debt remaining", s.remainingDebt],
-    ["Earned so far", s.cumulativeEarnings],
-  ];
+  const gap = s.netPosition - s.baselinePosition;
+  const ahead = gap >= 0;
   return (
     <div className="grid gap-4 rounded-lg border border-rule bg-surface p-4 sm:p-5">
       <div className="flex items-center justify-between gap-2">
-        <p className="flex items-center gap-2 text-caption font-bold tracking-[0.12em] text-ink">
-          <span className="size-2 rounded-full" style={{ background: PATH_VAR[f.index] }} />
-          {f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`} <span className="font-medium tracking-normal text-muted">{f.label}</span>
+        <p className="flex min-w-0 items-center gap-2 text-caption font-bold tracking-[0.12em] text-ink">
+          <span className="size-2 shrink-0 rounded-full" style={{ background: PATH_VAR[f.index] }} />
+          {f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`} <span className="truncate font-medium tracking-normal text-muted">{f.label}</span>
         </p>
-        <span className="tabular text-caption text-muted">Age {age.toFixed(1)}</span>
+        <span className="tabular shrink-0 text-caption font-semibold text-ink-2">At age {Math.floor(age)}</span>
       </div>
-      <dl className="grid grid-cols-3 gap-3">
-        {rows.map(([label, v]) => (
-          <div key={label} className="grid gap-0.5">
-            <dt className="text-caption text-muted">{label}</dt>
-            <dd className="text-base font-bold text-ink sm:text-h3">
-              <AnimatedNumber value={v} format={moneyCompact} />
-            </dd>
-          </div>
-        ))}
-      </dl>
-      <div className="flex items-end justify-between gap-3 border-t border-rule pt-3">
-        <div>
-          <p className="text-caption text-muted">Earned minus costs</p>
-          <p className="text-metric font-extrabold text-ink">
-            <AnimatedNumber value={s.netPosition} format={money} />
-          </p>
+      <div className="grid gap-1">
+        <p className="text-caption text-muted">Compared with working from 18</p>
+        <p className={cn("tabular text-h2 font-extrabold tracking-[-0.03em]", ahead ? "text-gain" : "text-ink")}>
+          {ahead ? "Ahead by " : "Behind by "}
+          <AnimatedNumber value={Math.abs(gap)} format={moneyCompact} />
+        </p>
+      </div>
+      <dl className="grid grid-cols-2 gap-3 border-t border-rule pt-3">
+        <div className="grid gap-0.5">
+          <dt className="text-caption text-muted">Yearly pay</dt>
+          <dd className="tabular text-base font-bold text-ink">{s.salary > 0 ? <AnimatedNumber value={s.salary} format={moneyCompact} /> : "In school"}</dd>
         </div>
-        <p className={cn("rounded-full px-3 py-1 text-caption font-bold tracking-[0.06em] transition-colors", past ? "bg-gain-tint text-gain" : "bg-surface-sunk text-muted")}>
-          {past ? "PAST BREAK-EVEN" : `vs. work: ${moneyCompact(s.netPosition - s.baselinePosition)}`}
-        </p>
-      </div>
+        <div className="grid gap-0.5">
+          <dt className="text-caption text-muted">Loan left to repay</dt>
+          <dd className="tabular text-base font-bold text-ink">
+            <AnimatedNumber value={s.remainingDebt} format={moneyCompact} />
+          </dd>
+        </div>
+      </dl>
     </div>
   );
 }

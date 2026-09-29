@@ -14,8 +14,16 @@ import type { PathSel } from "@/features/scenario/types";
  * Nothing is recalculated until "See my college path", so the form stays calm.
  */
 export function StarterCard() {
-  const { paths, setPath, setPersonal, setActive, colleges, majors, loading, error } = useScenario();
+  const { paths, setPath, personal, setPersonal, setActive, colleges, majors, loading } = useScenario();
   const [draft, setDraft] = useState<PathSel>(paths[0]);
+  const [error, setError] = useState<string | null>(null);
+  // Path 01 can also change elsewhere (cost slider, compare, "See an example"): follow it.
+  const [synced, setSynced] = useState<PathSel>(paths[0]);
+  if (synced !== paths[0]) {
+    setSynced(paths[0]);
+    setDraft(paths[0]);
+  }
+  const dirty = draft.collegeId !== paths[0].collegeId || draft.majorId !== paths[0].majorId || draft.residency !== paths[0].residency || draft.aid !== paths[0].aid;
   const aidId = useId();
   const college = colleges.find((c) => c.id === draft.collegeId)!;
   const collegeOpts = useMemo(() => colleges.map((c) => ({ value: c.id, label: c.shortName, meta: c.state, keywords: [c.name] })), [colleges]);
@@ -23,14 +31,19 @@ export function StarterCard() {
 
   const pickCollege = (id: string) => {
     const c = colleges.find((x) => x.id === id)!;
+    setError(null);
     setDraft((d) => ({ ...d, collegeId: id, majorId: c.majorIds.includes(d.majorId) ? d.majorId : c.majorIds[0] }));
   };
 
   // Not a <form>: Radix radio groups inside forms dispatch synthetic clicks
   // from effects, which collide with open popovers. Enter submits instead.
   const submit = async () => {
+    setError(null);
     const ok = await setPath(0, draft);
-    if (!ok) return;
+    if (!ok) {
+      setError("We couldn't load data for that college and major. Try a different major.");
+      return;
+    }
     setPersonal(true);
     setActive(0);
     goTo("your-path", "h2");
@@ -90,10 +103,10 @@ export function StarterCard() {
       </div>
       <Button size="lg" className="w-full" onClick={() => void submit()} disabled={loading === 0}>
         {loading === 0 ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
-        See my college path
+        {personal && dirty ? "Update my path" : "See my college path"}
       </Button>
-      <p className="-mt-2 min-h-5 text-caption text-risk" role="status">
-        {error}
+      <p className={error ? "-mt-2 min-h-5 text-caption text-risk" : "-mt-2 min-h-5 text-caption text-muted"} role="status">
+        {error ?? (personal && dirty ? "You've made changes. Update to see new numbers." : "")}
       </p>
     </div>
   );

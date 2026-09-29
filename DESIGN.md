@@ -29,13 +29,15 @@ Geist for everything, with tabular figures for numbers. Display 700–800 with t
 ## Simplicity rules (cleanup pass)
 
 - **One journey:** college → major → residency → optional aid → result → compare → explore deeper. The starter card is the clearest element on the page.
-- **Progressive disclosure:** level 1 a simple answer (five numbers + "What this means"), level 2 "Details", level 3 "View calculation". Advanced analysis sits behind **Simple / Advanced**; a **Guided view** walks through the result step by step.
+- **Progressive disclosure:** level 1 a simple answer (five numbers + "What this means" + the next two actions), level 2 "Details", level 3 "View calculation". Assumptions and methodology sit in one "Advanced analysis" panel.
+- **One chart per idea:** the payoff timeline is the only "college vs. working from 18" chart on the homepage.
+- **No dead ends:** placeholder pages were removed; every control changes something you can see.
 - **Every section:** small label, large question, one sentence, one interactive component.
 - **Plain words first**, the economics term second ("What you give up", then "Economists call this opportunity cost").
 - **Overview numbers are compact** ($84K, 7.4 yrs, 91%); full values appear in details.
 - **Badges:** DATA, ESTIMATE, SIMULATION.
 - **Three card styles only:** metric card, interactive selection card, educational card. **Buttons:** primary (continue / calculate / compare / run), secondary, quiet (ghost).
-- **Animation budget:** the big moments are the hero paths, cost bar, comparison transitions, break-even and the simulation; everything else only fades up. Text updates immediately; charts animate after.
+- **Animation budget:** the big moments are the hero paths, cost bar, comparison transitions, the payoff timeline and the simulation; everything else only fades up. Text updates immediately; charts animate after.
 
 ## Components and surfaces
 

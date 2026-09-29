@@ -227,14 +227,25 @@ export function FuturesSim() {
       </div>
 
       <div className="grid content-start gap-5 lg:col-span-4">
-        <dl className="grid gap-4">
-          <Stat label="Typical outcome by 40" value={done ? sim.median : null} fmt={moneyCompact} big />
-          <div className="grid gap-1">
-            <dt className="text-caption font-semibold text-ink-2">Likely range (middle half)</dt>
-            <dd className="tabular text-h2 font-bold text-ink">{done ? `${moneyCompact(sim.q25)} – ${moneyCompact(sim.q75)}` : <span className="text-muted">—</span>}</dd>
+        {done ? (
+          <dl className="grid gap-4">
+            <Stat label="Typical outcome by 40" value={sim.median} fmt={moneyCompact} big />
+            <div className="grid gap-1">
+              <dt className="text-caption font-semibold text-ink-2">Likely range (middle half)</dt>
+              <dd className="tabular text-h2 font-bold text-ink">{`${moneyCompact(sim.q25)} – ${moneyCompact(sim.q75)}`}</dd>
+            </div>
+            <Stat label="Chance of breaking even within 10 years" value={sim.recoverWithin10 * 100} fmt={(v) => pct(v)} big />
+          </dl>
+        ) : (
+          <div className="grid gap-3 rounded-md border border-dashed border-rule-strong p-5">
+            <p className="text-small font-semibold text-ink">{stage === "idle" ? "Press Run simulation to see:" : "Simulating 1,000 futures…"}</p>
+            <ul className="grid gap-1.5 text-small text-ink-2">
+              <li>· The typical outcome by age 40</li>
+              <li>· The likely range of outcomes</li>
+              <li>· The chance college pays for itself within 10 years</li>
+            </ul>
           </div>
-          <Stat label="Chance of breaking even within 10 years" value={done ? sim.recoverWithin10 * 100 : null} fmt={(v) => pct(v)} big />
-        </dl>
+        )}
         <p className="flex items-center gap-2 text-caption text-muted">
           <DataKindChip kind="simulated" /> Total money earned minus costs, across {RUNS.toLocaleString()} futures.
         </p>

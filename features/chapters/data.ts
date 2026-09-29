@@ -11,23 +11,6 @@ export interface TrayCard {
 }
 
 /** The comparison tray: eight real college/major pairs. */
-export function employmentMajors() {
-  return ["computer-science", "economics", "nursing", "psychology", "english"].flatMap((id) => {
-    const m = getMajor(id);
-    if (!m) return [];
-    return [
-      {
-        id: m.id,
-        name: m.name,
-        employment: m.employmentRate.value ?? 0,
-        unemployment: m.unemploymentRate.value ?? 0,
-        gradSchool: m.gradSchoolRate.value ?? 0,
-        lineage: m.employmentRate.lineage,
-      },
-    ];
-  });
-}
-
 export function salaryMajors() {
   return ["computer-science", "economics", "finance", "nursing", "psychology"].flatMap((id) => {
     const m = getMajor(id);
