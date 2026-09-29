@@ -64,7 +64,7 @@ export function Pipeline() {
       whileTap={{ scale: 0.98 }}
       className={cn("grid w-full gap-1 rounded-md border px-4 py-3 text-left transition-colors", sel === n.id ? "border-ink bg-ink text-on-ink shadow-3" : "border-rule bg-surface text-ink hover:border-rule-strong")}
     >
-      <span className="text-[11px] font-bold tracking-[0.14em]">{n.label}</span>
+      <span className="text-[11px] font-mono font-medium uppercase tracking-[0.08em]">{n.label}</span>
       <span className={cn("tabular text-small font-semibold", sel === n.id ? "text-on-ink" : "text-ink-2")}>{n.value(f)}</span>
     </motion.button>
   );
@@ -88,7 +88,7 @@ export function Pipeline() {
         ))}
       </div>
       <div className="lg:col-span-6">
-        <div className="sticky top-[calc(var(--nav-h)+24px)] grid gap-4 rounded-lg border border-rule bg-surface p-5 shadow-2 sm:p-6" aria-live="polite">
+        <div className="sticky top-[calc(var(--nav-h)+24px)] grid gap-4 panel p-5 sm:p-6" aria-live="polite">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div key={node.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8, transition: { duration: DUR.fast, ease: EASE.exit } }} transition={{ duration: DUR.standard, ease: EASE.smooth }} className="grid gap-4">
               <div className="flex flex-wrap items-center justify-between gap-2">

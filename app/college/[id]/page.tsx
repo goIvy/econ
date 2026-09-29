@@ -107,7 +107,7 @@ export default async function CollegePage(props: PageProps<"/college/[id]">) {
                   <SampleChip />
                 </div>
                 <ViewTransition name={`college-stats-${college.id}`}>
-                  <dl className="grid grid-cols-2 gap-x-6 gap-y-6 rounded-lg border border-rule bg-surface p-5 sm:grid-cols-3 lg:grid-cols-4">
+                  <dl className="grid grid-cols-2 gap-x-6 gap-y-6 panel p-5 sm:grid-cols-3 lg:grid-cols-4">
                     {college.control === "public" ? (
                       <>
                         <Readout size="sm" label="In-state tuition" value={c.tuitionInState.value} format="money" lineage={c.tuitionInState.lineage} footnote={1} />

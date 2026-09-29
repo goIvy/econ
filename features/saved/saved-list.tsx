@@ -14,7 +14,7 @@ export function SavedList({ suggestions }: { suggestions: Array<{ label: string;
       <ul className="grid gap-3">
         <AnimatePresence initial={false}>
           {items.map((it) => (
-            <motion.li key={it.id} layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -24, transition: { duration: DUR.fast, ease: EASE.exit } }} transition={{ duration: DUR.standard, ease: EASE.smooth }} className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-rule bg-surface p-4 shadow-1">
+            <motion.li key={it.id} layout initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -24, transition: { duration: DUR.fast, ease: EASE.exit } }} transition={{ duration: DUR.standard, ease: EASE.smooth }} className="flex flex-wrap items-center justify-between gap-3 panel p-4">
               <Link href={it.href} className="grid min-w-0 gap-1 rounded-xs">
                 <span className="text-h3 font-bold text-ink hover:underline">{it.label}</span>
                 <span className="text-small text-ink-2">{it.paths.join(" · ")}</span>

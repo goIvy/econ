@@ -7,9 +7,18 @@
 **Tagline:** See what college is really worth.
 **Core metaphor:** *Your future is a set of economic paths.* Paths appear everywhere: the hero's three futures, salary trajectories, break-even crossings, simulation fans, the methodology pipeline, the nav's section line.
 **Register:** premium fintech × academic research × interactive data journalism. Youthful, never childish.
-**Surface system:** dark-to-light hybrid. Story and simulation sections are dark (`.theme-dark`); research and data-reading sections are light. The same token names are redefined inside `.theme-dark`, so every component restyles itself.
+**Surface system (v3):** one page theme that follows the system setting, with a Light / Dark / System switch (`data-theme` on `<html>`, stored in `localStorage` as `cvl-theme`). Light tokens live on `:root`; dark tokens on `:root[data-theme="dark"]` and under `prefers-color-scheme: dark`. Sections never switch theme; `.theme-dark` is retired.
 
-**Provenance:** v1 ("Calibrated Instrument", light-only) was replaced by the owner's v2 brief (dark/light hybrid, #0B1020 / #6C7CFF / #36D1B4 / #A78BFA, Geist). The validated-palette method, lineage language, reduced-motion rules and checklist carry over.
+**Provenance:** v1 ("Calibrated Instrument") → v2 (dark/light hybrid, navy + indigo/teal/violet) → **v3** (this file): one burnt-orange accent (#D9622A light / #E06A2B dark, text-safe #A8431A / #F08A55) on cool zinc neutrals, Geist + Geist Mono, Phosphor icons, floating island nav, pill controls, double-bezel shells, grain, a 3D graduation cap and two GSAP scroll moments. `DESIGN.md` describes the identity in Stitch's semantic format. Where an older section below still names v2 colours or `.theme-dark`, the tokens in `app/globals.css` and the v3 rules here govern.
+
+### v3 rules (summary)
+
+- **Shape:** controls are pills; inputs 14px; inner cards and bento tiles 22px; outer shells 28px (`.bezel` 6px padding + `.bezel-core`). Content panels use `.panel` (28px, hairline ring + inner highlight + shadow-2).
+- **Accent:** `--accent` fills and rings only; accent-coloured text uses `--accent-ink`. Chart series use the validated `--trace-*` inks, never the UI accent tokens.
+- **Type:** headings 600-650 (never 800), sentence case, mono indices 01-07 on homepage chapters, tabular figures for all numbers.
+- **Motion:** `--ease-premium` cubic-bezier(0.32, 0.72, 0, 1); GSAP only for the hero scrub and the payoff word reveal; the telemetry voice is only for the simulation.
+- **Z-scale:** `--z-sticky` 30, `--z-nav` 40, `--z-overlay` 50, `--z-grain` 60.
+- **Copy:** no em dashes, middots rationed, no eyebrow labels above section questions.
 
 ---
 

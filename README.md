@@ -23,6 +23,17 @@ The site has one obvious journey: **pick a college, a major and residency, add a
 
 Every number carries a badge (DATA, ESTIMATE or SIMULATION) and a source. Old links to the retired onboarding, simulator, careers and sign-in pages redirect into this flow. Plain words first, the economics term second ("What you give up. Economists call this opportunity cost.").
 
+## Design (v3)
+
+The v3 redesign applies the installed design skills (taste-skill set, Stitch skills, img2threejs) while keeping the same one-page journey:
+
+- **One page theme** that follows the system (Light / Dark / System switch in the footer), one burnt-orange accent on zinc neutrals, film grain, Geist + Geist Mono, Phosphor icons.
+- **Floating glass island nav**, pill buttons with a button-in-button arrow on key calls to action, double-bezel shells around the main containers.
+- **3D graduation cap** in the hero: a procedural Three.js model built through the img2threejs pipeline (evidence in `.img2threejs/`), with pointer tilt, tassel sway and tap-to-toss. It pauses off-screen and renders one still frame under reduced motion.
+- **GSAP ScrollTrigger** in two places only: the hero scrubbing back as the path builder takes over, and the payoff sentence lighting up word by word.
+- **Results bento** (one lead tile, four around it), a telemetry-style readout in the simulation, an asymmetric lessons grid, hairline disclosures and `<kbd>` hints on the college browser.
+- Design documents: [`DESIGN.md`](DESIGN.md) (Stitch semantic format), [`.stitch/SITE.md`](.stitch/SITE.md), [`.stitch/prompts.md`](.stitch/prompts.md), and the engineering rules in [`design-system/MASTER.md`](design-system/MASTER.md).
+
 ## Run it
 
 ```bash

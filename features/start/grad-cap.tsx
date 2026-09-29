@@ -210,7 +210,7 @@ export function GradCap({ tossKey = 0, className }: { tossKey?: number; classNam
     };
 
     const base = { yaw: -0.35, pitch: 0.05 };
-    const clock = new THREE.Clock();
+    const start = performance.now();
     let visible = true;
     let raf = 0;
     let sway = 0;
@@ -218,7 +218,7 @@ export function GradCap({ tossKey = 0, className }: { tossKey?: number; classNam
     let lastYaw = base.yaw;
 
     const renderFrame = () => {
-      const t = clock.getElapsedTime();
+      const t = (performance.now() - start) / 1000;
       let lift = Math.sin(t * 1.1) * 0.025;
       let spin = 0;
       let flip = 0;

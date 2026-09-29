@@ -217,7 +217,7 @@ export function CompareWorkspace({
       </div>
 
       {/* desktop table */}
-      <div className="hidden overflow-x-auto rounded-lg border border-rule bg-surface shadow-2 xl:block">
+      <div className="hidden overflow-x-auto panel xl:block">
         <table className="w-full min-w-[60rem] text-small">
           <caption className="sr-only">Paths compared side by side. Select a column heading to sort. No path is marked better.</caption>
           <thead className="text-caption">
@@ -320,7 +320,7 @@ export function CompareWorkspace({
 
       <AnimatePresence>
       {paths.length > 0 && (
-        <motion.section key="chart" variants={enter} initial="hidden" animate="visible" exit="exit" aria-labelledby="cum-h" className="rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
+        <motion.section key="chart" variants={enter} initial="hidden" animate="visible" exit="exit" aria-labelledby="cum-h" className="panel p-4 sm:p-6">
           <h2 id="cum-h" className="mb-4 text-h3 font-[650]">Total money earned minus costs</h2>
           <TraceChart title="Total money earned minus costs, by path" series={series} marker={marker} band={{ from: 18, to: 22, label: "College" }} summary={summary} height={340} />
           <p className="mt-3 text-caption text-muted">
@@ -388,7 +388,7 @@ function PathEditor({
     // Not a <form>: Radix radio groups inside forms dispatch synthetic clicks that collide with open popovers.
     <div
       role="form"
-      className="grid gap-5 rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6"
+      className="grid gap-5 panel p-4 sm:p-6"
       aria-label={initial ? "Edit path" : "Add a path"}
     >
       <p className="flex items-center gap-2 font-display text-[1.05rem] font-semibold">

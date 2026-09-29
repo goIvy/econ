@@ -56,7 +56,8 @@ export function Hero() {
       ctx = gsap.context(() => {
         const st = { trigger: sectionRef.current, start: "top top", end: "bottom top", scrub: 0.6 };
         gsap.to(capRef.current, { yPercent: -18, scale: 0.86, opacity: 0.25, ease: "none", scrollTrigger: st });
-        gsap.to(copyRef.current, { yPercent: -10, opacity: 0.35, ease: "none", scrollTrigger: st });
+        // The copy only drifts (no fade) so its buttons keep full contrast while visible.
+        gsap.to(copyRef.current, { yPercent: -10, ease: "none", scrollTrigger: st });
       }, sectionRef);
     })();
     return () => {

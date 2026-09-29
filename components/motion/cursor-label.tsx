@@ -48,7 +48,7 @@ export function CursorLabel() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.12 } }}
             transition={{ duration: 0.18 }}
-            className="block rounded-full bg-accent px-2.5 py-1 text-[10px] font-bold tracking-[0.14em] text-white shadow-3"
+            className="block rounded-full bg-accent px-2.5 py-1 text-[10px] font-mono font-medium uppercase tracking-[0.08em] text-white shadow-3"
           >
             {label}
           </motion.span>

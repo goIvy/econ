@@ -17,14 +17,14 @@ import type { LessonInputs } from "./data";
 
 export type LessonId = "opportunity" | "purchasing" | "expected" | "debt" | "inflation" | "human" | "risk" | "npv";
 const LESSONS: Array<{ id: LessonId; title: string; term: string; hook: string; span?: string }> = [
-  { id: "opportunity", title: "What You Give Up", term: "Opportunity cost", hook: "Spend $20,000 now, or invest it?", span: "md:col-span-2 md:row-span-2" },
-  { id: "purchasing", title: "What Your Salary Can Actually Buy", term: "Purchasing power", hook: "$100K in San Francisco vs. Cleveland.", span: "md:col-span-2" },
-  { id: "debt", title: "Where Loan Payments Go", term: "Debt interest", hook: "How much of each payment is interest." },
-  { id: "expected", title: "The Average Outcome", term: "Expected value", hook: "Salary × the chance of having the job." },
-  { id: "inflation", title: "Why $100 Buys Less Later", term: "Inflation", hook: "What $100 buys over time." },
-  { id: "human", title: "Skills as an Investment", term: "Human capital", hook: "Education that pays back every year." },
-  { id: "risk", title: "Same Average, Different Spread", term: "Risk", hook: "Why the range matters, not just the middle." },
-  { id: "npv", title: "What Future Money Is Worth Today", term: "Net present value", hook: "A dollar later is worth less than a dollar now." },
+  { id: "opportunity", title: "What you give up", term: "Opportunity cost", hook: "Spend $20,000 now, or invest it?", span: "md:col-span-2 md:row-span-2" },
+  { id: "purchasing", title: "What your salary can actually buy", term: "Purchasing power", hook: "$100K in San Francisco vs. Cleveland.", span: "md:col-span-2" },
+  { id: "debt", title: "Where loan payments go", term: "Debt interest", hook: "How much of each payment is interest." },
+  { id: "expected", title: "The average outcome", term: "Expected value", hook: "Salary × the chance of having the job." },
+  { id: "inflation", title: "Why $100 buys less later", term: "Inflation", hook: "What $100 buys over time." },
+  { id: "human", title: "Skills as an investment", term: "Human capital", hook: "Education that pays back every year." },
+  { id: "risk", title: "Same average, different spread", term: "Risk", hook: "Why the range matters, not just the middle." },
+  { id: "npv", title: "What future money is worth today", term: "Net present value", hook: "A dollar later is worth less than a dollar now." },
 ];
 
 /**
@@ -34,10 +34,11 @@ const LESSONS: Array<{ id: LessonId; title: string; term: string; hook: string; 
 export function Lessons({ data, only }: { data: LessonInputs; only?: LessonId[] }) {
   const [open, setOpen] = useState<LessonId | null>(null);
   const lesson = LESSONS.find((l) => l.id === open);
-  const list = only ? LESSONS.filter((l) => only.includes(l.id)).map((l) => ({ ...l, span: undefined })) : LESSONS;
+  // A short selection gets an asymmetric layout: one lead lesson, the rest stacked beside it.
+  const list = only ? LESSONS.filter((l) => only.includes(l.id)).map((l, i) => ({ ...l, span: i === 0 ? "md:col-span-3 md:row-span-2" : "md:col-span-2" })) : LESSONS;
   return (
     <LayoutGroup>
-      <ul className={cn("grid auto-rows-[minmax(150px,auto)] gap-3", only ? "md:grid-cols-3" : "md:grid-cols-4")}>
+      <ul className={cn("grid auto-rows-[minmax(150px,auto)] gap-3", only ? "md:grid-cols-5" : "md:grid-cols-4")}>
         {list.map((l, i) => (
           <li key={l.id} className={cn(l.span)}>
             <motion.button
@@ -46,17 +47,17 @@ export function Lessons({ data, only }: { data: LessonInputs; only?: LessonId[] 
               onClick={() => setOpen(l.id)}
               whileTap={{ scale: 0.985 }}
               transition={{ duration: DUR.standard, ease: EASE.smooth }}
-              className="group relative grid h-full w-full content-between gap-6 overflow-hidden rounded-lg border border-rule bg-surface p-5 text-left shadow-1 hover:shadow-3"
+              className="group relative grid h-full w-full content-between gap-6 overflow-hidden rounded-md bg-surface p-5 text-left shadow-[0_0_0_1px_var(--rule),var(--hairline-inset)] transition-shadow duration-500 hover:shadow-[0_0_0_1px_var(--rule-strong),var(--hairline-inset),var(--shadow-3)] sm:p-6"
               data-cursor="EXPLORE"
             >
               <span className="flex items-start justify-between gap-3">
                 <span className="grid gap-1">
-                  <motion.span layoutId={`lesson-t-${l.id}`} className="text-h3 font-bold text-ink">
+                  <motion.span layoutId={`lesson-t-${l.id}`} className="text-h3 font-semibold tracking-[-0.02em] text-ink">
                     {l.title}
                   </motion.span>
                   <span className="text-caption text-muted">Economists call this {l.term.toLowerCase()}.</span>
                 </span>
-                <span className="tabular text-caption font-bold text-muted">{String(i + 1).padStart(2, "0")}</span>
+                <span className="tabular font-mono text-[11px] text-accent-ink">{String(i + 1).padStart(2, "0")}</span>
               </span>
               <span className={cn("grid gap-3", l.span?.includes("row-span-2") && "self-end")}>
                 <Glyph id={l.id} big={!!l.span?.includes("row-span-2")} />
@@ -72,20 +73,20 @@ export function Lessons({ data, only }: { data: LessonInputs; only?: LessonId[] 
           {lesson && (
             <Dialog.Portal forceMount>
               <Dialog.Overlay asChild forceMount>
-                <motion.div className="fixed inset-0 z-50 bg-[#0b1020]/60 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: DUR.fast } }} />
+                <motion.div className="fixed inset-0 z-[var(--z-overlay)] bg-black/45 backdrop-blur-sm" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: DUR.fast } }} />
               </Dialog.Overlay>
               <Dialog.Content asChild forceMount aria-describedby={undefined}>
                 {/* Flex-centered wrapper: the panel itself only carries the shared-layout transform. */}
-                <div className="fixed inset-0 z-50 flex items-end justify-center p-3 pt-[calc(var(--nav-h)+12px)] sm:p-6 md:items-center" onClick={(e) => e.target === e.currentTarget && setOpen(null)}>
+                <div className="fixed inset-0 z-[var(--z-overlay)] flex items-end justify-center p-3 pt-[calc(var(--nav-h)+12px)] sm:p-6 md:items-center" onClick={(e) => e.target === e.currentTarget && setOpen(null)}>
                   <motion.div
                     layoutId={`lesson-${lesson.id}`}
                     transition={{ duration: DUR.large, ease: EASE.smooth }}
-                    className="grid max-h-full w-full max-w-[880px] content-start gap-5 overflow-y-auto rounded-lg border border-rule bg-surface p-5 shadow-3 sm:p-8 md:max-h-[86vh]"
+                    className="grid max-h-full w-full max-w-[880px] content-start gap-5 overflow-y-auto rounded-lg bg-surface p-5 shadow-[0_0_0_1px_var(--rule),var(--hairline-inset),var(--shadow-3)] sm:p-8 md:max-h-[86vh]"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="grid gap-1">
                         <Dialog.Title asChild>
-                          <motion.h3 layoutId={`lesson-t-${lesson.id}`} className="text-h2 font-extrabold">
+                          <motion.h3 layoutId={`lesson-t-${lesson.id}`} className="text-h2 font-semibold">
                             {lesson.title}
                           </motion.h3>
                         </Dialog.Title>
@@ -209,8 +210,8 @@ function Lead({ children }: { children: React.ReactNode }) {
 function Big({ label, value, fmt, tone }: { label: string; value: number; fmt: (v: number) => string; tone?: string }) {
   return (
     <div className="grid gap-0.5">
-      <p className="text-caption font-bold tracking-[0.12em] text-muted">{label}</p>
-      <p className="text-metric font-extrabold" style={tone ? { color: tone } : undefined}>
+      <p className="text-caption font-mono font-medium uppercase tracking-[0.08em] text-muted">{label}</p>
+      <p className="text-metric font-semibold" style={tone ? { color: tone } : undefined}>
         <AnimatedNumber value={value} format={fmt} />
       </p>
     </div>
@@ -270,8 +271,8 @@ function PurchasingLesson({ data }: { data: LessonInputs }) {
           const left = 100000 - parts.slice(0, step).reduce((s, [, v]) => s + (v as number), 0);
           return (
             <div key={c.name} className="grid gap-3 rounded-md border border-rule p-4">
-              <p className="text-caption font-bold tracking-[0.12em] text-muted">{c.name.toUpperCase()}</p>
-              <p className="text-h2 font-extrabold">$100K</p>
+              <p className="text-caption font-mono font-medium uppercase tracking-[0.08em] text-muted">{c.name.toUpperCase()}</p>
+              <p className="text-h2 font-semibold">$100K</p>
               <ul className="grid gap-1.5">
                 {parts.map(([label, v], i) => (
                   <motion.li key={label} initial={false} animate={{ opacity: i < step ? 1 : 0.25, x: i < step ? 0 : -6 }} transition={{ duration: DUR.standard, ease: EASE.smooth }} className="flex justify-between text-small">
@@ -397,7 +398,7 @@ function InflationLesson() {
               <motion.div className="w-full origin-bottom rounded-t-md bg-trace-a" initial={false} animate={{ scaleY: (v as number) / 100 }} transition={{ duration: DUR.large, ease: EASE.smooth }} style={{ height: "100%" }} />
             </div>
             <p className="text-caption text-muted">{label}</p>
-            <p className="tabular text-h2 font-extrabold">
+            <p className="tabular text-h2 font-semibold">
               <AnimatedNumber value={v as number} format={money} />
             </p>
           </div>

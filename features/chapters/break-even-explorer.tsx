@@ -58,7 +58,7 @@ export function BreakEvenExplorer() {
     <div className="grid gap-6">
       <div className="grid gap-2" aria-live="polite">
         <p className="text-small font-semibold text-ink-2">Estimated break-even for {mine.ctx.college.shortName} {mine.ctx.major.name}</p>
-        <p className="text-[clamp(2.25rem,5.5vw,4.25rem)] font-extrabold leading-none tracking-[-0.045em] text-ink">{beYears == null ? "Not by age 40" : `${beYears.toFixed(1)} years after graduation`}</p>
+        <p className="text-[clamp(2.25rem,5.5vw,4.25rem)] font-semibold leading-none tracking-[-0.045em] text-ink">{beYears == null ? "Not by age 40" : `${beYears.toFixed(1)} years after graduation`}</p>
         <p className="max-w-[48rem] text-small text-ink-2">
           By graduation, someone who started working at 18 is about <strong className="font-semibold text-ink">{moneyCompact(headStart)}</strong> ahead of you, counting their pay and your costs.{" "}
           {beYears == null ? "With these numbers, your higher pay doesn't close that gap by age 40." : `Your higher pay closes that gap about ${beYears.toFixed(1)} years after graduation.`}{" "}
@@ -68,7 +68,7 @@ export function BreakEvenExplorer() {
           <DataKindChip kind="projected" /> After taxes and loan payments, in 2024 dollars.
         </p>
       </div>
-      <div className="grid gap-6 rounded-lg border border-rule bg-surface p-4 shadow-3 sm:p-6">
+      <div className="grid gap-6 panel p-4 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex flex-wrap gap-x-5 gap-y-2 text-caption text-ink-2">
             {pair.map((f) => (
@@ -215,10 +215,10 @@ function BreakEvenMarker({ f, i, age, x, y, W }: { f: Future; i: number; age: Mo
             </motion.g>
             <motion.g initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: DUR.standard, ease: EASE.smooth }} transform={`translate(${left ? -170 : 14}, ${i === 0 ? -64 : 18})`}>
               <rect width={156} height={44} rx={10} fill="var(--ink)" />
-              <text x={12} y={18} className="fill-on-ink text-[10px] font-bold tracking-[0.14em]">
+              <text x={12} y={18} className="fill-on-ink text-[10px] font-mono font-medium uppercase tracking-[0.08em]">
                 BREAK-EVEN · {f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`}
               </text>
-              <text x={12} y={35} className="tabular fill-on-ink text-[14px] font-extrabold">
+              <text x={12} y={35} className="tabular fill-on-ink text-[14px] font-semibold">
                 AGE {f.breakEven!.toFixed(1)}
               </text>
             </motion.g>
@@ -236,9 +236,9 @@ function Readouts({ f, age, baseline }: { f: Future; age: number; baseline: Para
   const gap = s.netPosition - s.baselinePosition;
   const ahead = gap >= 0;
   return (
-    <div className="grid gap-4 rounded-lg border border-rule bg-surface p-4 sm:p-5">
+    <div className="grid gap-4 panel p-4 sm:p-5">
       <div className="flex items-center justify-between gap-2">
-        <p className="flex min-w-0 items-center gap-2 text-caption font-bold tracking-[0.12em] text-ink">
+        <p className="flex min-w-0 items-center gap-2 text-caption font-mono font-medium uppercase tracking-[0.08em] text-ink">
           <span className="size-2 shrink-0 rounded-full" style={{ background: PATH_VAR[f.index] }} />
           {f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`} <span className="truncate font-medium tracking-normal text-muted">{f.label}</span>
         </p>
@@ -246,7 +246,7 @@ function Readouts({ f, age, baseline }: { f: Future; age: number; baseline: Para
       </div>
       <div className="grid gap-1">
         <p className="text-caption text-muted">Compared with working from 18</p>
-        <p className={cn("tabular text-h2 font-extrabold tracking-[-0.03em]", ahead ? "text-gain" : "text-ink")}>
+        <p className={cn("tabular text-h2 font-semibold tracking-[-0.03em]", ahead ? "text-gain" : "text-ink")}>
           {ahead ? "Ahead by " : "Behind by "}
           <AnimatedNumber value={Math.abs(gap)} format={moneyCompact} />
         </p>

@@ -156,7 +156,7 @@ export function CollegeWorkspace({
                       tuitionOut={(college.costs.tuitionOutOfState.value ?? 0) + (college.costs.fees.value ?? 0)}
                     />
                   </div>
-                  <div className="rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6 lg:col-span-7">
+                  <div className="panel p-4 sm:p-6 lg:col-span-7">
                     {result ? (
                       <CostLedger lines={result.r.costLines} net={result.r.net} lineage={college.costs.tuitionInState.lineage} title={`${college.shortName}, one year`} />
                     ) : (
@@ -225,7 +225,7 @@ function Overview({ college, result, bundle, residency, facts }: { college: Coll
   return (
     <div className="grid gap-10">
       {result && bundle && (
-        <motion.section variants={motionSafe(enter, reduce)} initial="hidden" animate="visible" aria-labelledby="yp-h" className="rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
+        <motion.section variants={motionSafe(enter, reduce)} initial="hidden" animate="visible" aria-labelledby="yp-h" className="panel p-4 sm:p-6">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
             <h2 id="yp-h" className="text-h3 font-[650]">
               Your path: {bundle.major.name}, {residency === "resident" ? (college.control === "public" ? `${college.state} resident` : "on campus") : "non-resident"}
@@ -306,7 +306,7 @@ function Earnings({ college, bundle }: { college: College; bundle?: MajorBundle 
   const p = bundle.outcome?.earlyCareer.value ?? bundle.major.earlyCareer.value!;
   return (
     <div className="grid gap-10">
-      <section className="grid gap-4 rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
+      <section className="grid gap-4 panel p-4 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-h3 font-[650]">{bundle.major.name} graduates: the full range</h2>
           <SampleChip />

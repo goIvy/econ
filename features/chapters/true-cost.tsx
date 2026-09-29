@@ -146,7 +146,7 @@ function Term({ label, sub, value, strong }: { label: string; sub: string; value
   return (
     <div className={cn("grid gap-1 rounded-md p-4", strong ? "bg-ink text-on-ink" : "border border-rule bg-surface")}>
       <p className={cn("text-caption font-semibold", strong ? "text-on-ink" : "text-ink-2")}>{label}</p>
-      <p className="tabular text-[clamp(2rem,4vw,3rem)] font-extrabold leading-none tracking-[-0.04em]">
+      <p className="tabular text-[clamp(2rem,4vw,3rem)] font-semibold leading-none tracking-[-0.04em]">
         <AnimatedNumber value={value} format={moneyCompact} />
       </p>
       <p className={cn("text-caption", strong ? "text-on-ink/80" : "text-muted")}>{sub}</p>

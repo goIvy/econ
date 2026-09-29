@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     // Vendored agent skills and the Python service are not app code.
     ".claude/**",
     "backend/**",
+    // img2threejs pipeline evidence (generator output, not app code).
+    ".img2threejs/**",
   ]),
 ]);
 

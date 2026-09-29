@@ -27,7 +27,7 @@ export function PriceEarningsScatter({ pts, r, lineage }: { pts: Pt[]; r: number
   const y = linear([Math.min(...pts.map((p) => p.earnings)) * 0.9, Math.max(...pts.map((p) => p.earnings)) * 1.05], [H - M.b, M.t]);
   const shown = pts.filter((p) => filter === "all" || p.control === filter);
   return (
-    <div ref={view} className="grid gap-4 rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
+    <div ref={view} className="grid gap-4 panel p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Segmented label="Show" hideLabel size="sm" value={filter} onChange={setFilter} options={[{ value: "all", label: "All" }, { value: "public", label: "Public" }, { value: "private", label: "Private" }]} />
         <div className="flex items-center gap-2">
@@ -99,7 +99,7 @@ export function BreakEvenBars({ rows, cost }: { rows: Array<{ id: string; name: 
   const list = all ? rows : rows.slice(0, 12);
   const max = 45;
   return (
-    <div ref={view} className="grid gap-4 rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-6">
+    <div ref={view} className="grid gap-4 panel p-4 sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-small text-ink-2">Break-even age vs. working from 18, at {money(cost)} a year (median public net price)</p>
         <div className="flex gap-2"><DataKindChip kind="projected" /><SampleChip /></div>

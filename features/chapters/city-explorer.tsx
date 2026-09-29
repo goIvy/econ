@@ -83,7 +83,7 @@ export function CityExplorer({ cities, lineage }: { cities: City[]; lineage: Lin
           <Combobox label="Any city" hideLabel value={cityId} onChange={setCityId} options={cities.map((c) => ({ value: c.id, label: `${c.name}, ${c.state}` }))} searchPlaceholder="Search metros" />
         </div>
 
-        <div className="grid gap-4 rounded-lg border border-rule bg-surface p-4 shadow-2" aria-live="polite">
+        <div className="grid gap-4 panel p-4" aria-live="polite">
           <div className="flex items-baseline justify-between gap-3">
             <AnimatePresence mode="wait" initial={false}>
               <motion.p key={city.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6, transition: { duration: DUR.fast } }} className="text-h3 font-bold text-ink">
@@ -115,14 +115,14 @@ export function CityExplorer({ cities, lineage }: { cities: City[]; lineage: Lin
           <div className="grid grid-cols-2 gap-4 border-t border-rule pt-3">
             <div>
               <p className="text-caption text-muted">Money left each year</p>
-              <p className="text-h2 font-extrabold text-ink">
+              <p className="text-h2 font-semibold text-ink">
                 <AnimatedNumber value={d.disposable} format={money} />
               </p>
               <p className="text-caption text-muted">{moneyCompact(dHome.disposable)} in {home.name}</p>
             </div>
             <div>
               <p className="text-caption text-muted">Same lifestyle would need</p>
-              <p className="text-h2 font-extrabold text-trace-a">
+              <p className="text-h2 font-semibold text-trace-a">
                 <AnimatedNumber value={equivalent} format={money} />
               </p>
               <p className="text-caption text-muted">to live like {moneyCompact(s)} in {home.name}</p>
@@ -131,7 +131,7 @@ export function CityExplorer({ cities, lineage }: { cities: City[]; lineage: Lin
         </div>
       </div>
 
-      <div className="order-1 grid min-w-0 gap-3 self-start rounded-lg border border-rule bg-surface p-3 shadow-3 sm:p-5 lg:order-2 lg:col-span-7">
+      <div className="order-1 grid min-w-0 gap-3 self-start panel p-3 sm:p-5 lg:order-2 lg:col-span-7">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-small font-semibold text-ink">
             Where {moneyCompact(s)} goes further

@@ -1,57 +1,86 @@
-# Design System: College Value Lab (v2)
+# Design System: College Value Lab (v3)
 
-> `design-system/MASTER.md` is the source of truth for every token, recipe and rule. This file is a short record of the shipped identity. Where the two differ, MASTER.md governs.
+> Written in the Stitch semantic format (`stitch-utilities:taste-design` / `design-md`) so it can seed Google Stitch screens. `design-system/MASTER.md` holds the token-level engineering rules; `app/globals.css` is the implementation. `.stitch/SITE.md` is the site constitution and `.stitch/prompts.md` holds ready-to-use Stitch prompts.
+>
+> Design read: **an overhaul of a consumer decision tool.** Dials: variance 7, motion 7, density 4.
 
-## Overview
+## 1. Visual Theme & Atmosphere
 
-**Tagline:** See what college is really worth.
-**Core metaphor:** your future is a set of economic paths. Paths show up everywhere: the hero's three futures, salary trajectories, break-even crossings, the 1,000-futures fan, the methodology pipeline.
+A calm, gallery-airy instrument for a big personal decision. The page feels like a well-lit architecture studio with a single ember of warmth. Cool zinc surfaces, one burnt-orange accent, confident asymmetric layouts and a tactile 3D graduation cap that tilts with the pointer and tosses when tapped. Motion is fluid and weighty (spring and custom cubic-bezier curves), never bouncy or decorative. A fine film grain sits over everything so nothing reads as sterile flat vector.
 
-The register is premium fintech × academic research × interactive data journalism. The page uses a **dark-to-light hybrid**: story and simulation chapters sit on deep navy (`#0B1020` / `#11182A`), research and data-reading chapters on a cool light ground (`#F7F8FC`). Both themes redefine the same CSS variables (`.theme-dark`, `.theme-dark-2`), so every component restyles itself.
+There is **one page theme** that follows the system setting, with a Light / Dark / System switch in the footer. Sections never flip to a different theme mid-page. Depth comes from nested "double-bezel" shells, hairline rings and tinted diffused shadows, not from heavy borders.
 
-v1 ("Calibrated Instrument", warm paper, Schibsted Grotesk, light only) was replaced by this system at the owner's request.
+The single simulation section ("There isn't just one possible future") borrows a restrained **telemetry** voice: mono uppercase readouts, dashed rules, numbered 01/02/03 stats. That language stays inside the simulation and is not used as decoration elsewhere.
 
-## Colors
+## 2. Color Palette & Roles
 
-| Role | Values |
-|---|---|
-| Grounds | `#0B1020`, `#11182A` (dark) · `#F7F8FC`, `#FFFFFF` (light) |
-| Brand accents (UI only) | `#6C7CFF` primary, `#36D1B4` secondary, `#A78BFA` highlight |
-| Path inks (data) | PATH 01 blue solid, PATH 02 teal solid, PATH 03 violet dotted, WORK neutral dashed. Validated per theme with the dataviz palette checker |
-| Signals (with a word or icon) | gain `#42C98A`, caution `#F4B860`, risk `#EF6A75` on dark; darker equivalents on light for 4.5:1 contrast |
+**Light**
+- **Zinc Canvas** (#F4F4F5): page background
+- **Near-White Surface** (#FCFCFC): cards, bento tiles, bezel cores
+- **Sunken Zinc** (#EBEBED): wells, pressed states, inactive tracks
+- **Graphite Ink** (#16171B): primary text, the inverted final-CTA card
+- **Slate Secondary** (#3F4148): body copy and descriptions
+- **Muted Steel** (#5D6068): metadata, captions, axis labels
+- **Whisper Rule** (rgba(22,23,27,0.09)): 1px structural hairlines and rings
+- **Ember Accent** (#D9622A): primary buttons, active states, focus rings, progress line
+- **Ember Ink** (#A8431A): accent-coloured text (AA on canvas and surface)
 
-Chart series use slightly deeper teal and violet than the brand accents so they pass the dark-mode lightness check; the bright versions stay UI accents.
+**Dark** (selected steps, not an automatic inversion)
+- **Night Canvas** (#0E0F12), **Night Surface** (#17181C), **Graphite Ink** (#F2F2F3), **Ember Accent** (#E06A2B), **Ember Ink** (#F08A55)
 
-## Typography
+**Data inks** (chart series only, validated with the dataviz palette checker for both themes, assigned in fixed order and never cycled)
+- Path 01 Ember (#D4581F / dark #E06A2B), Path 02 Cobalt (#3567C9 / #5585E0), Path 03 Pine (#1A8A6E / #1F9C79, dotted), Work-from-18 Neutral (#6B6E76, dashed)
 
-Geist for everything, with tabular figures for numbers. Display 700–800 with tight tracking: the hero headline up to ~92px, section questions up to 64px (36px on phones).
+**Signals** (always paired with a word): Gain (#17734B), Caution (#7D5208), Risk (#B8323F)
 
-## Simplicity rules (cleanup pass)
+Only one UI accent. Saturation stays below 80%. No purple or blue "AI gradient", no neon glows, no pure black.
 
-- **One journey:** college → major → residency → optional aid → result → compare → explore deeper. The starter card is the clearest element on the page.
-- **Progressive disclosure:** level 1 a simple answer (five numbers + "What this means" + the next two actions), level 2 "Details", level 3 "View calculation". Assumptions and methodology sit in one "Advanced analysis" panel.
-- **One chart per idea:** the payoff timeline is the only "college vs. working from 18" chart on the homepage.
-- **No dead ends:** placeholder pages were removed; every control changes something you can see.
-- **Every section:** small label, large question, one sentence, one interactive component.
-- **Plain words first**, the economics term second ("What you give up", then "Economists call this opportunity cost").
-- **Overview numbers are compact** ($84K, 7.4 yrs, 91%); full values appear in details.
-- **Badges:** DATA, ESTIMATE, SIMULATION.
-- **Three card styles only:** metric card, interactive selection card, educational card. **Buttons:** primary (continue / calculate / compare / run), secondary, quiet (ghost).
-- **Animation budget:** the big moments are the hero paths, cost bar, comparison transitions, the payoff timeline and the simulation; everything else only fades up. Text updates immediately; charts animate after.
+## 3. Typography Rules
 
-## Components and surfaces
+- **Display:** Geist, weight 600-650, track-tight (-0.05em at hero sizes), leading 0.95. The hero headline runs to ~94px on three lines ("See what college is / really worth."), with the last phrase in Ember Ink.
+- **Body:** Geist 400-500, relaxed 1.5 leading, max ~65 characters per line, Slate Secondary.
+- **Mono:** Geist Mono for section indices (01-07), metadata and the simulation telemetry. Numbers everywhere use tabular figures.
+- **Case:** sentence case for every heading and button. Small uppercase appears only in mono labels.
+- **Banned:** Inter, system-font defaults, serif display faces, all-caps headlines, gradient text.
 
-- Fixed glass navbar: Explore, Compare, Learn, Research; a Saved icon; one primary action, **Start comparing**. A thin progress line shows how far down the page you are; the bar switches to the dark or light treatment of the section underneath. Deep pages use breadcrumbs (Explore / UC Berkeley / Economics).
-- Glass is used only for the navbar and the hero's floating cards.
-- Every metric shows a label, a compact tabular value, a badge (DATA, ESTIMATE, SIMULATION) and, in its details, an ⓘ source card.
-- Primary buttons are ink-filled and magnetic (≤6px). Cards are `--surface` with a 1px rule; no side stripes and no rows of identical metric cards.
+## 4. Component Stylings
 
-## Motion
+- **Navigation:** a floating glass island detached from the top edge (12-16px gap), fully pill-shaped, with a hairline ring and inner highlight. Active page is a sliding pill. On the homepage a 1px ember progress line runs along its bottom edge. On phones two lines morph into an X and open a full-screen frosted sheet whose links rise in one by one.
+- **Buttons:** always pill-shaped. Primary is an Ember fill with graphite text, an inner top highlight and a soft ember-tinted shadow. Key calls to action use **button-in-button**: the trailing arrow sits in its own small circle that nudges up-right on hover. Secondary is a surface pill with a hairline ring. Pressing scales to 0.98.
+- **Double-bezel shells:** major containers (starter form, results bento, "What this means", simulation chart, final call to action) are an outer shell (28px radius, 6px padding, faint tinted fill, hairline ring) holding an inner core (22px radius, surface fill, inner highlight, diffused shadow).
+- **Bento results:** one large lead tile (net cost, 2x2) and four single tiles packed with a 6px gap inside one shell. Each tile is a disclosure button: a small "+" circle rotates to "x" when open.
+- **Inputs:** label above, helper or error below, 14px radius, accent focus ring (4px soft ember halo). Comboboxes are searchable popovers.
+- **Disclosures:** minimalist hairline rows (top and bottom rule, no card), a "+" in a ring that rotates 45 degrees when open.
+- **Data-kind badges:** tiny outlined pills, DATA / ESTIMATE / SIMULATION, next to every number. A "Sample data" chip marks every figure until live data is connected.
+- **Keyboard hints:** real `<kbd>` keys (hairline ring plus a 1px bottom edge) beside the college browser arrows.
+- **Loaders:** skeletons shaped like the final layout; a small inline spinner only inside a pressed button.
 
-Tokens live in `lib/animations.ts`: fast 0.18s, standard 0.38s, large 0.75s, hero 0.95s; smooth, spring and exit easings. Scroll reveals rise 28px and stagger. Paths draw and morph instead of redrawing; numbers spring to new values; a cursor label (DRAG, EXPLORE, COMPARE, SCRUB) appears on data interactions for fine pointers only. College pages switch with View Transitions. Under `prefers-reduced-motion`, parallax, cursor labels, magnetic pull, long scroll scenes and path choreography turn off, and charts update instantly.
+## 5. Layout Principles
 
-## Do / Don't
+- Max width 1200px with 16px (phone) to 32px gutters. CSS grid, never flexbox percentage maths.
+- Hero is an **asymmetric split**: copy left (1.1fr), the 3D cap right (0.9fr). Not centred.
+- The "Build your college path" section pins its heading and three numbered steps on the left while the starter form scrolls on the right.
+- Each homepage chapter is a question headline with a mono index (01-07), one sentence, then one interactive component. Section padding 64px (phone) to 96px.
+- No three-equal-column feature rows: lessons use a 3+2 asymmetric grid, the data legend is a hairline table, results are a bento.
+- Everything collapses to one column below 768px; the sticky summary becomes a floating glass card at the bottom of the screen.
 
-**Do:** label sample data; show ranges and medians; give every chart a text summary, an accessible description and keyboard control; keep everything usable without hover.
+## 6. Motion & Interaction
 
-**Don't:** gradient text, a single score or verdict for a college, good/bad labels on salaries, unlabeled projections, color-only meaning, emoji icons, motion that doesn't explain something.
+- Easing: `cubic-bezier(0.32, 0.72, 0, 1)` for UI, 280ms default. Exits are faster than entrances.
+- Entrances: headline, sentence and CTA rise in with blur-to-sharp (28px, 0.9s, 90ms stagger).
+- **GSAP ScrollTrigger (two uses only):** (1) the hero scrubs back (cap scales to 0.86 and fades) as the path builder takes over; (2) the payoff sentence lights up word by word as it scrolls through the viewport.
+- The 3D cap (Three.js, procedural, built through the img2threejs pipeline): pointer tilt on mouse, idle float, damped tassel sway, one entrance toss, tap to toss again. It pauses when off-screen.
+- The simulation runs 1,000 futures on a canvas: particles gather, lines draw forward, then settle into a band.
+- **Reduced motion:** no scrubbing, no toss, the cap renders a single still frame, words show at full strength, and every state change is instant.
+- Only transform and opacity are animated. Grain is a fixed pointer-events-none layer.
+
+## 7. Anti-Patterns (Banned)
+
+- No single score, grade or "winner" verdict for a college.
+- No invented numbers: every figure is labelled with its data kind and sample status.
+- No emojis, no Inter, no pure #000000, no neon or outer glows, no purple/blue AI gradients.
+- No three-equal-card rows, no centred hero, no dark section dropped into a light page.
+- No hover-only functionality: every hover reveal also works by tap and keyboard.
+- No em dashes in UI copy, no "Elevate / Seamless / Unleash / Next-gen" copywriting, no exclamation marks.
+- No Lucide icons (Phosphor only), no generic placeholder names, no dead links.
+- No z-index above the defined scale (sticky 30, nav 40, overlay 50, grain 60).

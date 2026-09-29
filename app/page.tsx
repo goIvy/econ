@@ -1,6 +1,7 @@
 import { Nav, type SpySection } from "@/components/site/nav";
 import { Footer } from "@/components/site/footer";
 import { Chapter } from "@/components/site/chapter";
+import { ScrubText } from "@/components/motion/scrub-text";
 import { ButtonLink } from "@/components/ui/button";
 import { ScenarioProvider } from "@/features/scenario/store";
 import { scenarioSeed } from "@/features/scenario/data";
@@ -62,32 +63,42 @@ export default function HomePage() {
           <Hero />
           <Results advanced={<Advanced />} />
 
-          <Chapter id="compare" eyebrow="COMPARE" title="How does another college stack up?" lede="Add a college to see it next to yours. Five numbers first; open more when you want them.">
+          <Chapter id="compare" index="02" title="How does another college stack up?" lede="Add a college to see it next to yours. Five numbers first; open more when you want them.">
             <Compare />
           </Chapter>
 
-          <Chapter id="true-cost" theme="dark" eyebrow="COST" title="What will college actually cost you?" lede="Sticker price can be very different from what you ultimately pay.">
+          <Chapter id="true-cost" index="03" title="What will college actually cost you?" lede="Sticker price can be very different from what you ultimately pay.">
             <TrueCost />
           </Chapter>
 
-          <Chapter id="break-even" theme="dark-2" eyebrow="PAYOFF" title="When does college pay for itself?" lede="While you're in school, someone who starts working at 18 is already earning. College pays for itself once your higher pay makes up for that head start and the cost.">
+          <Chapter
+            id="break-even"
+            index="04"
+            title="When does college pay for itself?"
+            lede={<ScrubText className="text-[clamp(1.3rem,2.3vw,1.85rem)] font-medium leading-[1.35] tracking-[-0.02em] text-ink" text="While you're in school, someone who starts working at 18 is already earning. College pays for itself once your higher pay makes up for that head start and the cost." />}
+          >
             <BreakEvenExplorer />
           </Chapter>
 
-          <Chapter id="futures" theme="dark" eyebrow="POSSIBLE FUTURES" title="There isn't just one possible future." lede="We simulate many possible outcomes by changing things like salary, graduation timing, time to find a job and living costs.">
+          <Chapter id="futures" index="05" title="There isn't just one possible future." lede="We simulate many possible outcomes by changing things like salary, graduation timing, time to find a job and living costs.">
             <FuturesSim />
           </Chapter>
 
-          <Chapter id="learn" eyebrow="LEARN THE ECONOMICS" title="The ideas behind every number." lede="Short experiments you can play with. No textbook required.">
-            <Lessons data={lessonInputs()} only={["opportunity", "debt", "purchasing"]} />
-            <div className="mt-6">
-              <ButtonLink href="/learn" variant="secondary">
+          <Chapter
+            id="learn"
+            index="06"
+            title="The ideas behind every number."
+            lede="Short experiments you can play with. No textbook required."
+            aside={
+              <ButtonLink href="/learn" variant="secondary" trail>
                 See all lessons
               </ButtonLink>
-            </div>
+            }
+          >
+            <Lessons data={lessonInputs()} only={["opportunity", "debt", "purchasing"]} />
           </Chapter>
 
-          <Chapter id="data" eyebrow="DATA" title="Where do these numbers come from?" lede="Every figure is labeled with what kind of number it is and where it came from.">
+          <Chapter id="data" index="07" title="Where do these numbers come from?" lede="Every figure is labeled with what kind of number it is and where it came from.">
             <Transparency />
           </Chapter>
 

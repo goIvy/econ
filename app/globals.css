@@ -22,7 +22,7 @@
   --rule-strong: rgba(22, 23, 27, 0.17);
   --grid: rgba(22, 23, 27, 0.04);
   --grid-major: rgba(22, 23, 27, 0.07);
-  --glass: rgba(252, 252, 252, 0.72);
+  --glass: rgba(252, 252, 252, 0.8);
   --hairline-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
   /* One accent (burnt orange). --accent fills and rings; --accent-ink is the
@@ -96,7 +96,7 @@
   --rule-strong: rgba(255, 255, 255, 0.16);
   --grid: rgba(255, 255, 255, 0.03);
   --grid-major: rgba(255, 255, 255, 0.055);
-  --glass: rgba(14, 15, 18, 0.66);
+  --glass: rgba(14, 15, 18, 0.74);
   --hairline-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
   --accent: #e06a2b;
@@ -146,7 +146,7 @@
     --rule-strong: rgba(255, 255, 255, 0.16);
     --grid: rgba(255, 255, 255, 0.03);
     --grid-major: rgba(255, 255, 255, 0.055);
-    --glass: rgba(14, 15, 18, 0.66);
+    --glass: rgba(14, 15, 18, 0.74);
     --hairline-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 
     --accent: #e06a2b;
@@ -431,5 +431,15 @@
   ::view-transition-old(*),
   ::view-transition-new(*) {
     animation: none !important;
+  }
+}
+
+@layer components {
+  /* A content panel (charts, tables, tools): the outer-shell radius with a
+     hairline ring and inner highlight instead of a border. */
+  .panel {
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: 0 0 0 1px var(--rule), var(--hairline-inset), var(--shadow-2);
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Play, RotateCcw } from "@/components/ui/icons";
+import { Play, Plus, RotateCcw } from "@/components/ui/icons";
 import { useEffect, useRef, useState } from "react";
 import { AnimatedNumber, useMeasuredWidth } from "@/components/motion";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,14 @@ const RUNS = 1000;
 /** Stage timings (ms). */
 const T = { starting: 450, running: 2000, settling: 900 };
 type Stage = "idle" | "starting" | "running" | "settling" | "complete";
-const RGB = ["108,124,255", "22,164,140", "146,119,242"];
+const TRACE = ["--trace-a", "--trace-b", "--trace-d"];
+
+/** The path's trace colour as "r,g,b", read from the live theme for the canvas. */
+function traceRgb(el: Element, index: number) {
+  const hex = getComputedStyle(el).getPropertyValue(TRACE[index] ?? TRACE[0]).trim().replace("#", "");
+  const n = parseInt(hex.length === 3 ? hex.replace(/./g, "$&$&") : hex, 16);
+  return Number.isFinite(n) ? `${(n >> 16) & 255},${(n >> 8) & 255},${n & 255}` : "212,88,31";
+}
 
 /**
  * 1,000 POSSIBLE FUTURES. idle → starting (particles gather at 18) →
@@ -87,7 +94,7 @@ export function FuturesSim() {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, W, H);
     if (!sim || stage === "idle") return;
-    const rgb = RGB[f.index] ?? RGB[0];
+    const rgb = traceRgb(cv, f.index);
     const pts = (s: Float64Array, upTo: number) => {
       ctx.beginPath();
       ctx.moveTo(x(18), y(0));
@@ -153,17 +160,31 @@ export function FuturesSim() {
       })()
     : [];
   const color = PATH_VAR[f.index];
+  const status = stage === "idle" ? "Ready" : stage === "complete" ? "Complete" : stage === "settling" ? "Settling" : "Running";
 
   return (
     <div className="grid gap-6 lg:grid-cols-12">
-      <div className="grid min-w-0 gap-3 rounded-lg border border-rule bg-surface p-4 shadow-3 sm:p-6 lg:col-span-8">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="flex items-center gap-2 text-caption font-bold tracking-[0.12em] text-ink">
+      <div className="bezel min-w-0 lg:col-span-8">
+      <div className="bezel-core grid min-w-0 gap-3 p-4 sm:p-6">
+        {/* telemetry strip */}
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-dashed border-rule-strong pb-3 font-mono text-[11px] uppercase tracking-[0.1em] text-muted">
+          <p className="flex items-center gap-2 text-ink">
             <span className="size-2 rounded-full" style={{ background: color }} />
-            YOUR PATH <span className="font-medium tracking-normal text-muted">{f.label}</span>
+            Sim/{f.label}
           </p>
-          <p className="text-caption font-bold tracking-[0.14em] text-muted" aria-live="polite">
-            {stage === "idle" ? "READY" : stage === "complete" ? `${RUNS.toLocaleString()} FUTURES` : "SIMULATING…"}
+          <p className="tabular flex gap-4">
+            <span>
+              Runs <data value={RUNS} className="text-ink">{RUNS.toLocaleString()}</data>
+            </span>
+            <span className="hidden sm:inline">
+              Ages <span className="text-ink">18-{HORIZON}</span>
+            </span>
+            <span>
+              Status{" "}
+              <output aria-live="polite" className={cn("text-ink", stage !== "idle" && stage !== "complete" && "text-accent-ink")}>
+                {status}
+              </output>
+            </span>
           </p>
         </div>
         <div ref={ref} className="relative min-w-0" style={{ height: H }}>
@@ -200,7 +221,7 @@ export function FuturesSim() {
                   {hist.map((h, i) => (
                     <motion.rect key={i} x={W - M.r + 10} y={h.y0 + 0.5} height={Math.max(0, h.y1 - h.y0 - 1)} rx={1.5} fill={color} fillOpacity={0.6} initial={{ width: 0 }} animate={{ width: h.share * (HIST - 4) }} transition={{ duration: DUR.large, ease: EASE.smooth, delay: 0.2 + i * 0.012 }} />
                   ))}
-                  <text x={W - M.r + 10} y={M.t + 4} className="fill-muted text-[10px] font-bold tracking-[0.12em]">
+                  <text x={W - M.r + 10} y={M.t + 4} className="fill-muted font-mono text-[10px] tracking-[0.1em]">
                     AT 40
                   </text>
                 </motion.g>
@@ -210,7 +231,7 @@ export function FuturesSim() {
           <AnimatePresence>
             {stage === "idle" && (
               <motion.div key="cta" className="absolute inset-0 grid place-items-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, transition: { duration: DUR.fast } }}>
-                <Button size="lg" onClick={run} className="gap-2 shadow-3">
+                <Button size="lg" onClick={run} className="gap-2 shadow-3 ring-8 ring-surface">
                   <Play className="size-4" aria-hidden /> Run simulation
                 </Button>
               </motion.div>
@@ -225,25 +246,33 @@ export function FuturesSim() {
           <SampleChip className="ml-auto" />
         </p>
       </div>
+      </div>
 
       <div className="grid content-start gap-5 lg:col-span-4">
         {done ? (
-          <dl className="grid gap-4">
-            <Stat label="Typical outcome by 40" value={sim.median} fmt={moneyCompact} big />
-            <div className="grid gap-1">
-              <dt className="text-caption font-semibold text-ink-2">Likely range (middle half)</dt>
-              <dd className="tabular text-h2 font-bold text-ink">{`${moneyCompact(sim.q25)} - ${moneyCompact(sim.q75)}`}</dd>
+          <dl className="grid divide-y divide-dashed divide-rule-strong border-y border-rule-strong">
+            <Stat code="01" label="Typical outcome by 40" value={sim.median} fmt={moneyCompact} />
+            <div className="grid gap-1.5 py-4">
+              <dt className="flex gap-3 font-mono text-[11px] uppercase tracking-[0.1em] text-muted">
+                <span className="text-accent-ink">02</span>Likely range, middle half
+              </dt>
+              <dd className="tabular text-h2 font-semibold tracking-[-0.03em] text-ink">
+                <data value={sim.q25}>{moneyCompact(sim.q25)}</data> to <data value={sim.q75}>{moneyCompact(sim.q75)}</data>
+              </dd>
             </div>
-            <Stat label="Chance of breaking even within 10 years" value={sim.recoverWithin10 * 100} fmt={(v) => pct(v)} big />
+            <Stat code="03" label="Pays off within 10 years" value={sim.recoverWithin10 * 100} fmt={(v) => pct(v)} />
           </dl>
         ) : (
-          <div className="grid gap-3 rounded-md border border-dashed border-rule-strong p-5">
-            <p className="text-small font-semibold text-ink">{stage === "idle" ? "Press Run simulation to see:" : "Simulating 1,000 futures…"}</p>
-            <ul className="grid gap-1.5 text-small text-ink-2">
-              <li>· The typical outcome by age 40</li>
-              <li>· The likely range of outcomes</li>
-              <li>· The chance college pays for itself within 10 years</li>
-            </ul>
+          <div className="grid gap-3 border-y border-dashed border-rule-strong py-5">
+            <p className="text-small font-medium text-ink">{stage === "idle" ? "Run the simulation to see:" : "Simulating 1,000 futures…"}</p>
+            <ol className="grid gap-2 text-small text-ink-2">
+              {["The typical outcome by age 40", "The likely range of outcomes", "The chance college pays for itself within 10 years"].map((t, i) => (
+                <li key={t} className="flex gap-3">
+                  <span className="tabular font-mono text-[11px] leading-5 text-accent-ink">0{i + 1}</span>
+                  {t}
+                </li>
+              ))}
+            </ol>
           </div>
         )}
         <p className="flex items-center gap-2 text-caption text-muted">
@@ -261,9 +290,12 @@ export function FuturesSim() {
             <RotateCcw className="size-4" aria-hidden /> Run again
           </Button>
         )}
-        <details className="group rounded-md border border-rule bg-surface p-4 text-caption text-ink-2">
-          <summary className="cursor-pointer list-none font-semibold text-ink marker:hidden">
-            What changes in each future? <span className="text-muted group-open:hidden">Show</span>
+        <details className="group border-b border-rule pb-4 text-caption text-ink-2">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-small font-medium text-ink marker:hidden [&::-webkit-details-marker]:hidden">
+            What changes in each future?
+            <span className="grid size-8 shrink-0 place-items-center rounded-full ring-1 ring-rule transition-transform duration-500 ease-[var(--ease-premium)] group-open:rotate-45">
+              <Plus className="size-3.5" aria-hidden />
+            </span>
           </summary>
           <ul className="mt-3 grid gap-1.5">
             <li>Starting salary and raises, drawn from this program&apos;s pay range (10th-90th percentile)</li>
@@ -271,7 +303,7 @@ export function FuturesSim() {
             <li>Graduating in 4, 5 or 6 years, from the college&apos;s rates</li>
             <li>Costs and living costs: about ±{Math.round(SIM_ASSUMPTIONS.costSd * 100)}%; debt follows</li>
           </ul>
-          {done && <p className="mt-2">Lowest 10%: {moneyCompact(sim.downside)} · Highest 10%: {moneyCompact(sim.upside)} by 40.</p>}
+          {done && <p className="mt-2">By 40, the lowest 10% end below {moneyCompact(sim.downside)} and the highest 10% above {moneyCompact(sim.upside)}.</p>}
           <p className="mt-2 text-muted">{SIM_ASSUMPTIONS.note}</p>
         </details>
       </div>
@@ -279,11 +311,16 @@ export function FuturesSim() {
   );
 }
 
-function Stat({ label, value, fmt, big }: { label: string; value: number | null; fmt: (v: number) => string; big?: boolean }) {
+function Stat({ code, label, value, fmt }: { code: string; label: string; value: number | null; fmt: (v: number) => string }) {
   return (
-    <div className="grid gap-1">
-      <dt className="text-caption font-semibold text-ink-2">{label}</dt>
-      <dd className={cn("font-bold text-ink", big ? "text-h2" : "text-h3")}>{value == null ? <span className="text-muted">n/a</span> : <AnimatedNumber value={value} format={fmt} />}</dd>
+    <div className="grid gap-1.5 py-4">
+      <dt className="flex gap-3 font-mono text-[11px] uppercase tracking-[0.1em] text-muted">
+        <span className="text-accent-ink">{code}</span>
+        {label}
+      </dt>
+      <dd className="tabular text-[clamp(2rem,3.2vw,2.6rem)] font-semibold leading-none tracking-[-0.04em] text-ink">
+        {value == null ? <span className="text-muted">n/a</span> : <data value={value}><AnimatedNumber value={value} format={fmt} /></data>}
+      </dd>
     </div>
   );
 }

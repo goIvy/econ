@@ -53,7 +53,7 @@ export function MajorsIndex({ bundles }: { bundles: MajorBundle[] }) {
       {list.length === 0 ? (
         <p className="rounded-md border border-dashed border-rule-strong p-6 text-small text-ink-2">No majors match. Try a shorter search, like &ldquo;engineer&rdquo; or &ldquo;bio&rdquo;.</p>
       ) : (
-        <ul className="divide-y divide-rule overflow-hidden rounded-lg border border-rule bg-surface shadow-1">
+        <ul className="divide-y divide-rule overflow-hidden panel">
           {list.map((b) => {
             const m = b.major;
             const isOpen = open === m.id;

@@ -121,7 +121,7 @@ export function WhatIfLab() {
     <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
       <div className="grid content-start gap-6 lg:col-span-5">
         <div className="flex items-center justify-between gap-2">
-          <p className="flex items-center gap-2 text-caption font-bold tracking-[0.12em] text-ink">
+          <p className="flex items-center gap-2 text-caption font-mono font-medium uppercase tracking-[0.08em] text-ink">
             <span className="size-2 rounded-full" style={{ background: PATH_VAR[f.index] }} />
             PATH {pathNo(f.index)} <span className="font-medium tracking-normal text-muted">{f.label}</span>
           </p>
@@ -141,7 +141,7 @@ export function WhatIfLab() {
         </div>
       </div>
 
-      <div className="z-10 grid min-w-0 content-start gap-4 self-start rounded-lg border border-rule bg-surface p-4 shadow-3 max-lg:sticky max-lg:top-[calc(var(--nav-h)+8px)] sm:p-6 lg:sticky lg:top-[calc(var(--nav-h)+24px)] lg:col-span-7">
+      <div className="z-10 grid min-w-0 content-start gap-4 self-start panel p-4 max-lg:sticky max-lg:top-[calc(var(--nav-h)+8px)] sm:p-6 lg:sticky lg:top-[calc(var(--nav-h)+24px)] lg:col-span-7">
         <div className="flex items-center justify-between gap-2">
           <p className="text-small font-semibold text-ink">Total money earned minus costs, vs. working from 18</p>
           <SampleChip />

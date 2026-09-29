@@ -72,47 +72,47 @@ export function StickySummary() {
       {visible && (
         <>
           {/* desktop: a slim bar */}
-          <motion.aside key="desk" {...motionProps} aria-label="Your path summary" className="fixed bottom-4 left-1/2 z-40 hidden -translate-x-1/2 items-center gap-5 rounded-full border border-rule bg-surface py-2 pl-5 pr-2 shadow-3 lg:flex">
+          <motion.aside key="desk" {...motionProps} aria-label="Your path summary" className="glass fixed bottom-5 left-1/2 z-[var(--z-sticky)] hidden -translate-x-1/2 items-center gap-5 rounded-full py-2 pl-6 pr-2 lg:flex">
             <p className="grid leading-tight">
-              <span className="text-[10px] font-bold tracking-[0.16em] text-trace-a">YOUR PATH</span>
-              <span className="max-w-[16rem] truncate text-small font-bold text-ink">
-                {f.ctx.college.shortName} <span className="font-normal text-ink-2">· {f.ctx.major.name}, {residencyShort(f).toLowerCase()}</span>
+              <span className="font-mono text-[11px] font-medium text-accent-ink">Your path</span>
+              <span className="max-w-[16rem] truncate text-small font-semibold text-ink">
+                {f.ctx.college.shortName} <span className="font-normal text-ink-2">{f.ctx.major.name}</span>
               </span>
             </p>
             <dl className="flex gap-5 border-l border-rule pl-5">
               {rows.map(([k, v]) => (
                 <div key={k} className="grid leading-tight">
                   <dt className="text-[11px] text-muted">{k}</dt>
-                  <dd className="tabular text-small font-bold text-ink">{v}</dd>
+                  <dd className="tabular text-small font-semibold text-ink">{v}</dd>
                 </div>
               ))}
             </dl>
-            <Button size="sm" onClick={compare} className="rounded-full">
+            <Button size="sm" trail onClick={compare}>
               Compare
             </Button>
           </motion.aside>
 
           {/* phone bar + sheet */}
-          <motion.aside key="mob" {...motionProps} aria-label="Your path summary" className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-surface pb-[env(safe-area-inset-bottom)] shadow-3 lg:hidden">
+          <motion.aside key="mob" {...motionProps} aria-label="Your path summary" className="glass fixed inset-x-2 bottom-[max(0.5rem,env(safe-area-inset-bottom))] z-[var(--z-sticky)] overflow-hidden rounded-md lg:hidden">
             <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="summary-sheet" className="flex h-14 w-full items-center justify-between gap-3 px-4 text-left">
               <span className="min-w-0 truncate text-small">
-                <span className="font-bold text-ink">{f.ctx.college.shortName}</span> <span className="text-ink-2">· {moneyCompact(f.result.net.netPrice)} net, {yrs(breakEvenYears(f))}</span>
+                <span className="font-semibold text-ink">{f.ctx.college.shortName}</span> <span className="text-ink-2">{moneyCompact(f.result.net.netPrice)} net, {yrs(breakEvenYears(f))}</span>
               </span>
               <ChevronUp className={cn("size-5 shrink-0 text-ink-2 transition-transform", open && "rotate-180")} aria-hidden />
             </button>
             <div id="summary-sheet" hidden={!open} className="grid gap-3 border-t border-rule px-4 pb-4 pt-3">
               <p className="text-caption text-ink-2">
-                {f.ctx.major.name} · {residencyShort(f)}
+                {f.ctx.major.name}, {residencyShort(f).toLowerCase()}
               </p>
               <dl className="grid grid-cols-3 gap-2">
                 {rows.map(([k, v]) => (
                   <div key={k} className="grid gap-0.5">
                     <dt className="text-caption text-muted">{k}</dt>
-                    <dd className="tabular text-base font-bold text-ink">{v}</dd>
+                    <dd className="tabular text-base font-semibold text-ink">{v}</dd>
                   </div>
                 ))}
               </dl>
-              <Button onClick={compare} className="w-full">
+              <Button trail onClick={compare} className="w-full justify-between pl-5">
                 Compare
               </Button>
             </div>

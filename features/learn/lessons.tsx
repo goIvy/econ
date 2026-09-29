@@ -55,7 +55,7 @@ function Lesson({ slug, n, title, steps, visual }: { slug: string; n: number; ti
         </h2>
       </div>
       <div className="mt-8 grid gap-6 lg:grid-cols-12 lg:gap-12">
-        <div className="sticky top-[calc(var(--nav-h)+8px)] z-10 self-start rounded-lg border border-rule bg-surface p-4 shadow-2 sm:p-5 lg:order-2 lg:col-span-7 lg:top-[calc(var(--nav-h)+32px)]">{visual(step)}</div>
+        <div className="sticky top-[calc(var(--nav-h)+8px)] z-10 self-start panel p-4 sm:p-5 lg:order-2 lg:col-span-7 lg:top-[calc(var(--nav-h)+32px)]">{visual(step)}</div>
         <div className="grid gap-4 lg:order-1 lg:col-span-5">
           {steps.map((s, i) => (
             <div

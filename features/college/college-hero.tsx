@@ -26,7 +26,8 @@ export interface CollegeHeroProps {
   accent: number;
 }
 
-const GLOWS = ["rgba(108,124,255,.28)", "rgba(54,209,180,.22)", "rgba(167,139,250,.26)"];
+// Soft washes in the chart palette (orange, blue, green), rotated per college.
+const GLOWS = ["rgba(217,98,42,.16)", "rgba(53,103,201,.12)", "rgba(26,138,110,.12)"];
 
 /**
  * College detail hero: big metrics, a timeline you can scrub right away, and
@@ -64,7 +65,7 @@ export function CollegeHero(p: CollegeHeroProps) {
 
   return (
     <section
-      className="theme-dark relative isolate overflow-hidden"
+      className="relative isolate overflow-hidden"
       aria-labelledby="college-title"
       onPointerDown={(e) => e.pointerType !== "mouse" && (swipe.current = e.clientX)}
       onPointerUp={(e) => {
@@ -91,10 +92,15 @@ export function CollegeHero(p: CollegeHeroProps) {
             </ol>
           </nav>
           <div className="flex items-center gap-2">
-            <button type="button" onClick={() => go("prev")} className="flex h-10 items-center gap-2 rounded-full border border-rule px-3 text-caption font-semibold text-ink-2 hover:border-rule-strong hover:text-ink" aria-label={`Previous college: ${p.prev.name}`}>
+            <p className="mr-1 hidden items-center gap-1.5 text-caption text-muted lg:flex">
+              <kbd className="grid h-6 min-w-6 place-items-center rounded-xs bg-surface px-1.5 font-mono text-[11px] text-ink-2 shadow-[0_0_0_1px_var(--rule),0_1px_0_var(--rule-strong)]">←</kbd>
+              <kbd className="grid h-6 min-w-6 place-items-center rounded-xs bg-surface px-1.5 font-mono text-[11px] text-ink-2 shadow-[0_0_0_1px_var(--rule),0_1px_0_var(--rule-strong)]">→</kbd>
+              to browse
+            </p>
+            <button type="button" onClick={() => go("prev")} className="flex h-10 items-center gap-2 rounded-full bg-surface px-3.5 text-caption font-medium text-ink-2 shadow-[0_0_0_1px_var(--rule),var(--hairline-inset)] transition-colors hover:text-ink" aria-label={`Previous college: ${p.prev.name}`}>
               <ArrowLeft className="size-4" aria-hidden /> <span className="hidden sm:inline">{p.prev.name}</span>
             </button>
-            <button type="button" onClick={() => go("next")} className="flex h-10 items-center gap-2 rounded-full border border-rule px-3 text-caption font-semibold text-ink-2 hover:border-rule-strong hover:text-ink" aria-label={`Next college: ${p.next.name}`}>
+            <button type="button" onClick={() => go("next")} className="flex h-10 items-center gap-2 rounded-full bg-surface px-3.5 text-caption font-medium text-ink-2 shadow-[0_0_0_1px_var(--rule),var(--hairline-inset)] transition-colors hover:text-ink" aria-label={`Next college: ${p.next.name}`}>
               <span className="hidden sm:inline">{p.next.name}</span> <ArrowRight className="size-4" aria-hidden />
             </button>
           </div>
@@ -104,19 +110,19 @@ export function CollegeHero(p: CollegeHeroProps) {
           <div className="grid gap-8 lg:grid-cols-12 lg:gap-10">
             <div className="grid content-start gap-4 lg:col-span-5">
               <ViewTransition name={`college-name-${p.id}`}>
-                <h1 id="college-title" className="text-h1 font-extrabold uppercase">
+                <h1 id="college-title" className="text-[clamp(2.4rem,5vw,4rem)] font-semibold leading-[0.95] tracking-[-0.05em] text-balance">
                   {p.name}
                 </h1>
               </ViewTransition>
-              <p className="text-h3 font-semibold text-accent-2">{p.major.toUpperCase()}</p>
+              <p className="text-h3 font-medium text-accent-ink">{p.major}</p>
               <p className="text-small text-ink-2">{p.place}</p>
               <dl className="mt-2 grid grid-cols-2 gap-x-6 gap-y-5">
                 {metrics.map((m, i) => (
                   <motion.div key={m.label} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.08, duration: 0.6, ease: EASE.smooth }} className={i === 4 ? "col-span-2" : undefined}>
-                    <dt className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-bold tracking-[0.14em] text-muted">
+                    <dt className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] font-mono font-medium uppercase tracking-[0.08em] text-muted">
                       {m.label} <DataKindChip kind={m.kind} className="hidden sm:inline-flex" />
                     </dt>
-                    <dd className="tabular text-[clamp(1.75rem,2.9vw,2.6rem)] font-extrabold leading-tight tracking-[-0.035em] text-ink">{m.value == null ? "Not by 40" : <AnimatedNumber value={m.value} format={m.fmt} />}
+                    <dd className="tabular text-[clamp(1.75rem,2.9vw,2.6rem)] font-semibold leading-tight tracking-[-0.035em] text-ink">{m.value == null ? "Not by 40" : <AnimatedNumber value={m.value} format={m.fmt} />}
                       {m.label === "BREAK-EVEN" && m.value != null && <span className="block text-caption font-medium tracking-normal text-muted">after graduation, vs. working from 18</span>}</dd>
                   </motion.div>
                 ))}
@@ -149,7 +155,7 @@ function Timeline({ series, base, be }: { series: number[]; base: number[]; be: 
   const clipW = useTransform(age, (a) => Math.max(0, x(a) - M.l));
   const d = (s: number[]) => linePath(s.map((v, i) => [x(18 + i), y(v)]));
   return (
-    <div className="grid gap-3 rounded-lg border border-rule bg-surface p-4 shadow-3 sm:p-5">
+    <div className="grid gap-3 panel p-4 sm:p-5">
       <div className="flex items-center justify-between gap-2">
         <p className="text-small font-semibold text-ink">Total money earned minus costs, vs. working from 18</p>
         <SampleChip />

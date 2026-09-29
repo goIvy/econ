@@ -90,7 +90,7 @@ export function Compare() {
               >
                 <header className="grid gap-2">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="flex items-center gap-2 text-[10px] font-bold tracking-[0.16em] text-muted">
+                    <p className="flex items-center gap-2 text-[10px] font-mono font-medium uppercase tracking-[0.08em] text-muted">
                       <span className="size-2 rounded-full" style={{ background: PATH_VAR[f.index] }} />
                       {f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`}
                     </p>

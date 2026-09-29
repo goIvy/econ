@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Pencil, SlidersHorizontal } from "@/components/ui/icons";
+import { Pencil, Plus, SlidersHorizontal } from "@/components/ui/icons";
 import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MetricCard } from "@/components/ui/metric-card";
@@ -32,17 +32,24 @@ export function Results({ advanced }: { advanced: React.ReactNode }) {
   const openFact = facts.find((x) => x.key === open);
 
   return (
-    <section id="your-path" aria-labelledby="your-path-h" className="relative scroll-mt-[var(--nav-h)] bg-paper">
-      <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-16 md:px-8 md:py-24">
+    <section id="your-path" aria-labelledby="your-path-h" className="relative scroll-mt-[var(--nav-h)]">
+      <div className="mx-auto grid max-w-[1200px] gap-8 px-4 pb-20 pt-16 md:px-8 md:pb-28 md:pt-24">
         {/* who this is */}
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <div className="grid gap-2">
-            <p className="text-caption font-semibold tracking-[0.18em] text-trace-a">{personal ? "YOUR RESULT" : "EXAMPLE RESULT"}</p>
-            <h2 id="your-path-h" tabIndex={-1} className="text-[clamp(2rem,4.4vw,3.5rem)] font-extrabold uppercase leading-none tracking-[-0.04em] outline-none">
+          <div className="grid gap-3">
+            <p className="flex items-center gap-2 font-mono text-[0.8125rem] font-medium tracking-[0.04em] text-ink-2">
+              <span className="tabular text-accent-ink">01</span>
+              <span className="relative flex size-2">
+                {!reduce && <span className="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-50" />}
+                <span className="relative inline-flex size-2 rounded-full bg-accent" />
+              </span>
+              {personal ? "Your result" : "Example result"}
+            </p>
+            <h2 id="your-path-h" tabIndex={-1} className="text-[clamp(2.25rem,5vw,4rem)] font-semibold leading-[0.95] tracking-[-0.05em] outline-none text-balance">
               {f.ctx.college.shortName}
             </h2>
             <p className="text-lede text-ink-2">
-              <span className="font-semibold text-ink">{f.ctx.major.name}</span>, {residencyLabel(f)} · {f.sel.aid > 0 ? `${moneyCompact(f.sel.aid)}/yr in grants` : "no grants"}
+              <span className="font-medium text-ink">{f.ctx.major.name}</span>, {residencyLabel(f)}, {f.sel.aid > 0 ? `${moneyCompact(f.sel.aid)}/yr in grants` : "no grants"}
             </p>
           </div>
           <Button variant="secondary" size="sm" onClick={() => goTo("starter", "button")} className="gap-1.5">
@@ -50,21 +57,24 @@ export function Results({ advanced }: { advanced: React.ReactNode }) {
           </Button>
         </div>
 
-        {/* five numbers */}
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          {facts.map((m) => (
-            <MetricCard
-              key={m.key}
-              label={m.label}
-              value={m.value}
-              kind={m.kind}
-              sub={m.sub}
-              expanded={open === m.key}
-              onToggle={() => setOpen((o) => (o === m.key ? null : m.key))}
-              controls={panelId}
-              className={m.key === "breakeven" ? "sm:col-span-2 lg:col-span-1" : undefined}
-            />
-          ))}
+        {/* five numbers: one lead tile, four around it */}
+        <div className="bezel">
+          <div className="grid gap-1.5 sm:grid-cols-2 lg:grid-flow-dense lg:grid-cols-4">
+            {facts.map((m) => (
+              <MetricCard
+                key={m.key}
+                label={m.label}
+                value={m.value}
+                kind={m.kind}
+                sub={m.sub}
+                feature={m.key === "cost"}
+                expanded={open === m.key}
+                onToggle={() => setOpen((o) => (o === m.key ? null : m.key))}
+                controls={panelId}
+                className={m.key === "cost" ? "sm:col-span-2 lg:row-span-2" : undefined}
+              />
+            ))}
+          </div>
         </div>
 
         {/* the parts of one number */}
@@ -79,35 +89,41 @@ export function Results({ advanced }: { advanced: React.ReactNode }) {
         </div>
 
         {/* what it means, and what to do next */}
-        <div className="grid gap-6 rounded-lg border border-rule bg-surface p-5 shadow-2 sm:p-7 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-12">
-          <div className="grid gap-2">
-            <h3 className="text-small font-bold text-ink">What this means</h3>
-            <p className="max-w-[62ch] text-lede text-ink">{whatThisMeans(f)}</p>
-          </div>
-          <div className="flex flex-wrap gap-2 lg:flex-col lg:items-stretch">
-            <Button onClick={() => goTo("compare", "h2")}>Compare another college</Button>
-            <Button variant="secondary" onClick={() => goTo("break-even", "h2")}>
-              See when it pays off
-            </Button>
+        <div className="bezel">
+          <div className="bezel-core grid gap-6 p-6 sm:p-8 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-12">
+            <div className="grid gap-3">
+              <h3 className="text-small font-medium text-ink-2">What this means</h3>
+              <p className="max-w-[60ch] text-[clamp(1.125rem,1.6vw,1.375rem)] font-medium leading-[1.45] tracking-[-0.01em] text-ink text-pretty">{whatThisMeans(f)}</p>
+            </div>
+            <div className="flex flex-wrap gap-2 lg:flex-col lg:items-stretch">
+              <Button trail className="justify-between pl-5" onClick={() => goTo("compare", "h2")}>
+                Compare another college
+              </Button>
+              <Button variant="secondary" onClick={() => goTo("break-even", "h2")}>
+                See when it pays off
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* for anyone who wants to dig in */}
-        <div className="rounded-lg border border-rule">
-          <button type="button" onClick={() => setShowAdvanced((v) => !v)} aria-expanded={showAdvanced} aria-controls={advId} className="flex w-full items-center justify-between gap-4 p-5 text-left sm:px-7">
+        <div className="border-y border-rule">
+          <button type="button" onClick={() => setShowAdvanced((v) => !v)} aria-expanded={showAdvanced} aria-controls={advId} className="group/adv flex w-full items-center justify-between gap-4 py-5 text-left">
             <span className="flex items-start gap-3">
               <SlidersHorizontal className="mt-0.5 size-5 shrink-0 text-ink-2" aria-hidden />
               <span className="grid gap-0.5">
-                <span className="text-small font-bold text-ink">Advanced analysis</span>
+                <span className="text-body font-medium text-ink">Advanced analysis</span>
                 <span className="text-caption text-ink-2">Change the assumptions behind these numbers and see how each one is calculated.</span>
               </span>
             </span>
-            <ChevronDown className={cn("size-5 shrink-0 text-ink-2 transition-transform", showAdvanced && "rotate-180")} aria-hidden />
+            <span className={cn("grid size-9 shrink-0 place-items-center rounded-full ring-1 ring-rule transition-[transform,background-color,color] duration-500 ease-[var(--ease-premium)] group-hover/adv:bg-surface-sunk", showAdvanced && "rotate-45 bg-ink text-on-ink group-hover/adv:bg-ink")}>
+              <Plus className="size-4" aria-hidden />
+            </span>
           </button>
           <AnimatePresence initial={false}>
             {showAdvanced && (
               <motion.div id={advId} key="adv" initial={reduce ? false : { opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0, transition: { duration: DUR.fast } }} transition={{ duration: DUR.standard, ease: EASE.smooth }} className="overflow-hidden">
-                <div className="border-t border-rule p-5 sm:p-7">{advanced}</div>
+                <div className="border-t border-rule py-6 sm:py-8">{advanced}</div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -169,8 +185,8 @@ function Details({ f, fact }: { f: Future; fact: Fact }) {
             ] as const
           ).map(([label, v, pctl]) => (
             <div key={label} title={pctl} className={cn("grid gap-0.5 rounded-sm p-3", label === "Typical" ? "bg-ink text-on-ink" : "bg-surface-sunk")}>
-              <span className={cn("text-[11px] font-bold tracking-[0.12em]", label === "Typical" ? "text-on-ink" : "text-muted")}>{label.toUpperCase()}</span>
-              <span className="tabular text-h3 font-extrabold">{moneyCompact(v)}</span>
+              <span className={cn("text-caption font-medium", label === "Typical" ? "text-on-ink" : "text-muted")}>{label}</span>
+              <span className="tabular text-h3 font-semibold">{moneyCompact(v)}</span>
               <span className={cn("text-[11px]", label === "Typical" ? "text-on-ink/80" : "text-muted")}>{pctl}</span>
             </div>
           ))}
@@ -200,9 +216,9 @@ function Details({ f, fact }: { f: Future; fact: Fact }) {
   }
 
   return (
-    <div className="grid gap-5 rounded-md border border-rule bg-surface p-5 shadow-2 sm:p-6 lg:grid-cols-12">
+    <div className="grid gap-5 rounded-md bg-surface p-5 shadow-[0_0_0_1px_var(--rule),var(--hairline-inset),var(--shadow-2)] sm:p-7 lg:grid-cols-12">
       <div className="grid content-start gap-2 lg:col-span-4">
-        <p className="flex items-center gap-2 text-small font-bold text-ink">
+        <p className="flex items-center gap-2 text-body font-semibold text-ink">
           {fact.label} <DataKindChip kind={fact.kind} />
         </p>
         <p className="text-small text-ink-2">
@@ -211,7 +227,7 @@ function Details({ f, fact }: { f: Future; fact: Fact }) {
         </p>
         <div className="flex items-center gap-2 pt-1">
           <SampleChip />
-          <SourceFootnote metric={`${f.label} · ${fact.label}`} lineage={lineage} n={1} />
+          <SourceFootnote metric={`${f.label}: ${fact.label}`} lineage={lineage} n={1} />
         </div>
       </div>
       <div className="grid content-start gap-3 lg:col-span-8">

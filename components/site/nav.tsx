@@ -68,7 +68,7 @@ export function Nav({ overlay = false }: { overlay?: boolean; sections?: SpySect
                   <Link
                     href={l.href}
                     aria-current={isActive(l.href) ? "page" : undefined}
-                    className={cn("relative block rounded-full px-4 py-2 text-small font-medium transition-colors duration-300", isActive(l.href) ? "text-ink" : "text-muted hover:text-ink")}
+                    className={cn("relative block rounded-full px-4 py-2 text-small font-medium transition-colors duration-300", isActive(l.href) ? "text-ink" : "text-ink-2 hover:text-ink")}
                   >
                     {isActive(l.href) && <motion.span layoutId="nav-active" transition={microSpring} className="absolute inset-0 -z-10 rounded-full bg-surface-sunk" />}
                     {l.label}
@@ -78,7 +78,7 @@ export function Nav({ overlay = false }: { overlay?: boolean; sections?: SpySect
             </ul>
           </nav>
           <div className="ml-auto flex items-center gap-1 lg:ml-0">
-            <Link href="/saved" title="Saved comparisons" className="relative grid size-11 place-items-center rounded-full text-muted transition-colors hover:bg-surface-sunk hover:text-ink" aria-label={`Saved comparisons${saved ? ` (${saved})` : ""}`}>
+            <Link href="/saved" title="Saved comparisons" className="relative grid size-11 place-items-center rounded-full text-ink-2 transition-colors hover:bg-surface-sunk hover:text-ink" aria-label={`Saved comparisons${saved ? ` (${saved})` : ""}`}>
               <Bookmark className="size-[19px]" />
               <AnimatePresence>
                 {saved > 0 && (
