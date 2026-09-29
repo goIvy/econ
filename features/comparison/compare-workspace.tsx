@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowDown, ArrowUp, Bookmark, BookmarkCheck, Check, ChevronDown, Link2, Pencil, Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Bookmark, BookmarkCheck, Check, ChevronDown, Link2, Pencil, Plus, Trash2 } from "@/components/ui/icons";
 import { useSaved } from "@/hooks/use-saved";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -240,7 +240,7 @@ export function CompareWorkspace({
                         <span className="font-semibold text-ink">{r.meta.shortName}</span>
                         <span className="text-caption text-ink-2">{majors.find((m) => m.id === r.spec.majorId)?.name}</span>
                         <span className="text-caption text-muted">
-                          {r.meta.control === "public" ? (r.spec.residency === "resident" ? `${r.meta.state} resident` : "Non-resident") : "Private"} · {livingLabel(r.spec.living)} · {moneyCompact(r.spec.aid)}/yr aid
+                          {r.meta.control === "public" ? (r.spec.residency === "resident" ? `${r.meta.state} resident` : "Non-resident") : "Private"}, {livingLabel(r.spec.living).toLowerCase()} · {moneyCompact(r.spec.aid)}/yr aid
                         </span>
                       </span>
                     </span>
@@ -280,7 +280,7 @@ export function CompareWorkspace({
               {cols.map((c) => (
                 <div key={c.key} className="flex items-baseline justify-between gap-2 border-t border-rule pt-2">
                   <dt className="text-caption text-muted">{c.label}</dt>
-                  <dd className="tabular text-small font-semibold text-ink">{r.res.data ? (c.get(r.res.data) == null ? "—" : c.fmt(c.get(r.res.data)!)) : "…"}</dd>
+                  <dd className="tabular text-small font-semibold text-ink">{r.res.data ? (c.get(r.res.data) == null ? "n/a" : c.fmt(c.get(r.res.data)!)) : "…"}</dd>
                 </div>
               ))}
             </dl>

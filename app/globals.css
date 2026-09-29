@@ -8,102 +8,187 @@
 
 /* Light "research" theme: data sections, app pages. */
 :root {
-  /* Neutrals */
-  --paper: #f7f8fc;
-  --surface: #ffffff;
-  --surface-sunk: #eef0f7;
-  --ink: #141824;
-  --ink-hover: #232a3d;
-  --on-ink: #ffffff;
-  --ink-2: #3a4152;
-  --muted: #5d6679;
-  --rule: #e3e6ef;
-  --rule-strong: #cbd0dd;
-  --grid: rgba(20, 24, 36, 0.045);
-  --grid-major: rgba(20, 24, 36, 0.075);
-  --glass: rgba(247, 248, 252, 0.72);
+  /* Neutrals: one cool zinc family. */
+  --paper: #f4f4f5;
+  --surface: #fcfcfc;
+  --surface-sunk: #ebebed;
+  --shell: rgba(22, 23, 27, 0.035);
+  --ink: #16171b;
+  --ink-hover: #2a2c32;
+  --on-ink: #fcfcfc;
+  --ink-2: #3f4148;
+  --muted: #5d6068;
+  --rule: rgba(22, 23, 27, 0.09);
+  --rule-strong: rgba(22, 23, 27, 0.17);
+  --grid: rgba(22, 23, 27, 0.04);
+  --grid-major: rgba(22, 23, 27, 0.07);
+  --glass: rgba(252, 252, 252, 0.72);
+  --hairline-inset: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
-  /* Brand accents (UI: highlights, glows, focus). Data series use the trace inks below. */
-  --accent: #6c7cff;
-  --accent-2: #36d1b4;
-  --highlight: #a78bfa;
+  /* One accent (burnt orange). --accent fills and rings; --accent-ink is the
+     text-safe shade (AA on paper and surface). */
+  --accent: #d9622a;
+  --on-accent: #16171b;
+  --accent-ink: #a8431a;
+  --accent-soft: rgba(217, 98, 42, 0.12);
+  /* Legacy aliases kept so older components resolve to the single accent. */
+  --accent-2: var(--accent-ink);
+  --highlight: var(--accent);
 
-  /* Trace inks, validated per theme (dataviz validator: all checks pass).
-     a = path 01, b = path 02, d = path 03, c = work from 18 (neutral, dashed), e = spare. */
-  --trace-a: #4f5bd5;
-  --trace-b: #0e8f79;
-  --trace-c: #667085;
-  --trace-d: #7a58d0;
-  --trace-e: #a86a12;
-  --trace-a-tint: rgba(79, 91, 213, 0.1);
-  --trace-b-tint: rgba(14, 143, 121, 0.1);
-  --trace-c-tint: rgba(102, 112, 133, 0.1);
-  --trace-d-tint: rgba(122, 88, 208, 0.1);
-  --trace-e-tint: rgba(168, 106, 18, 0.1);
+  /* Trace inks (data series only), validated with the dataviz validator per theme.
+     a = path 01 (your path), b = path 02, d = path 03, c = work from 18 (neutral, dashed), e = spare. */
+  --trace-a: #d4581f;
+  --trace-b: #3567c9;
+  --trace-c: #6b6e76;
+  --trace-d: #1a8a6e;
+  --trace-e: #9a5bd0;
+  --trace-a-tint: rgba(212, 88, 31, 0.1);
+  --trace-b-tint: rgba(53, 103, 201, 0.1);
+  --trace-c-tint: rgba(107, 110, 118, 0.1);
+  --trace-d-tint: rgba(26, 138, 110, 0.1);
+  --trace-e-tint: rgba(154, 91, 208, 0.1);
 
-  /* Signals */
+  /* Signals (readout states only, always with a word). */
   --gain: #17734b;
-  --gain-tint: rgba(66, 201, 138, 0.14);
+  --gain-tint: rgba(23, 115, 75, 0.1);
   --caution: #7d5208;
   --caution-tint: rgba(244, 184, 96, 0.2);
-  --risk: #c2414e;
+  --risk: #b8323f;
+  --risk-tint: rgba(184, 50, 63, 0.1);
+
+  /* Elevation: tinted to the zinc canvas, one light source from above. */
+  --shadow-1: 0 1px 2px rgba(22, 23, 27, 0.05);
+  --shadow-2: 0 1px 2px rgba(22, 23, 27, 0.04), 0 12px 32px -16px rgba(22, 23, 27, 0.16);
+  --shadow-3: 0 2px 4px rgba(22, 23, 27, 0.04), 0 30px 60px -28px rgba(22, 23, 27, 0.26);
+
+  /* Ambient light: a single warm wash, used behind the hero and final call to action. */
+  --glow-hero: radial-gradient(60% 55% at 78% 30%, rgba(217, 98, 42, 0.14), transparent 70%);
+  --glow-2: radial-gradient(50% 50% at 20% 60%, rgba(53, 103, 201, 0.08), transparent 70%);
+  --field-wash: var(--glow-hero);
+  --grain-opacity: 0.05;
+
+  /* Layers (the only z-index values in the app). */
+  --z-sticky: 30;
+  --z-nav: 40;
+  --z-overlay: 50;
+  --z-grain: 60;
+
+  --nav-h: 76px;
+  color-scheme: light;
+}
+
+/*
+ * One theme per page (no section inversions). The page follows the system
+ * setting unless the visitor picks Light or Dark in the footer, which sets
+ * data-theme on <html> before first paint.
+ */
+:root[data-theme="dark"] {
+  --paper: #0e0f12;
+  --surface: #17181c;
+  --surface-sunk: #121316;
+  --shell: rgba(255, 255, 255, 0.035);
+  --ink: #f2f2f3;
+  --ink-hover: #ffffff;
+  --on-ink: #0e0f12;
+  --ink-2: rgba(242, 242, 243, 0.8);
+  --muted: rgba(242, 242, 243, 0.6);
+  --rule: rgba(255, 255, 255, 0.08);
+  --rule-strong: rgba(255, 255, 255, 0.16);
+  --grid: rgba(255, 255, 255, 0.03);
+  --grid-major: rgba(255, 255, 255, 0.055);
+  --glass: rgba(14, 15, 18, 0.66);
+  --hairline-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  --accent: #e06a2b;
+  --on-accent: #0e0f12;
+  --accent-ink: #f08a55;
+  --accent-soft: rgba(224, 106, 43, 0.16);
+
+  --trace-a: #e06a2b;
+  --trace-b: #5585e0;
+  --trace-c: rgba(242, 242, 243, 0.5);
+  --trace-d: #1f9c79;
+  --trace-e: #9f74d4;
+  --trace-a-tint: rgba(224, 106, 43, 0.16);
+  --trace-b-tint: rgba(85, 133, 224, 0.16);
+  --trace-c-tint: rgba(255, 255, 255, 0.08);
+  --trace-d-tint: rgba(31, 156, 121, 0.16);
+  --trace-e-tint: rgba(159, 116, 212, 0.16);
+
+  --gain: #4cc58f;
+  --gain-tint: rgba(76, 197, 143, 0.14);
+  --caution: #f4b860;
+  --caution-tint: rgba(244, 184, 96, 0.14);
+  --risk: #ef6a75;
   --risk-tint: rgba(239, 106, 117, 0.14);
 
-  /* Elevation */
-  --shadow-1: 0 1px 2px rgba(20, 24, 36, 0.06);
-  --shadow-2: 0 1px 2px rgba(20, 24, 36, 0.05), 0 10px 28px -14px rgba(20, 24, 36, 0.18);
-  --shadow-3: 0 2px 4px rgba(20, 24, 36, 0.05), 0 28px 56px -24px rgba(20, 24, 36, 0.28);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 18px 40px -20px rgba(0, 0, 0, 0.7);
+  --shadow-3: 0 2px 4px rgba(0, 0, 0, 0.3), 0 36px 70px -30px rgba(0, 0, 0, 0.8);
 
-  /* Gradients: used sparingly (hero, one secondary glow). */
-  --glow-hero: radial-gradient(circle at 55% 40%, rgba(108, 124, 255, 0.28), transparent 45%);
-  --glow-2: radial-gradient(circle at 30% 50%, rgba(54, 209, 180, 0.18), transparent 50%);
-  --field-wash: var(--glow-hero);
-
-  --nav-h: 64px;
-}
-
-/* Dark theme: hero, story sections, simulations. Same token names, so every
-   component restyles itself inside a .theme-dark section. */
-.theme-dark {
-  --paper: #0b1020;
-  --surface: #11182a;
-  --surface-sunk: #0e1426;
-  --ink: #ffffff;
-  --ink-hover: #e6e9f5;
-  --on-ink: #0b1020;
-  --ink-2: rgba(255, 255, 255, 0.82);
-  --muted: rgba(255, 255, 255, 0.65);
-  --rule: rgba(255, 255, 255, 0.1);
-  --rule-strong: rgba(255, 255, 255, 0.2);
-  --grid: rgba(255, 255, 255, 0.035);
-  --grid-major: rgba(255, 255, 255, 0.06);
-  --glass: rgba(11, 16, 32, 0.62);
-
-  --trace-a: #6c7cff;
-  --trace-b: #16a48c;
-  --trace-c: rgba(255, 255, 255, 0.55);
-  --trace-d: #9277f2;
-  --trace-e: #be8230;
-  --trace-a-tint: rgba(108, 124, 255, 0.16);
-  --trace-b-tint: rgba(22, 164, 140, 0.16);
-  --trace-c-tint: rgba(255, 255, 255, 0.08);
-  --trace-d-tint: rgba(146, 119, 242, 0.16);
-  --trace-e-tint: rgba(190, 130, 48, 0.16);
-
-  --gain: #42c98a;
-  --caution: #f4b860;
-  --risk: #ef6a75;
-
-  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -18px rgba(0, 0, 0, 0.6);
-  --shadow-3: 0 2px 4px rgba(0, 0, 0, 0.3), 0 32px 64px -24px rgba(0, 0, 0, 0.7);
-
-  background-color: var(--paper);
-  color: var(--ink);
+  --glow-hero: radial-gradient(60% 55% at 78% 30%, rgba(224, 106, 43, 0.16), transparent 70%);
+  --glow-2: radial-gradient(50% 50% at 20% 60%, rgba(85, 133, 224, 0.08), transparent 70%);
+  --grain-opacity: 0.06;
   color-scheme: dark;
 }
-/* A dark section's secondary surface. */
-.theme-dark-2 { --paper: #11182a; --surface: #172036; --surface-sunk: #0e1426; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e0f12;
+    --surface: #17181c;
+    --surface-sunk: #121316;
+    --shell: rgba(255, 255, 255, 0.035);
+    --ink: #f2f2f3;
+    --ink-hover: #ffffff;
+    --on-ink: #0e0f12;
+    --ink-2: rgba(242, 242, 243, 0.8);
+    --muted: rgba(242, 242, 243, 0.6);
+    --rule: rgba(255, 255, 255, 0.08);
+    --rule-strong: rgba(255, 255, 255, 0.16);
+    --grid: rgba(255, 255, 255, 0.03);
+    --grid-major: rgba(255, 255, 255, 0.055);
+    --glass: rgba(14, 15, 18, 0.66);
+    --hairline-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+    --accent: #e06a2b;
+    --on-accent: #0e0f12;
+    --accent-ink: #f08a55;
+    --accent-soft: rgba(224, 106, 43, 0.16);
+
+    --trace-a: #e06a2b;
+    --trace-b: #5585e0;
+    --trace-c: rgba(242, 242, 243, 0.5);
+    --trace-d: #1f9c79;
+    --trace-e: #9f74d4;
+    --trace-a-tint: rgba(224, 106, 43, 0.16);
+    --trace-b-tint: rgba(85, 133, 224, 0.16);
+    --trace-c-tint: rgba(255, 255, 255, 0.08);
+    --trace-d-tint: rgba(31, 156, 121, 0.16);
+    --trace-e-tint: rgba(159, 116, 212, 0.16);
+
+    --gain: #4cc58f;
+    --gain-tint: rgba(76, 197, 143, 0.14);
+    --caution: #f4b860;
+    --caution-tint: rgba(244, 184, 96, 0.14);
+    --risk: #ef6a75;
+    --risk-tint: rgba(239, 106, 117, 0.14);
+
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --shadow-2: 0 1px 2px rgba(0, 0, 0, 0.3), 0 18px 40px -20px rgba(0, 0, 0, 0.7);
+    --shadow-3: 0 2px 4px rgba(0, 0, 0, 0.3), 0 36px 70px -30px rgba(0, 0, 0, 0.8);
+
+    --glow-hero: radial-gradient(60% 55% at 78% 30%, rgba(224, 106, 43, 0.16), transparent 70%);
+    --glow-2: radial-gradient(50% 50% at 20% 60%, rgba(85, 133, 224, 0.08), transparent 70%);
+    --grain-opacity: 0.06;
+    color-scheme: dark;
+}
+}
+
+/* Legacy section classes are now inert: sections share the page theme. */
+.theme-dark,
+.theme-dark-2 {
+  background-color: var(--paper);
+  color: var(--ink);
+}
 
 @theme inline {
   --color-paper: var(--paper);
@@ -133,18 +218,30 @@
   --color-risk: var(--risk);
   --color-risk-tint: var(--risk-tint);
   --color-accent: var(--accent);
+  --color-on-accent: var(--on-accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
   --color-accent-2: var(--accent-2);
   --color-highlight: var(--highlight);
   --color-glass: var(--glass);
 
   --font-display: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
 
-  --radius-xs: 6px;
-  --radius-sm: 10px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
+  /* Shape rule: controls are full pills; inputs 14px; inner cards 22px;
+     outer shells 28px (double bezel: shell 28 = core 22 + 6px padding). */
+  --radius-xs: 8px;
+  --radius-sm: 14px;
+  --radius-md: 22px;
+  --radius-lg: 28px;
   --radius-pill: 999px;
+
+  /* Motion: exits are faster than entrances; nothing uses linear or ease-in-out. */
+  --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --default-transition-duration: 280ms;
+  --default-transition-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
 
   --shadow-1: var(--shadow-1);
   --shadow-2: var(--shadow-2);
@@ -189,6 +286,7 @@
 
 @layer base {
   html {
+    scroll-behavior: smooth;
     background: var(--paper);
     color: var(--ink);
     -webkit-text-size-adjust: 100%;
@@ -203,14 +301,14 @@
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    font-weight: 700;
+    font-weight: 650;
     text-wrap: balance;
     color: var(--ink);
   }
   p { text-wrap: pretty; }
 
   /* Browser surfaces carry the design too */
-  ::selection { background: rgba(108, 124, 255, 0.3); color: var(--ink); }
+  ::selection { background: var(--accent-soft); color: var(--ink); }
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
@@ -220,10 +318,38 @@
   a { text-underline-offset: 3px; text-decoration-thickness: 1px; }
   button:not(:disabled), [role="button"]:not([aria-disabled="true"]), summary, label[for] { cursor: pointer; }
   * { scrollbar-color: var(--rule-strong) transparent; scrollbar-width: thin; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  /* Grain: one fixed, pointer-events-none layer (never on scrolling containers). */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-grain);
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
 }
 
 @layer utilities {
   .tabular { font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
+
+  /* Double bezel (high-end-visual-design): a hairline shell holding an inner core. */
+  .bezel {
+    border-radius: var(--radius-lg);
+    padding: 6px;
+    background: var(--shell);
+    box-shadow: 0 0 0 1px var(--rule);
+  }
+  .bezel-core {
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--hairline-inset), var(--shadow-2);
+  }
 
   /* The measured field: 8px minor / 40px major grid. Used only behind instruments
      (hero demo, college metric header, onboarding), never as page decoration. */
@@ -261,7 +387,11 @@
   /* Frosted glass: the fixed navbar and floating hero cards only. */
   .glass {
     background: var(--glass);
-    backdrop-filter: saturate(160%) blur(14px);
+    backdrop-filter: saturate(160%) blur(18px);
+    box-shadow: 0 0 0 1px var(--rule), var(--hairline-inset), var(--shadow-2);
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .glass { background: var(--surface); backdrop-filter: none; }
   }
   .glow-hero { background-image: var(--glow-hero); }
   .glow-2 { background-image: var(--glow-2); }

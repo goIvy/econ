@@ -55,7 +55,7 @@ export const OCCUPATIONS: Occupation[] = OCCUPATION_ROWS.map(([id, soc, title, w
   soc,
   title,
   medianWage: { value: wage, lineage: lineage("bls-oews", 2023, "All workers in occupation, national", { sampleSize: 5000 }) },
-  growth10yr: { value: growth, lineage: lineage("bls-ep", "2023–33", "Projected employment change, national") },
+  growth10yr: { value: growth, lineage: lineage("bls-ep", "2023-33", "Projected employment change, national") },
   typicalEducation: edu,
   topMetros: metros,
   category,
@@ -65,14 +65,14 @@ export const OCCUPATIONS: Occupation[] = OCCUPATION_ROWS.map(([id, soc, title, w
 
 export const MAJORS: Major[] = MAJOR_ROWS.map((row) => {
   const [id, name, cip, category, early, mid, unemp, underemp, grad, sigma, months, occ, profile, blurb] = row;
-  const pop = "Recent graduates aged 22–27 with a bachelor's degree in this major";
+  const pop = "Recent graduates aged 22-27 with a bachelor's degree in this major";
   return {
     id,
     name,
     cip,
     category,
     earlyCareer: { value: percentilesFromMedian(early, sigma), lineage: lineage("acs-major", 2023, pop, { sampleSize: 2500 }) },
-    midCareerMedian: { value: mid, lineage: lineage("acs-major", 2023, "Graduates aged 35–45 with a bachelor's degree in this major", { sampleSize: 4000 }) },
+    midCareerMedian: { value: mid, lineage: lineage("acs-major", 2023, "Graduates aged 35-45 with a bachelor's degree in this major", { sampleSize: 4000 }) },
     unemploymentRate: { value: unemp, lineage: lineage("nyfed-grads", 2024, pop, { sampleSize: 2500 }) },
     employmentRate: { value: Math.round((100 - unemp) * 10) / 10, lineage: lineage("nyfed-grads", 2024, `${pop}, in the labor force`, { sampleSize: 2500 }) },
     underemploymentRate: { value: underemp, lineage: lineage("nyfed-grads", 2024, pop, { sampleSize: 2500, note: "Share working in jobs that typically do not require a bachelor's degree." }) },
@@ -160,7 +160,7 @@ export const COLLEGES: College[] = COLLEGE_ROWS.map((row, index) => {
     trends.push({ year: y, tuitionInState: round(tIn / back), tuitionOutOfState: round(tOut / back), netPrice: round(netPrice / Math.pow(1 + growth * 0.8, 2024 - y)) });
   }
 
-  const ipedsCost = (label: string) => lineage("ipeds-cost", "2023–24", `Full-time, first-time undergraduates; ${label}`, { sampleSize: enroll });
+  const ipedsCost = (label: string) => lineage("ipeds-cost", "2023-24", `Full-time, first-time undergraduates; ${label}`, { sampleSize: enroll });
   const cohort = Math.round(enroll / 4.2);
 
   return {
@@ -182,17 +182,17 @@ export const COLLEGES: College[] = COLLEGE_ROWS.map((row, index) => {
       books: { value: books, lineage: ipedsCost("books and supplies") },
       transportation: { value: transportation, lineage: ipedsCost("transportation allowance") },
       misc: { value: misc, lineage: ipedsCost("other personal expenses") },
-      netPrice: { value: netPrice, lineage: lineage("scorecard-inst", "2022–23", "Title IV students receiving grant aid, all income levels", { sampleSize: Math.round(cohort * 0.6) }) },
+      netPrice: { value: netPrice, lineage: lineage("scorecard-inst", "2022-23", "Title IV students receiving grant aid, all income levels", { sampleSize: Math.round(cohort * 0.6) }) },
     },
     aid: {
-      pctReceivingGrants: { value: Math.round(pctGrants * 100), lineage: lineage("scorecard-inst", "2022–23", "Full-time, first-time undergraduates") },
-      avgGrant: { value: avgGrant, lineage: lineage("ipeds-cost", "2022–23", "Grant recipients, average grant and scholarship aid", { sampleSize: Math.round(cohort * pctGrants) }) },
-      pctBorrowing: { value: Math.round((control === "private" ? (elite ? 0.14 : 0.45) : 0.34) * 100 + h("borrow") * 12), lineage: lineage("scorecard-inst", "2022–23", "Undergraduates receiving federal loans") },
+      pctReceivingGrants: { value: Math.round(pctGrants * 100), lineage: lineage("scorecard-inst", "2022-23", "Full-time, first-time undergraduates") },
+      avgGrant: { value: avgGrant, lineage: lineage("ipeds-cost", "2022-23", "Grant recipients, average grant and scholarship aid", { sampleSize: Math.round(cohort * pctGrants) }) },
+      pctBorrowing: { value: Math.round((control === "private" ? (elite ? 0.14 : 0.45) : 0.34) * 100 + h("borrow") * 12), lineage: lineage("scorecard-inst", "2022-23", "Undergraduates receiving federal loans") },
     },
     gradRate4: { value: g4, lineage: lineage("ipeds-grad", "2017 cohort", "First-time, full-time bachelor's-seeking students; completion within 4 years", { sampleSize: cohort }) },
     gradRate6: { value: g6, lineage: lineage("ipeds-grad", "2017 cohort", "First-time, full-time bachelor's-seeking students; completion within 6 years", { sampleSize: cohort }) },
-    medianDebt: { value: debt, lineage: lineage("scorecard-inst", "2022–23", "Undergraduate completers with federal loans", { sampleSize: Math.round(cohort * 0.4) }) },
-    medianEarnings: { value: earn, lineage: lineage("scorecard-inst", "2021–22", "Federally aided students, 10 years after entry", { sampleSize: Math.round(cohort * 0.5) }) },
+    medianDebt: { value: debt, lineage: lineage("scorecard-inst", "2022-23", "Undergraduate completers with federal loans", { sampleSize: Math.round(cohort * 0.4) }) },
+    medianEarnings: { value: earn, lineage: lineage("scorecard-inst", "2021-22", "Federally aided students, 10 years after entry", { sampleSize: Math.round(cohort * 0.5) }) },
     earningsFactor: Math.min(1.35, Math.max(0.8, Math.pow(earn / NATIONAL_MEDIAN_EARNINGS, 0.6))),
     majorIds: majorsFor(id, tags),
     trends,
@@ -231,7 +231,7 @@ export function buildOutcome(collegeId: string, majorId: string): CollegeMajorOu
     majorId,
     earlyCareer: suppressed
       ? { value: early, lineage: lineage("acs-major", 2023, "National graduates in this major, scaled by this institution's earnings level", { sampleSize: 2500, coverage: 0.5, note: "No field-of-study salary data is available for this program; showing an institution-adjusted national estimate." }) }
-      : { value: early, lineage: lineage("scorecard-fos", "2020–21 completers", fosPop, { sampleSize: Math.max(12, cohortSize), coverage: 0.7 }) },
+      : { value: early, lineage: lineage("scorecard-fos", "2020-21 completers", fosPop, { sampleSize: Math.max(12, cohortSize), coverage: 0.7 }) },
     midCareerMedian: { value: round(major.midCareerMedian.value! * factor), lineage: lineage("cvl-model", 2024, "National mid-career median for the major, scaled by institution earnings level", { note: "Projection, not observed for this program." }) },
     employmentRate: { value: Math.min(99, Math.round((major.employmentRate.value! + (factor - 1) * 3) * 10) / 10), lineage: major.employmentRate.lineage },
     isFallback: suppressed,

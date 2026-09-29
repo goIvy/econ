@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "@/components/ui/icons";
 import { useId, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
@@ -50,13 +50,12 @@ export function StarterCard() {
   };
 
   return (
-    <div id="starter" role="form" className="grid scroll-mt-[calc(var(--nav-h)+16px)] gap-5 rounded-lg border border-accent/40 bg-surface p-5 shadow-3 sm:p-6" aria-labelledby="starter-h">
-      <div className="grid gap-1">
-        <h2 id="starter-h" className="text-h3 font-bold text-ink">
-          Build your college path
-        </h2>
-        <p className="text-small text-ink-2">Four quick choices. You can change any of them later.</p>
-      </div>
+    <div className="bezel scroll-mt-[calc(var(--nav-h)+16px)]">
+    <div id="starter" role="form" className="bezel-core grid gap-5 p-5 sm:p-7" aria-labelledby="starter-h">
+      <p id="starter-h" className="flex items-center justify-between gap-3 text-small font-semibold text-ink">
+        Your choices
+        <span className="font-mono text-[11px] font-medium uppercase tracking-[0.12em] text-muted">4 fields</span>
+      </p>
       <Combobox label="College" value={draft.collegeId} onChange={pickCollege} options={collegeOpts} searchPlaceholder="Search colleges" />
       <Combobox label="Major" value={draft.majorId} onChange={(v) => setDraft((d) => ({ ...d, majorId: v }))} options={majorOpts} searchPlaceholder="Search majors" />
       {college.control === "public" ? (
@@ -72,14 +71,14 @@ export function StarterCard() {
       ) : (
         <div className="grid gap-1.5">
           <p className="text-caption font-medium text-muted">Residency</p>
-          <p className="flex h-11 items-center rounded-sm border border-rule px-3 text-small text-ink-2">Private college: same tuition for everyone</p>
+          <p className="flex h-12 items-center rounded-full bg-surface-sunk px-4 text-small text-ink-2">Private college: same tuition for everyone</p>
         </div>
       )}
       <div className="grid gap-1.5">
         <label htmlFor={aidId} className="text-caption font-medium text-muted">
           Grants &amp; scholarships per year <span className="font-normal">(optional)</span>
         </label>
-        <div className="flex h-11 items-center gap-1 rounded-sm border border-rule-strong bg-surface px-3 shadow-1 focus-within:border-trace-a focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-surface">
+        <div className="flex h-12 items-center gap-1 rounded-sm border border-rule-strong bg-surface px-4 shadow-[var(--hairline-inset)] transition-shadow focus-within:border-accent focus-within:ring-4 focus-within:ring-accent-soft">
           <span className="text-muted" aria-hidden>
             $
           </span>
@@ -101,13 +100,14 @@ export function StarterCard() {
           Money you don&apos;t pay back. Loans aren&apos;t aid.
         </p>
       </div>
-      <Button size="lg" className="w-full" onClick={() => void submit()} disabled={loading === 0}>
+      <Button size="lg" trail={loading !== 0} className="w-full justify-between pl-6" onClick={() => void submit()} disabled={loading === 0}>
         {loading === 0 ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
         {personal && dirty ? "Update my path" : "See my college path"}
       </Button>
       <p className={error ? "-mt-2 min-h-5 text-caption text-risk" : "-mt-2 min-h-5 text-caption text-muted"} role="status">
         {error ?? (personal && dirty ? "You've made changes. Update to see new numbers." : "")}
       </p>
+    </div>
     </div>
   );
 }

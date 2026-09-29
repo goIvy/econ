@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/ui/icons";
 import { DataKindChip, type DataKind } from "@/components/ui/data-kind";
 import { cn } from "@/lib/cn";
 

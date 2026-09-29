@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog } from "radix-ui";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "@/components/ui/icons";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
@@ -100,7 +100,7 @@ export function ExploreFilters({ states, majors, count }: { states: Option[]; ma
         onChange={(v) => set("size", v)}
         options={[
           { value: "small", label: "Under 5K" },
-          { value: "medium", label: "5K–20K" },
+          { value: "medium", label: "5K-20K" },
           { value: "large", label: "20K+" },
         ]}
       />

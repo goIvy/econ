@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog, Popover } from "radix-ui";
-import { ExternalLink, X, Info } from "lucide-react";
+import { ExternalLink, X, Info } from "@/components/ui/icons";
 import Link from "next/link";
 import { useState } from "react";
 import type { Confidence, Lineage } from "@/types";

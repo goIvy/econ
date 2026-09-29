@@ -38,7 +38,7 @@ export function OutcomesPanel({ college, major }: { college: College; major: Maj
           <Gauge label="Finish within 6 years" value={g6} lineage={<SourceFootnote metric="6-year graduation rate" lineage={college.gradRate6.lineage} n={2} />} />
         </div>
         <p className="measure text-small text-ink-2">
-          Of 100 students who started full time at {college.shortName}, about {g4 ?? "—"} finished in four years and {g6 ?? "—"} within six. {GRAD_DISCLAIMER}
+          Of 100 students who started full time at {college.shortName}, about {g4 ?? "n/a"} finished in four years and {g6 ?? "n/a"} within six. {GRAD_DISCLAIMER}
         </p>
       </section>
 
@@ -62,7 +62,7 @@ export function OutcomesPanel({ college, major }: { college: College; major: Maj
           <Stat label="Months to first job" value={major.monthsToFirstJob.value != null ? `${major.monthsToFirstJob.value.toFixed(1)} (approx.)` : "No reliable data"} />
         </dl>
         <p className="measure text-small text-ink-2">
-          National outcomes for recent {major.name.toLowerCase()} graduates aged 22–27. Employment reflects past labor markets and the students who chose this major, so it isn&apos;t a forecast for any one person.
+          National outcomes for recent {major.name.toLowerCase()} graduates aged 22-27. Employment reflects past labor markets and the students who chose this major, so it isn&apos;t a forecast for any one person.
         </p>
       </section>
     </div>

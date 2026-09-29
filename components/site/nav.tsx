@@ -2,11 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
-import { Bookmark, Menu, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { Bookmark } from "@/components/ui/icons";
 import { ButtonLink } from "@/components/ui/button";
-import { collapse, enter, microSpring, staggerParent } from "@/lib/animations";
+import { microSpring } from "@/lib/animations";
 import { useSavedCount } from "@/hooks/use-saved";
 import { cn } from "@/lib/cn";
 import { Logo } from "./logo";
@@ -23,154 +23,136 @@ export interface SpySection {
   label: string;
 }
 
+const EASE = [0.32, 0.72, 0, 1] as const;
+
 /**
- * Fixed frosted-glass navbar. It reads the section underneath and takes that
- * section's theme (dark or light), so its text always contrasts. On the
- * homepage it carries a scroll-spy "path line": the current chapter's name and
- * how far through the story you are.
+ * The fluid island: a floating glass pill, detached from the top edge. On
+ * phones the two-line menu icon morphs into an X and opens a full-screen
+ * glass sheet whose links rise in one after another.
  */
-export function Nav({ overlay = false, sections }: { overlay?: boolean; sections?: SpySection[] }) {
+export function Nav({ overlay = false }: { overlay?: boolean; sections?: SpySection[] }) {
   const pathname = usePathname();
+  const reduce = useReducedMotion();
   const [open, setOpen] = useState(false);
-  const [dark, setDark] = useState(overlay);
-  const [scrolled, setScrolled] = useState(false);
   const saved = useSavedCount();
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 40 });
 
-  // Theme under the nav + scroll-spy, sampled at most once per frame.
+  // Menu open: lock page scroll, close on Escape, move focus into the sheet.
   useEffect(() => {
-    let raf = 0;
-    const sample = () => {
-      raf = 0;
-      const navH = 64;
-      setScrolled(window.scrollY > 8);
-      const below = document.elementsFromPoint(window.innerWidth / 2, navH / 2).find((el) => !el.closest("header[data-site-nav]"));
-      setDark(!!below?.closest(".theme-dark"));
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(sample);
-    };
-    sample();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, [sections]);
-
-  useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    sheetRef.current?.querySelector<HTMLElement>("a")?.focus();
     return () => {
       document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
-  const { scrollYProgress } = useScroll();
-  const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 40 });
-  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
-
   return (
     <>
-      <header
-        data-site-nav
-        className={cn(
-          "glass fixed inset-x-0 top-0 z-40 border-b text-ink transition-[border-color,background-color,color] duration-300",
-          dark && "theme-dark !bg-[var(--glass)]",
-          scrolled || !overlay ? "border-rule" : "border-transparent",
-        )}
-      >
-        <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-sm focus:bg-ink focus:px-3 focus:py-2 focus:text-on-ink">
+      <header data-site-nav className="pointer-events-none fixed inset-x-0 top-0 z-[var(--z-nav)] px-3 pt-3 sm:px-4 sm:pt-4">
+        <a href="#main" className="pointer-events-auto sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-on-ink">
           Skip to content
         </a>
-        <div className="mx-auto flex h-[var(--nav-h)] max-w-[1280px] items-center gap-6 px-4 md:px-8">
+        <div className="glass pointer-events-auto relative mx-auto flex h-[3.75rem] max-w-[1120px] items-center gap-4 overflow-hidden rounded-full pl-4 pr-2 sm:pl-5">
           <Logo />
-          <nav aria-label="Main" className="hidden flex-1 lg:block">
-            <ul className="flex items-center gap-1">
+          <nav aria-label="Main" className="mx-auto hidden lg:block">
+            <ul className="flex items-center gap-0.5">
               {NAV_LINKS.map((l) => (
-                <li key={l.href} className="relative">
+                <li key={l.href}>
                   <Link
                     href={l.href}
                     aria-current={isActive(l.href) ? "page" : undefined}
-                    className={cn("relative block rounded-xs px-3 py-1.5 text-small font-medium transition-colors", isActive(l.href) ? "text-ink" : "text-muted hover:text-ink")}
+                    className={cn("relative block rounded-full px-4 py-2 text-small font-medium transition-colors duration-300", isActive(l.href) ? "text-ink" : "text-muted hover:text-ink")}
                   >
+                    {isActive(l.href) && <motion.span layoutId="nav-active" transition={microSpring} className="absolute inset-0 -z-10 rounded-full bg-surface-sunk" />}
                     {l.label}
-                    {isActive(l.href) && <motion.span layoutId="nav-active" transition={microSpring} className="absolute inset-x-3 -bottom-[13px] h-[2px] rounded-full bg-accent" />}
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
           <div className="ml-auto flex items-center gap-1 lg:ml-0">
-            <Link href="/saved" title="Saved comparisons" className="relative grid size-10 place-items-center rounded-sm text-muted transition-colors hover:bg-surface-sunk hover:text-ink" aria-label={`Saved comparisons${saved ? ` (${saved})` : ""}`}>
-              <Bookmark className="size-[18px]" aria-hidden />
+            <Link href="/saved" title="Saved comparisons" className="relative grid size-11 place-items-center rounded-full text-muted transition-colors hover:bg-surface-sunk hover:text-ink" aria-label={`Saved comparisons${saved ? ` (${saved})` : ""}`}>
+              <Bookmark className="size-[19px]" />
               <AnimatePresence>
                 {saved > 0 && (
-                  <motion.span key={saved} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} className="tabular absolute right-0.5 top-0.5 grid min-w-4 place-items-center rounded-full bg-accent px-1 text-[10px] font-bold text-[#0b1020]">
+                  <motion.span key={saved} initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} className="tabular absolute right-1 top-1 grid min-w-4 place-items-center rounded-full bg-accent px-1 font-mono text-[10px] font-bold text-on-accent">
                     {saved}
                   </motion.span>
                 )}
               </AnimatePresence>
             </Link>
-            <ButtonLink href="/#starter" size="sm" className="ml-1 hidden sm:inline-flex">
+            <ButtonLink href="/#starter" size="sm" trail className="hidden sm:inline-flex">
               Start comparing
             </ButtonLink>
             <button
               type="button"
               onClick={() => setOpen((v) => !v)}
-              className="grid size-10 place-items-center rounded-sm text-ink hover:bg-surface-sunk lg:hidden"
+              className="relative grid size-11 place-items-center rounded-full text-ink hover:bg-surface-sunk lg:hidden"
               aria-expanded={open}
               aria-controls="mobile-nav"
               aria-label={open ? "Close menu" : "Open menu"}
             >
-              {open ? <X className="size-5" /> : <Menu className="size-5" />}
+              <span aria-hidden className={cn("absolute h-[1.5px] w-5 rounded-full bg-current transition-transform duration-500 ease-[var(--ease-premium)]", open ? "rotate-45" : "-translate-y-[4px]")} />
+              <span aria-hidden className={cn("absolute h-[1.5px] w-5 rounded-full bg-current transition-transform duration-500 ease-[var(--ease-premium)]", open ? "-rotate-45" : "translate-y-[4px]")} />
             </button>
           </div>
-        </div>
-
-        {/* scroll-spy path line (homepage) */}
-        {sections && (
-          <div className="pointer-events-none absolute inset-x-0 -bottom-px h-[2px]" aria-hidden>
-            <motion.div className="h-full origin-left bg-accent" style={{ scaleX: progress }} />
-          </div>
-        )}
-        <AnimatePresence>
-          {open && (
-            <motion.nav
-              id="mobile-nav"
-              aria-label="Main"
-              variants={collapse}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
-              style={{ maxHeight: "calc(100dvh - var(--nav-h))" }}
-              className="overflow-y-auto border-t border-rule bg-paper lg:hidden"
-            >
-              <motion.ul variants={staggerParent(0.04, 0.05)} initial="hidden" animate="visible" className="grid gap-1 px-4 py-4">
-                {[...NAV_LINKS, { href: "/saved", label: "Saved" }].map((l) => (
-                  <motion.li key={l.href} variants={enter}>
-                    <Link
-                      href={l.href}
-                      onClick={() => setOpen(false)}
-                      aria-current={isActive(l.href) ? "page" : undefined}
-                      className={cn("block rounded-sm px-3 py-3 text-[1.5rem] font-bold tracking-[-0.03em]", isActive(l.href) ? "bg-surface-sunk text-ink" : "text-ink-2")}
-                    >
-                      {l.label}
-                    </Link>
-                  </motion.li>
-                ))}
-                <motion.li variants={enter} className="mt-4 grid border-t border-rule pt-5">
-                  <ButtonLink href="/#starter" onClick={() => setOpen(false)}>
-                    Start comparing
-                  </ButtonLink>
-                </motion.li>
-              </motion.ul>
-            </motion.nav>
+          {overlay && (
+            <div className="pointer-events-none absolute inset-x-6 bottom-0 h-px" aria-hidden>
+              <motion.div className="h-full origin-left bg-accent" style={{ scaleX: progress }} />
+            </div>
           )}
-        </AnimatePresence>
+        </div>
       </header>
-      {/* Pages flow below the fixed bar; the homepage hero slides underneath it. */}
-      {!overlay && <div aria-hidden className="h-[var(--nav-h)]" />}
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            ref={sheetRef}
+            id="mobile-nav"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.25 } }}
+            transition={{ duration: 0.4, ease: EASE }}
+            className="fixed inset-0 z-[calc(var(--z-nav)-1)] flex flex-col bg-[var(--glass)] px-6 pb-10 pt-28 backdrop-blur-3xl lg:hidden"
+          >
+            <nav aria-label="Main">
+              <ul className="grid gap-1">
+                {[...NAV_LINKS, { href: "/saved", label: "Saved" }].map((l, i) => (
+                  <li key={l.href} className="overflow-hidden">
+                    <motion.div initial={reduce ? false : { y: "110%" }} animate={{ y: 0 }} transition={{ duration: 0.7, ease: EASE, delay: 0.08 + i * 0.05 }}>
+                      <Link
+                        href={l.href}
+                        onClick={() => setOpen(false)}
+                        aria-current={isActive(l.href) ? "page" : undefined}
+                        className={cn("block py-2 text-[2.5rem] font-semibold leading-tight tracking-[-0.04em]", isActive(l.href) ? "text-ink" : "text-ink-2 hover:text-ink")}
+                      >
+                        {l.label}
+                      </Link>
+                    </motion.div>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+            <motion.div className="mt-auto" initial={reduce ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: EASE, delay: 0.35 }}>
+              <ButtonLink href="/#starter" size="lg" trail onClick={() => setOpen(false)} className="w-full justify-between">
+                Start comparing
+              </ButtonLink>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Pages flow below the floating bar; the homepage hero slides underneath it. */}
+      {!overlay && <div aria-hidden className="h-[calc(var(--nav-h)+12px)]" />}
     </>
   );
 }

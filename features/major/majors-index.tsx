@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search } from "@/components/ui/icons";
 import { useMemo, useState } from "react";
 import { Segmented } from "@/components/ui/segmented";
 import { SampleChip } from "@/components/ui/lineage";

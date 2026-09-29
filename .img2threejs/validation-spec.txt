@@ -1,0 +1,5 @@
+PASS
+warning: quality: preSpecAssessment has unresolved unknowns before implementation
+warning: quality: material 'felt' needs usable referencePbr extracted from source pixels
+warning: quality: material 'satin' needs usable referencePbr extracted from source pixels
+warning: quality: detailInventory lists a gloss detail but no material provides low roughness or clearcoat response

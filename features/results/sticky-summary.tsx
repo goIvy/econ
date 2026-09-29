@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronUp } from "lucide-react";
+import { ChevronUp } from "@/components/ui/icons";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DUR, EASE } from "@/lib/animations";
@@ -76,7 +76,7 @@ export function StickySummary() {
             <p className="grid leading-tight">
               <span className="text-[10px] font-bold tracking-[0.16em] text-trace-a">YOUR PATH</span>
               <span className="max-w-[16rem] truncate text-small font-bold text-ink">
-                {f.ctx.college.shortName} <span className="font-normal text-ink-2">· {f.ctx.major.name} · {residencyShort(f)}</span>
+                {f.ctx.college.shortName} <span className="font-normal text-ink-2">· {f.ctx.major.name}, {residencyShort(f).toLowerCase()}</span>
               </span>
             </p>
             <dl className="flex gap-5 border-l border-rule pl-5">
@@ -96,7 +96,7 @@ export function StickySummary() {
           <motion.aside key="mob" {...motionProps} aria-label="Your path summary" className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-surface pb-[env(safe-area-inset-bottom)] shadow-3 lg:hidden">
             <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="summary-sheet" className="flex h-14 w-full items-center justify-between gap-3 px-4 text-left">
               <span className="min-w-0 truncate text-small">
-                <span className="font-bold text-ink">{f.ctx.college.shortName}</span> <span className="text-ink-2">· {moneyCompact(f.result.net.netPrice)} net · {yrs(breakEvenYears(f))}</span>
+                <span className="font-bold text-ink">{f.ctx.college.shortName}</span> <span className="text-ink-2">· {moneyCompact(f.result.net.netPrice)} net, {yrs(breakEvenYears(f))}</span>
               </span>
               <ChevronUp className={cn("size-5 shrink-0 text-ink-2 transition-transform", open && "rotate-180")} aria-hidden />
             </button>

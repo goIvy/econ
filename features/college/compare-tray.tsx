@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { X } from "@/components/ui/icons";
 import { ButtonLink } from "@/components/ui/button";
 import { PathTag, TRACE_KEYS } from "@/components/ui/lineage";
 import { COMPARE_MAX, useCompareList } from "@/hooks/use-compare-list";

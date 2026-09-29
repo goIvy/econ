@@ -15,7 +15,7 @@ import { lineage } from "@/data/sources";
 import { money, moneyCents, moneyCompact } from "@/lib/format";
 import type { LoanType } from "@/types";
 
-const RATE_LINEAGE = lineage("fsa-rates", "2024–25", "Loans first disbursed July 1, 2024 – June 30, 2025");
+const RATE_LINEAGE = lineage("fsa-rates", "2024-25", "Loans first disbursed July 1, 2024 - June 30, 2025");
 const MODEL = lineage("cvl-model", 2024, "Standard amortization of your inputs");
 
 /**

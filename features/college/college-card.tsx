@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ViewTransition } from "react";
 import { motion } from "framer-motion";
-import { Check, Plus } from "lucide-react";
+import { Check, Plus } from "@/components/ui/icons";
 import { useCompareList } from "@/hooks/use-compare-list";
 import { microSpring } from "@/lib/animations";
 import { money, number, pct } from "@/lib/format";

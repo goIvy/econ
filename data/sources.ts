@@ -100,7 +100,7 @@ export const SOURCES: Record<SourceId, DataSource> = {
     id: "fsa-rates",
     publisher: "Federal Student Aid",
     name: "Federal student loan interest rates",
-    dataset: "Direct Loan rates for loans first disbursed 2024–25",
+    dataset: "Direct Loan rates for loans first disbursed 2024-25",
     url: "https://studentaid.gov/understand-aid/types/loans/interest-rates",
     methodologyId: "loans",
     quality: 1,

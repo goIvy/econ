@@ -1,0 +1,14 @@
+{
+  "admitted": true,
+  "reasons": [],
+  "provenance": {
+    "viewpoint": "reference",
+    "sourcePath": "/home/user/econ/.img2threejs/reference.png",
+    "width": 512,
+    "height": 512,
+    "foregroundCoverage": 0.3514,
+    "largestComponentFraction": 1.0,
+    "pHash": 16769989403894063778,
+    "duplicateOfHash": null
+  }
+}

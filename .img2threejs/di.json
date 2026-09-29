@@ -1,0 +1,191 @@
+{
+ "sourceImage": "/home/user/econ/.img2threejs/reference.png",
+ "zonesDir": "/home/user/econ/.img2threejs/detail-inventory",
+ "detailInventory": {
+  "scanMethod": "grid-3x3",
+  "targetMinDetails": 3,
+  "details": [
+   {
+    "id": "zone-r0c0",
+    "kind": "none",
+    "description": "Background or repeated board/skullcap surface; no additional identity detail.",
+    "region": {
+     "x": 0.0,
+     "y": 0.0,
+     "width": 0.3333,
+     "height": 0.3333,
+     "units": "normalized"
+    },
+    "scale": "none",
+    "affects": "none",
+    "mapsTo": {
+     "type": "none",
+     "ref": "none"
+    },
+    "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r0c0.png",
+    "confidence": 0.9
+   },
+   {
+    "id": "zone-r0c1",
+    "kind": "bevel",
+    "description": "Board top apex: soft rounded rim along the board perimeter catches the key light (bright edge line).",
+    "region": {
+     "x": 0.3333,
+     "y": 0.0,
+     "width": 0.3333,
+     "height": 0.3333,
+     "units": "normalized"
+    },
+    "scale": "meso",
+    "affects": "geometry",
+    "mapsTo": {
+     "type": "component.localFeatures",
+     "ref": "board.edge-bevel"
+    },
+    "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r0c1.png",
+    "confidence": 0.8
+   },
+   {
+    "id": "zone-r0c2",
+    "kind": "none",
+    "description": "Background or repeated board/skullcap surface; no additional identity detail.",
+    "region": {
+     "x": 0.6667,
+     "y": 0.0,
+     "width": 0.3333,
+     "height": 0.3333,
+     "units": "normalized"
+    },
+    "scale": "none",
+    "affects": "none",
+    "mapsTo": {
+     "type": "none",
+     "ref": "none"
+    },
+    "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r0c2.png",
+    "confidence": 0.9
+   },
+   {
+    "id": "zone-r1c0",
+    "kind": "none",
+    "description": "Background or repeated board/skullcap surface; no additional identity detail.",
+    "region": {
+     "x": 0.0,
+     "y": 0.3333,
+     "width": 0.3333,
+     "height": 0.3333,
+     "units": "normalized"
+    },
+    "scale": "none",
+    "affects": "none",
+    "mapsTo": {
+     "type": "none",
+     "ref": "none"
+    },
+    "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r1c0.png",
+    "confidence": 0.9
+   },
+   {
+    "id": "zone-r1c1",
+    "kind": "seam",
+    "description": "Tassel button at board center with the cord leaving it across the board top.",
+    "region": {
+     "x": 0.3333,
+     "y": 0.3333,
+     "width": 0.3333,
+     "height": 0.3333,
+     "units": "normalized"
+    },
+    "scale": "micro",
+    "affects": "geometry",
+    "mapsTo": {
+     "type": "component.localFeatures",
+     "ref": "tassel-button.center-button"
+    },
+    "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r1c1.png",
+    "confidence": 0.7
+   },
+   {
+    "id": "zone-r1c2",
+    "kind": "contour",
+    "description": "Cord drapes over the board edge with a ~90 deg bend; identity-defining silhouette break.",
+    "region": {
+     "x": 0.6667,
+     "y": 0.3333,
+     "width": 0.3333,
+     "height": 0.3333,
+     "units": "normalized"
+    },
+    "scale": "meso",
+    "affects": "geometry",
+    "mapsTo": {
+     "type": "component.localFeatures",
+     "ref": "tassel-cord.edge-drape"
+    },
+    "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r1c2.png",
+    "confidence": 0.75
+   },
+   {
+    "id": "zone-r2c0",
+    "kind": "none",
+    "description": "Background or repeated board/skullcap surface; no additional identity detail.",
+    "region": {
+     "x": 0.0,
+     "y": 0.6667,
+     "width": 0.3333,
+     "height": 0.3333,
+     "units": "normalized"
+    },
+    "scale": "none",
+    "affects": "none",
+    "mapsTo": {
+     "type": "none",
+     "ref": "none"
+    },
+    "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r2c0.png",
+    "confidence": 0.9
+   },
+   {
+    "id": "zone-r2c1",
+    "kind": "bevel",
+    "description": "Skullcap lower rim is slightly flared and rounded.",
+    "region": {
+     "x": 0.3333,
+     "y": 0.6667,
+     "width": 0.3333,
+     "height": 0.3333,
+     "units": "normalized"
+    },
+    "scale": "meso",
+    "affects": "geometry",
+    "mapsTo": {
+     "type": "component.localFeatures",
+     "ref": "skullcap.rim-flare"
+    },
+    "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r2c1.png",
+    "confidence": 0.7
+   },
+   {
+    "id": "zone-r2c2",
+    "kind": "gloss",
+    "description": "Tassel bullion is satin with a warm highlight; gradient from cord color to a deeper tip.",
+    "region": {
+     "x": 0.6667,
+     "y": 0.6667,
+     "width": 0.3333,
+     "height": 0.3333,
+     "units": "normalized"
+    },
+    "scale": "meso",
+    "affects": "material",
+    "mapsTo": {
+     "type": "material.localOverrides",
+     "ref": "tassel-satin.bullion-tip"
+    },
+    "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r2c2.png",
+    "confidence": 0.7
+   }
+  ]
+ },
+ "authoringInstruction": "Open each zone crop under zonesDir and replace every detail stub's kind, description, scale, affects, mapsTo, and confidence with what is actually observed. Add more detail entries per zone if a single zone contains multiple distinct marks; do not leave stubs unfilled or unlinked (mapsTo must reference a real component.localFeatures or material.localOverrides entry)."
+}

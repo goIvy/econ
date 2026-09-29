@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
-import { ChevronDown, Loader2, Plus, X } from "lucide-react";
+import { ChevronDown, Loader2, Plus, X } from "@/components/ui/icons";
 import { useMemo, useState } from "react";
 import { ButtonLink } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
@@ -35,8 +35,8 @@ const MORE: Row[] = [
   { label: "Tuition & fees / yr", kind: "observed", get: (f) => money(perYear(f, ["tuition", "fees"])) },
   { label: "Living costs / yr", kind: "observed", get: (f) => money(perYear(f, ["housing", "food", "books", "transportation", "misc"])) },
   { label: "Grants / yr", kind: "estimated", get: (f) => money(f.sel.aid) },
-  { label: "Monthly loan payment", kind: "estimated", get: (f) => (f.result.loan.monthlyPayment > 0 ? `${money(f.result.loan.monthlyPayment)}/mo` : "—") },
-  { label: "Pay range (low – high)", kind: "observed", get: (f) => { const p = f.ctx.outcome.earlyCareer.value; return p ? `${moneyCompact(p.p10)} – ${moneyCompact(p.p90)}` : "—"; } },
+  { label: "Monthly loan payment", kind: "estimated", get: (f) => (f.result.loan.monthlyPayment > 0 ? `${money(f.result.loan.monthlyPayment)}/mo` : "n/a") },
+  { label: "Pay range (low - high)", kind: "observed", get: (f) => { const p = f.ctx.outcome.earlyCareer.value; return p ? `${moneyCompact(p.p10)} - ${moneyCompact(p.p90)}` : "n/a"; } },
   { label: "Mid-career pay", kind: "observed", get: (f) => moneyCompact(f.ctx.outcome.midCareerMedian.value ?? f.ctx.major.midCareerMedian.value) },
   { label: "Graduate in 6 years", kind: "observed", get: (f) => pct(f.ctx.college.gradRate6.value) },
   { label: "Earned minus costs by 40", kind: "projected", get: (f) => moneyCompact(f.series[f.series.length - 1]) },

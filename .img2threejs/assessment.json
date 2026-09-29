@@ -1,0 +1,420 @@
+{
+ "targetName": "Graduation cap (mortarboard)",
+ "sourceImage": "reference.png",
+ "preSpecAssessment": {
+  "objectClass": {
+   "primaryType": "mortarboard graduation cap",
+   "primaryDomain": "object",
+   "formLanguage": [
+    "geometric",
+    "softly-bevelled"
+   ],
+   "structureKind": [
+    "rigid-board",
+    "lathed-skullcap",
+    "hanging-cord"
+   ],
+   "motionPotential": [
+    "idle-float",
+    "tassel-sway",
+    "pointer-tilt"
+   ],
+   "materialFamilies": [
+    "matte-fabric",
+    "satin-cord"
+   ],
+   "notes": "Stylized brand reconstruction: ink-colored felt board/skullcap, accent-colored tassel."
+  },
+  "complexity": {
+   "tier": "simple",
+   "scores": {
+    "silhouetteComplexity": 2,
+    "componentCount": 2,
+    "hierarchyDepth": 2,
+    "repetitionDensity": 0,
+    "materialLayerCount": 2,
+    "localDetailDensity": 1,
+    "occlusionRisk": 1,
+    "actionReadinessNeed": 2
+   },
+   "estimatedCounts": {
+    "macroComponents": 3,
+    "mesoComponents": 4,
+    "microFeatureGroups": 1,
+    "materialLayers": 2,
+    "repetitionSystems": 0
+   },
+   "reasoning": [
+    "Three macro parts (board, skullcap, tassel assembly) from box/lathe/tube primitives.",
+    "Two material families; no repetition systems.",
+    "Tassel sway is the only moving part."
+   ]
+  },
+  "specDepthDecision": {
+   "requiredDepth": "simple",
+   "minimumComponentLevels": [
+    "macro",
+    "meso"
+   ],
+   "needsRepetitionSystems": false,
+   "needsMaterialLocalOverrides": false,
+   "needsMultipleReviewViews": true,
+   "needsActionReadyHierarchy": true,
+   "rationale": "Macro parts plus the tassel's meso sub-assembly (button, cord, head, bullion) carry identity."
+  },
+  "unknownsToResolveBeforeImplementation": [],
+  "detailInventory": {
+   "scanMethod": "grid-3x3",
+   "targetMinDetails": 3,
+   "details": [
+    {
+     "id": "zone-r0c1",
+     "kind": "bevel",
+     "description": "Board top apex: soft rounded rim along the board perimeter catches the key light (bright edge line).",
+     "region": {
+      "x": 0.3333,
+      "y": 0.0,
+      "width": 0.3333,
+      "height": 0.3333,
+      "units": "normalized"
+     },
+     "scale": "meso",
+     "affects": "geometry",
+     "mapsTo": {
+      "type": "component.localFeatures",
+      "ref": "board.edge-bevel"
+     },
+     "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r0c1.png",
+     "confidence": 0.8
+    },
+    {
+     "id": "zone-r1c1",
+     "kind": "seam",
+     "description": "Tassel button at board center with the cord leaving it across the board top.",
+     "region": {
+      "x": 0.3333,
+      "y": 0.3333,
+      "width": 0.3333,
+      "height": 0.3333,
+      "units": "normalized"
+     },
+     "scale": "micro",
+     "affects": "geometry",
+     "mapsTo": {
+      "type": "component.localFeatures",
+      "ref": "tassel-button.center-button"
+     },
+     "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r1c1.png",
+     "confidence": 0.7
+    },
+    {
+     "id": "zone-r1c2",
+     "kind": "contour",
+     "description": "Cord drapes over the board edge with a ~90 deg bend; identity-defining silhouette break.",
+     "region": {
+      "x": 0.6667,
+      "y": 0.3333,
+      "width": 0.3333,
+      "height": 0.3333,
+      "units": "normalized"
+     },
+     "scale": "meso",
+     "affects": "geometry",
+     "mapsTo": {
+      "type": "component.localFeatures",
+      "ref": "tassel-cord.edge-drape"
+     },
+     "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r1c2.png",
+     "confidence": 0.75
+    },
+    {
+     "id": "zone-r2c1",
+     "kind": "bevel",
+     "description": "Skullcap lower rim is slightly flared and rounded.",
+     "region": {
+      "x": 0.3333,
+      "y": 0.6667,
+      "width": 0.3333,
+      "height": 0.3333,
+      "units": "normalized"
+     },
+     "scale": "meso",
+     "affects": "geometry",
+     "mapsTo": {
+      "type": "component.localFeatures",
+      "ref": "skullcap.rim-flare"
+     },
+     "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r2c1.png",
+     "confidence": 0.7
+    },
+    {
+     "id": "zone-r2c2",
+     "kind": "gloss",
+     "description": "Tassel bullion is satin with a warm highlight; gradient from cord color to a deeper tip.",
+     "region": {
+      "x": 0.6667,
+      "y": 0.6667,
+      "width": 0.3333,
+      "height": 0.3333,
+      "units": "normalized"
+     },
+     "scale": "meso",
+     "affects": "material",
+     "mapsTo": {
+      "type": "material.localOverrides",
+      "ref": "tassel-satin.bullion-tip"
+     },
+     "evidenceRef": "/home/user/econ/.img2threejs/detail-inventory/zone-r2c2.png",
+     "confidence": 0.7
+    }
+   ]
+  },
+  "anatomy": {
+   "applies": false,
+   "styleHeads": 0.0,
+   "proportions": {
+    "headUnit": 0.0,
+    "torso": 0.0,
+    "legs": 0.0,
+    "shoulderWidth": 0.0,
+    "hipWidth": 0.0
+   },
+   "pose": {
+    "type": "unassessed",
+    "jointAngles": {}
+   },
+   "faceLandmarks": {
+    "eyeLine": 0.0,
+    "eyeSpacing": 0.0,
+    "noseBase": 0.0,
+    "mouthLine": 0.0,
+    "hairline": 0.0
+   },
+   "features": [],
+   "confidence": 0.0,
+   "note": "Only meaningful when objectClass.primaryDomain is character or hybrid. Set applies=true and fill from forge/stage1_intake/extract_landmarks.py. See grimoire/character/reconstruction.md and grimoire/character/likeness_maximization.md."
+  },
+  "sourceImage": "reference.png"
+ },
+ "qualityContract": {
+  "qualityBar": "simple",
+  "definitionOfDone": [
+   "The rendered model matches the reference silhouette, primary proportions, visible component hierarchy, material response, and most recognizable local features for the selected fidelity tier."
+  ],
+  "minimumSpecDepth": {
+   "macroComponents": 1,
+   "mesoComponents": 0,
+   "microFeatureGroups": 0,
+   "materialLayers": 1,
+   "repetitionSystems": 0,
+   "reviewViewpoints": 2
+  },
+  "featureGroups": [
+   {
+    "id": "overall-silhouette",
+    "name": "Overall silhouette and proportions",
+    "required": true,
+    "qualityCriteria": [
+     "Bounding shape, dominant curves, negative spaces, and scale relationships are explicitly described."
+    ],
+    "evidenceRefs": [
+     "full-object"
+    ],
+    "failureModes": [
+     "model reads as a generic placeholder instead of the reference object",
+     "major proportions are guessed without evidence"
+    ]
+   },
+   {
+    "id": "primary-structure",
+    "name": "Primary structure and hierarchy",
+    "required": true,
+    "qualityCriteria": [
+     "Major parts, joints, seams, contact points, and parent-child relationships are named before code generation."
+    ],
+    "evidenceRefs": [
+     "full-object"
+    ],
+    "failureModes": [
+     "large visible parts are merged into one mesh",
+     "component hierarchy is too shallow for the observed complexity"
+    ]
+   },
+   {
+    "id": "attachment-joint-correctness",
+    "name": "Attachment and joint correctness",
+    "required": true,
+    "qualityCriteria": [
+     "Every visible child appendage, branch, limb, handle, connector, tube, cable, horn, wing, leg, or hinged part has an attachment contract with parent socket, localStart/localEnd, contact type, embed/overlap, and gap tolerance."
+    ],
+    "evidenceRefs": [
+     "full-object"
+    ],
+    "failureModes": [
+     "child part root floats away from the parent",
+     "branch/limb/tube is centered in space instead of pivoting from its root",
+     "parent-child transform mixes world and local coordinates"
+    ]
+   },
+   {
+    "id": "surface-material-response",
+    "name": "Surface material response",
+    "required": true,
+    "qualityCriteria": [
+     "Albedo zones, roughness, normal/bump/displacement intent, cavity dirt, edge wear, and local overrides are specified where visible.",
+     "Important materials define independent albedo, roughness, height/normal, and AO responses instead of reusing one texture for unrelated PBR channels.",
+     "Surface response is decomposed into macro, meso, and micro frequency bands with scale and amplitude tied to object scale."
+    ],
+    "evidenceRefs": [
+     "full-object"
+    ],
+    "failureModes": [
+     "surface looks like flat plastic",
+     "local material variation is missing or not tied to image evidence"
+    ]
+   },
+   {
+    "id": "reference-lookdev",
+    "name": "Reference color, material, and lighting response",
+    "required": true,
+    "qualityCriteria": [
+     "Material-pass names the reference-derived albedo palette, roughness variation, tactile normal/bump/displacement response, and local masks.",
+     "When a source image is available, run reference PBR extraction and require confidence >= 0.7 before treating maps as implementation-ready.",
+     "Lighting-pass names key/fill/rim or environment light, exposure, tone mapping, background, and contact shadow behavior.",
+     "Neutral, grazing-angle, and reference-matched renders prove that surface relief survives relighting and is not painted into albedo."
+    ],
+    "evidenceRefs": [
+     "full-object"
+    ],
+    "failureModes": [
+     "model has acceptable shape but reads as flat shaded or plastic",
+     "colors are a generic average instead of reference-observed local color zones",
+     "lighting is evenly ambient and cannot reproduce the source value range"
+    ]
+   }
+  ],
+  "visualDeltaChecks": [
+   "silhouette and negative-space delta",
+   "component hierarchy depth delta",
+   "repetition density and distribution delta",
+   "material albedo/roughness/normal response delta",
+   "local feature placement and scale delta"
+  ],
+  "antiShallowSpecRules": [
+   "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+   "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+   "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+   "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+   "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+   "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+   "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+   "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+   "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+   "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+   "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md)."
+  ]
+ },
+ "authoringInstruction": "Fill observed object class, complexity reasoning, featureGroups, visualDeltaChecks, and unknowns before generating or implementing ObjectSculptSpec.",
+ "localSpecSearch": {
+  "collection": "core_3d",
+  "query": "Graduation cap (mortarboard) fabric felt matte tassel cord tube",
+  "index": {
+   "status": "hit",
+   "reason": "current",
+   "fingerprint": "62f2831e1d52eeb6dbb94a87c44fa25b1f4926626a7b1f8c2bcadc63e04e9471"
+  },
+  "matches": [
+   {
+    "record_id": "core.pbr-roughness",
+    "file_path": "grimoire/glossary/3d_vocabulary.md",
+    "heading": "Material And PBR",
+    "key_path": null,
+    "score": 5.84800548653,
+    "snippets": [
+     "Roughness is microfacet scatter: high roughness reads matte and low roughness reads glossy. Recognition cues: low roughness reads as a sharp, mirror-like, tight specular highlight; high roughness reads as a blurry, wide, dim highlight and matte ..."
+    ],
+    "source_refs": [
+     {
+      "path": "grimoire/glossary/3d_vocabulary.md",
+      "heading": "Material And PBR",
+      "key_path": null
+     },
+     {
+      "path": "grimoire/intake/image_analysis.md",
+      "heading": "Layer 5 \u2014 Materials & surface (PBR)",
+      "key_path": null
+     },
+     {
+      "path": "docs/raw/img2threejs-skill-dataset.json",
+      "heading": null,
+      "key_path": "categories.material_pbr[1]"
+     }
+    ],
+    "evidence_refs": [
+     {
+      "kind": "source",
+      "ref": "grimoire/glossary/3d_vocabulary.md"
+     },
+     {
+      "kind": "notebooklm-research",
+      "ref": "notebooklm:4b03c2f9-8393-411f-b5b4-039ab9532843",
+      "note": "Validated generic schema vocabulary; numeric claims remain backed by local source_refs."
+     },
+     {
+      "kind": "source",
+      "ref": "docs/raw/img2threejs-skill-dataset.json",
+      "note": "img2threejs NotebookLM research distillation \u2014 merged recognition cues + Three.js target instead of duplicating this entity."
+     }
+    ]
+   },
+   {
+    "record_id": "core.shader-mapping-torusgeometry-rings-loops",
+    "file_path": "docs/raw/img2threejs-skill-dataset.json",
+    "heading": null,
+    "key_path": "categories.rendering_shader_mapping[8]",
+    "score": 3.401965238705,
+    "snippets": [
+     "... Talon knife, trigger guard loop, carrying handle D\u1ea5u hi\u1ec7u nh\u1eadn di\u1ec7n: Chi ti\u1ebft v\u00f2ng tr\u00f2n \u2014 v\u00f2ng c\u00e1n l\u01b0\u1ee1i l\u00ea, v\u00f2ng ng\u00f3n tay tr\u00ean dao Talon, v\u00f2ng v\u00e0nh b\u1ea3o v\u1ec7 c\u00f2, tay x\u00e1ch Three.js target: TorusGeometry(radius, tube, radialSegments, tubularSegments)"
+    ],
+    "source_refs": [
+     {
+      "path": "docs/raw/img2threejs-skill-dataset.json",
+      "heading": null,
+      "key_path": "categories.rendering_shader_mapping[8]"
+     }
+    ],
+    "evidence_refs": [
+     {
+      "kind": "source",
+      "ref": "docs/raw/img2threejs-skill-dataset.json",
+      "note": "img2threejs NotebookLM research distillation"
+     }
+    ]
+   },
+   {
+    "record_id": "core.shader-mapping-cylindergeometry-barrels-round-components",
+    "file_path": "docs/raw/img2threejs-skill-dataset.json",
+    "heading": null,
+    "key_path": "categories.rendering_shader_mapping[4]",
+    "score": 3.206244668833,
+    "snippets": [
+     "... Recognition cues: Long uniform-cross-section round part (barrel, suppressor, muzzle brake body, cleaning rod, magazine tube) D\u1ea5u hi\u1ec7u nh\u1eadn di\u1ec7n: B\u1ed9 ph\u1eadn tr\u00f2n c\u00f3 ti\u1ebft di\u1ec7n \u0111\u1ec1u d\u00e0i (n\u00f2ng s\u00fang, \u1ed1ng gi\u1ea3m thanh, th\u00e2n b\u00f9 gi\u1eadt, c\u1ea7n th\u00f4ng n\u00f2ng, ..."
+    ],
+    "source_refs": [
+     {
+      "path": "docs/raw/img2threejs-skill-dataset.json",
+      "heading": null,
+      "key_path": "categories.rendering_shader_mapping[4]"
+     }
+    ],
+    "evidence_refs": [
+     {
+      "kind": "source",
+      "ref": "docs/raw/img2threejs-skill-dataset.json",
+      "note": "img2threejs NotebookLM research distillation"
+     }
+    ]
+   }
+  ]
+ }
+}

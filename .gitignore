@@ -11,3 +11,7 @@ next-env.d.ts
 .impeccable/config.local.json
 .impeccable/review/
 *.tsbuildinfo
+
+# img2threejs working files (state, crops, renders)
+.img2threejs/detail-inventory/
+.img2threejs/pbr-*/

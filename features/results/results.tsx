@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, Pencil, SlidersHorizontal } from "lucide-react";
+import { ChevronDown, Pencil, SlidersHorizontal } from "@/components/ui/icons";
 import { useId, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { MetricCard } from "@/components/ui/metric-card";
@@ -42,7 +42,7 @@ export function Results({ advanced }: { advanced: React.ReactNode }) {
               {f.ctx.college.shortName}
             </h2>
             <p className="text-lede text-ink-2">
-              <span className="font-semibold text-ink">{f.ctx.major.name}</span> · {residencyLabel(f)} · {f.sel.aid > 0 ? `${moneyCompact(f.sel.aid)}/yr in grants` : "no grants"}
+              <span className="font-semibold text-ink">{f.ctx.major.name}</span>, {residencyLabel(f)} · {f.sel.aid > 0 ? `${moneyCompact(f.sel.aid)}/yr in grants` : "no grants"}
             </p>
           </div>
           <Button variant="secondary" size="sm" onClick={() => goTo("starter", "button")} className="gap-1.5">
@@ -176,7 +176,7 @@ function Details({ f, fact }: { f: Future; fact: Fact }) {
           ))}
         </div>
       );
-      rows = [["Mid-career (age 35–45)", moneyCompact(f.ctx.outcome.midCareerMedian.value ?? f.ctx.major.midCareerMedian.value)]];
+      rows = [["Mid-career (age 35-45)", moneyCompact(f.ctx.outcome.midCareerMedian.value ?? f.ctx.major.midCareerMedian.value)]];
       formula = "Field-of-study earnings for this major at this college where reported; otherwise the college-wide figure. The model follows the typical (median) graduate.";
       break;
     case "jobs":
@@ -192,7 +192,7 @@ function Details({ f, fact }: { f: Future; fact: Fact }) {
       rows = [
         ["Graduation", `Age ${r.graduationAge}`],
         ["Break-even", f.breakEven ? `Age ${f.breakEven.toFixed(1)}` : "Not by 40"],
-        ["Years after graduation", be == null ? "—" : `${be.toFixed(1)} yrs`, true],
+        ["Years after graduation", be == null ? "n/a" : `${be.toFixed(1)} yrs`, true],
       ];
       formula = "The first age where total money earned minus costs passes what you'd have by working from 18, and stays ahead. After taxes and loan payments, in 2024 dollars.";
       lineage = f.ctx.outcome.earlyCareer.lineage;

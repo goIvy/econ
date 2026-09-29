@@ -50,7 +50,7 @@ export function Segmented<T extends string>({
         value={value}
         onValueChange={(v) => onChange(v as T)}
         orientation="horizontal"
-        className={cn("relative flex rounded-sm border border-rule bg-surface-sunk p-1", wrap && "flex-wrap gap-y-1")}
+        className={cn("relative flex bg-surface-sunk p-1 ring-1 ring-rule", wrap ? "flex-wrap gap-y-1 rounded-sm" : "rounded-full")}
       >
         {options.map((o) => {
           const active = o.value === value;
@@ -60,7 +60,7 @@ export function Segmented<T extends string>({
               value={o.value}
               disabled={o.disabled}
               className={cn(
-                "relative z-0 flex flex-1 flex-col items-center justify-center rounded-[7px] px-3 text-center outline-offset-1 transition-colors", wrap && "basis-[30%] md:basis-0",
+                "relative z-0 flex flex-1 flex-col items-center justify-center rounded-full px-3 text-center outline-offset-1 transition-colors", wrap && "basis-[30%] md:basis-0",
                 size === "md" ? "min-h-10 py-1.5" : "min-h-8 py-1",
                 active ? "text-on-ink" : "text-ink-2 hover:text-ink",
                 o.disabled && "opacity-40",
@@ -69,7 +69,7 @@ export function Segmented<T extends string>({
               {active && (
                 <motion.span
                   layoutId={`${id}-indicator`}
-                  className="absolute inset-0 -z-10 rounded-[7px] bg-ink shadow-1"
+                  className="absolute inset-0 -z-10 rounded-full bg-ink shadow-[var(--hairline-inset),var(--shadow-1)]"
                   transition={microSpring}
                   aria-hidden
                 />

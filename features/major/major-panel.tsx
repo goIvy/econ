@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "@/components/ui/icons";
 import { PercentileStrip } from "@/components/charts/percentile-strip";
 import { Readout } from "@/components/ui/readout";
 import { SampleChip, SourceFootnote } from "@/components/ui/lineage";

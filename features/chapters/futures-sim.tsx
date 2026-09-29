@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Play, RotateCcw } from "lucide-react";
+import { Play, RotateCcw } from "@/components/ui/icons";
 import { useEffect, useRef, useState } from "react";
 import { AnimatedNumber, useMeasuredWidth } from "@/components/motion";
 import { Button } from "@/components/ui/button";
@@ -232,7 +232,7 @@ export function FuturesSim() {
             <Stat label="Typical outcome by 40" value={sim.median} fmt={moneyCompact} big />
             <div className="grid gap-1">
               <dt className="text-caption font-semibold text-ink-2">Likely range (middle half)</dt>
-              <dd className="tabular text-h2 font-bold text-ink">{`${moneyCompact(sim.q25)} – ${moneyCompact(sim.q75)}`}</dd>
+              <dd className="tabular text-h2 font-bold text-ink">{`${moneyCompact(sim.q25)} - ${moneyCompact(sim.q75)}`}</dd>
             </div>
             <Stat label="Chance of breaking even within 10 years" value={sim.recoverWithin10 * 100} fmt={(v) => pct(v)} big />
           </dl>
@@ -266,7 +266,7 @@ export function FuturesSim() {
             What changes in each future? <span className="text-muted group-open:hidden">Show</span>
           </summary>
           <ul className="mt-3 grid gap-1.5">
-            <li>Starting salary and raises, drawn from this program&apos;s pay range (10th–90th percentile)</li>
+            <li>Starting salary and raises, drawn from this program&apos;s pay range (10th-90th percentile)</li>
             <li>Time to find a first job: about {SIM_ASSUMPTIONS.jobSearchMeanMonths} months on average</li>
             <li>Graduating in 4, 5 or 6 years, from the college&apos;s rates</li>
             <li>Costs and living costs: about ±{Math.round(SIM_ASSUMPTIONS.costSd * 100)}%; debt follows</li>
@@ -283,7 +283,7 @@ function Stat({ label, value, fmt, big }: { label: string; value: number | null;
   return (
     <div className="grid gap-1">
       <dt className="text-caption font-semibold text-ink-2">{label}</dt>
-      <dd className={cn("font-bold text-ink", big ? "text-h2" : "text-h3")}>{value == null ? <span className="text-muted">—</span> : <AnimatedNumber value={value} format={fmt} />}</dd>
+      <dd className={cn("font-bold text-ink", big ? "text-h2" : "text-h3")}>{value == null ? <span className="text-muted">n/a</span> : <AnimatedNumber value={value} format={fmt} />}</dd>
     </div>
   );
 }

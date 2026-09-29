@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Plus, RotateCcw } from "lucide-react";
+import { Plus, RotateCcw } from "@/components/ui/icons";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { AnimatedNumber, useMeasuredWidth } from "@/components/motion";
 import { Concept } from "@/components/concepts/concept";

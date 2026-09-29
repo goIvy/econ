@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Accordion as A } from "radix-ui";
-import { Plus } from "lucide-react";
+import { Plus } from "@/components/ui/icons";
 import { useState } from "react";
 import { collapse, microSpring } from "@/lib/animations";
 

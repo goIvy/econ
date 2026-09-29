@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { X } from "@/components/ui/icons";
 import { Dialog } from "radix-ui";
 import { overlay, sheet } from "@/lib/animations";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";

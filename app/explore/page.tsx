@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { SearchX } from "lucide-react";
+import { SearchX } from "@/components/ui/icons";
 import { PageShell } from "@/components/site/page-shell";
 import { SampleChip } from "@/components/ui/lineage";
 import { CollegeCard, type CollegeCardData } from "@/features/college/college-card";

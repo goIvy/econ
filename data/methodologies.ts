@@ -43,7 +43,7 @@ export const METHODOLOGIES: Methodology[] = [
     body: [
       "We use standard amortization, the same formula federal loan servicers use for the Standard Repayment Plan.",
       "Unsubsidized and private loans build up interest while you're in school. That interest is added to the balance when repayment begins. Subsidized federal loans don't build up interest while you're enrolled at least half-time.",
-      "Federal rates are the ones set for loans first disbursed in 2024–25. Private loan rates vary by lender and credit, so the private default is an assumption you can change.",
+      "Federal rates are the ones set for loans first disbursed in 2024-25. Private loan rates vary by lender and credit, so the private default is an assumption you can change.",
     ],
     formula: "Payment = P × r / (1 − (1 + r)^−n), where r is the monthly rate and n the number of months",
   },
@@ -75,7 +75,7 @@ export const METHODOLOGIES: Methodology[] = [
     title: "Employment outcomes",
     simple: "How often recent graduates in a major are employed, unemployed, or in jobs that don't typically need a degree.",
     body: [
-      "Employment and unemployment rates by major come from the New York Fed's analysis of recent college graduates (ages 22–27) in the American Community Survey.",
+      "Employment and unemployment rates by major come from the New York Fed's analysis of recent college graduates (ages 22-27) in the American Community Survey.",
       "Underemployment means working in a job that typically doesn't require a bachelor's degree. We show it only where the data is defensible.",
       "Occupation growth rates come from the BLS Employment Projections program.",
     ],

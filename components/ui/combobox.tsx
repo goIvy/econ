@@ -3,7 +3,7 @@
 import { Command } from "cmdk";
 import { AnimatePresence, motion } from "framer-motion";
 import { Popover } from "radix-ui";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "@/components/ui/icons";
 import { useId, useState } from "react";
 import { pop } from "@/lib/animations";
 import { cn } from "@/lib/cn";
@@ -52,7 +52,7 @@ export function Combobox({
       <Popover.Root open={open} onOpenChange={setOpen}>
         <Popover.Trigger
           aria-labelledby={`${id}-l`}
-          className="flex h-11 w-full min-w-0 items-center justify-between gap-2 rounded-sm border border-rule-strong bg-surface px-3 text-left shadow-1 transition-colors hover:border-ink/40 data-[state=open]:border-trace-a"
+          className="flex h-12 w-full min-w-0 items-center justify-between gap-2 rounded-sm border border-rule-strong bg-surface px-4 text-left shadow-[var(--hairline-inset)] transition-colors hover:border-[color-mix(in_srgb,var(--ink)_35%,transparent)] data-[state=open]:border-accent data-[state=open]:ring-4 data-[state=open]:ring-accent-soft"
         >
           <span className={cn("min-w-0 truncate text-[0.9375rem]", selected ? "font-medium text-ink" : "text-muted")}>
             {selected?.label ?? placeholder}
@@ -80,7 +80,7 @@ export function Combobox({
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="z-50 w-[min(26rem,calc(100vw-2rem))] overflow-hidden rounded-md border border-rule bg-surface shadow-3"
+                  className="z-[var(--z-overlay)] w-[min(26rem,calc(100vw-2rem))] overflow-hidden rounded-md border border-rule bg-surface shadow-3"
                 >
                   <Command loop>
                     <Command.Input
@@ -106,7 +106,7 @@ export function Combobox({
                               }}
                               className="flex cursor-pointer items-center gap-2 rounded-xs px-2 py-2 text-small text-ink data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-40 data-[selected=true]:bg-surface-sunk"
                             >
-                              <Check className={cn("size-4 shrink-0 text-trace-a", o.value === value ? "opacity-100" : "opacity-0")} aria-hidden />
+                              <Check className={cn("size-4 shrink-0 text-accent-ink", o.value === value ? "opacity-100" : "opacity-0")} aria-hidden />
                               <span className="min-w-0 flex-1">
                                 <span className="block truncate font-medium">{o.label}</span>
                                 {o.meta && <span className="block truncate text-caption text-muted">{o.meta}</span>}

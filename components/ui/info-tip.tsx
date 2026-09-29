@@ -1,7 +1,7 @@
 "use client";
 
 import { Tooltip, Popover } from "radix-ui";
-import { Info } from "lucide-react";
+import { Info } from "@/components/ui/icons";
 import { useMedia } from "@/hooks/use-media";
 
 /**

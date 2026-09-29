@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Dialog } from "radix-ui";
-import { BookOpen, X } from "lucide-react";
+import { BookOpen, X } from "@/components/ui/icons";
 import Link from "next/link";
 import { useState } from "react";
 import { LIMITATIONS, METHODOLOGIES } from "@/data/methodologies";

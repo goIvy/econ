@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, LayoutGroup, motion } from "framer-motion";
-import { Pause, Play, X } from "lucide-react";
+import { Pause, Play, X } from "@/components/ui/icons";
 import { Dialog } from "radix-ui";
 import { useEffect, useRef, useState } from "react";
 import { AnimatedNumber, useMeasuredWidth } from "@/components/motion";

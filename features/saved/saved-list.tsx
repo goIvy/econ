@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { Bookmark, Trash2 } from "lucide-react";
+import { Bookmark, Trash2 } from "@/components/ui/icons";
 import Link from "next/link";
 import { useSaved } from "@/hooks/use-saved";
 import { DUR, EASE } from "@/lib/animations";

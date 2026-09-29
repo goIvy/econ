@@ -70,7 +70,7 @@ export async function POST(req: Request) {
       netCost: college.costs.tuitionInState.lineage,
       earnings: outcome.earlyCareer.lineage,
       employment: outcome.employmentRate.lineage,
-      loanRate: lineage("fsa-rates", "2024–25", "Loans first disbursed July 1, 2024 – June 30, 2025"),
+      loanRate: lineage("fsa-rates", "2024-25", "Loans first disbursed July 1, 2024 - June 30, 2025"),
       model: lineage("cvl-model", 2024, "Calculated from your inputs and the datasets above", { note: "Break-even and projected earnings are estimates in 2024 dollars." }),
       gradRate: college.gradRate6.lineage,
     },

@@ -76,7 +76,7 @@ export default async function CollegePage(props: PageProps<"/college/[id]">) {
           hero={{
             id: college.id,
             name: college.shortName,
-            place: `${college.name} · ${college.city}, ${college.state} · ${college.control === "public" ? "Public" : "Private nonprofit"}`,
+            place: `${college.name}, ${college.city}, ${college.state}. ${college.control === "public" ? "Public" : "Private nonprofit"}.`,
             major: run?.major.name ?? "",
             metrics: run
               ? { netCost: run.result.net.netPrice, employment: run.result.employmentRate * 100, salary: run.result.startingSalary, debt: run.result.net.borrowing, breakEven: run.breakEven && run.breakEven.age > 18 ? run.breakEven.age : null }
@@ -101,7 +101,7 @@ export default async function CollegePage(props: PageProps<"/college/[id]">) {
                       {college.shortName} at a glance
                     </h2>
                     <p className="text-small text-ink-2">
-                      {college.city}, {college.state} · {college.control === "public" ? "Public" : "Private nonprofit"} · {number(college.undergradEnrollment.value)} undergraduates
+                      {college.city}, {college.state}. {college.control === "public" ? "Public" : "Private nonprofit"}, {number(college.undergradEnrollment.value)} undergraduates
                     </p>
                   </div>
                   <SampleChip />

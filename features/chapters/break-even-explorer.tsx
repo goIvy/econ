@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, animate, motion, useMotionValue, useSpring, useTransform, type AnimationPlaybackControls, type MotionValue } from "framer-motion";
-import { Pause, Play, RotateCcw } from "lucide-react";
+import { Pause, Play, RotateCcw } from "@/components/ui/icons";
 import { Slider } from "radix-ui";
 import { useEffect, useRef, useState } from "react";
 import { AnimatedNumber, useMeasuredWidth, useSteppedValue } from "@/components/motion";

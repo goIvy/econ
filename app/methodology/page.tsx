@@ -78,7 +78,7 @@ export default function MethodologyPage() {
             <div className="flex flex-wrap gap-2">
               <ConfidenceBadge level="high" /> <ConfidenceBadge level="moderate" /> <ConfidenceBadge level="limited" />
             </div>
-            <p className="text-small text-muted">High: 80% or more of full marks. Moderate: 60–79%. Limited: below 60%.</p>
+            <p className="text-small text-muted">High: 80% or more of full marks. Moderate: 60-79%. Limited: below 60%.</p>
           </section>
 
           <section id="limitations" aria-labelledby="lim-h" className="grid scroll-mt-28 gap-3">

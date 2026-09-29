@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useInView } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/components/ui/icons";
 import { useRef, useState } from "react";
 import { AnimatedNumber } from "@/components/motion";
 import { DataKindChip } from "@/components/ui/data-kind";
