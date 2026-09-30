@@ -16,7 +16,7 @@ import { DUR, EASE, scrubSpring } from "@/lib/animations";
 import { moneyCompact } from "@/lib/format";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/cn";
-import { HORIZON, PATH_DASH, PATH_VAR, pathNo, useScenario, type Future } from "@/features/scenario/store";
+import { HORIZON, PATH_DASH, PATH_VAR, pathRole, useScenario, type Future } from "@/features/scenario/store";
 
 
 const LiquidMetalButton = dynamic(() => import("@designcodeio/threeui/components/LiquidMetalButton").then((m) => m.LiquidMetalButton), {
@@ -40,7 +40,8 @@ export function BreakEvenExplorer() {
   const gradIdx = Math.max(0, Math.round(mine.result.graduationAge) - START);
   const headStart = Math.max(0, (baselineSeries[gradIdx] ?? 0) - (mine.series[gradIdx] ?? 0));
   const reduce = useReducedMotion();
-  const target = useMotionValue(22);
+  // Open on the whole story (age 40); "Play my future" replays it from 18.
+  const target = useMotionValue(HORIZON);
   const age = useSpring(target, scrubSpring);
   const shown = clamp(useSteppedValue(age, 0.1), START, HORIZON);
   const [playing, setPlaying] = useState(false);
@@ -82,18 +83,37 @@ export function BreakEvenExplorer() {
                 <svg width="24" height="8" aria-hidden>
                   <line x1="1" x2="23" y1="4" y2="4" stroke={PATH_VAR[f.index]} strokeWidth="3" strokeDasharray={PATH_DASH[f.index]} />
                 </svg>
-                <span className="font-bold tracking-[0.08em]">{f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`}</span> {f.label}
+                <span className="font-semibold text-ink">{f.label}</span> <span className="text-muted">({pathRole(f.index).toLowerCase()})</span>
               </span>
             ))}
             <span className="flex items-center gap-2">
               <svg width="24" height="8" aria-hidden>
                 <line x1="1" x2="23" y1="4" y2="4" stroke="var(--trace-c)" strokeWidth="2" strokeDasharray="6 4" />
               </svg>
-              Work from 18
+              Working from 18 instead
             </span>
           </div>
           <SampleChip />
         </div>
+
+        <details className="group rounded-sm bg-surface-sunk px-4 py-3 text-small text-ink-2" open>
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-medium text-ink [&::-webkit-details-marker]:hidden">
+            How to read this chart
+            <span className="text-caption text-muted group-open:hidden">Show</span>
+            <span className="hidden text-caption text-muted group-open:inline">Hide</span>
+          </summary>
+          <ul className="mt-2 grid gap-1.5">
+            <li>
+              <strong className="font-semibold text-ink">Each line is money in your pocket over time:</strong> everything earned, minus college costs and loan payments.
+            </li>
+            <li>
+              <strong className="font-semibold text-ink">The dashed grey line</strong> is the same person skipping college and working from age 18.
+            </li>
+            <li>
+              <strong className="font-semibold text-ink">Where your line climbs above the dashed line,</strong> college has paid for itself. That point is marked as your break-even.
+            </li>
+          </ul>
+        </details>
 
         <Chart pair={pair} base={baselineSeries} age={age} />
 
@@ -155,7 +175,7 @@ function Scrubber({ value, onChange }: { value: number; onChange: (v: number) =>
 function Chart({ pair, base, age }: { pair: Future[]; base: number[]; age: MotionValue<number> }) {
   const [ref, W] = useMeasuredWidth<HTMLDivElement>(900);
   const H = W < 560 ? 260 : 380;
-  const M = { t: 24, r: 16, b: 28, l: W < 560 ? 46 : 60 };
+  const M = { t: 28, r: 16, b: 28, l: W < 560 ? 46 : 60 };
   const all = [...pair.flatMap((f) => f.series), ...base];
   const lo = Math.min(0, ...all) * 1.2;
   const hi = Math.max(...all) * 1.06;
@@ -181,6 +201,15 @@ function Chart({ pair, base, age }: { pair: Future[]; base: number[]; age: Motio
           </g>
         ))}
         <rect x={x(18)} y={M.t} width={x(22) - x(18)} height={H - M.t - M.b} fill="var(--ink)" fillOpacity={0.035} />
+        <text x={(x(18) + x(22)) / 2} y={M.t + 14} textAnchor="middle" className="fill-muted text-[10px] font-medium">
+          In college
+        </text>
+        <text x={M.l} y={12} className="fill-ink-2 text-[11px] font-medium">
+          Money after costs ↑
+        </text>
+        <text x={W - M.r} y={H - 8} textAnchor="end" className="fill-muted text-[11px]">
+          Age →
+        </text>
         {/* faint future, inked past */}
         <path d={d(base)} fill="none" stroke="var(--trace-c)" strokeOpacity={0.35} strokeWidth={1.5} strokeDasharray="6 4" />
         {pair.map((f) => (
@@ -198,7 +227,7 @@ function Chart({ pair, base, age }: { pair: Future[]; base: number[]; age: Motio
         {pair.map((f) => (
           <HeadDot key={`h${f.index}`} age={age} series={f.series} x={x} y={y} color={PATH_VAR[f.index]} r={6} />
         ))}
-        {[18, 22, 26, 30, 35, 40].map((t) => (
+        {[18, 22, 26, 30, 35].map((t) => (
           <text key={t} x={x(t)} y={H - 8} textAnchor="middle" className="tabular fill-muted text-[11px]">
             {t}
           </text>
@@ -231,7 +260,7 @@ function BreakEvenMarker({ f, i, age, x, y, W }: { f: Future; i: number; age: Mo
             <motion.g initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: DUR.standard, ease: EASE.smooth }} transform={`translate(${left ? -170 : 14}, ${i === 0 ? -64 : 18})`}>
               <rect width={156} height={44} rx={10} fill="var(--ink)" />
               <text x={12} y={18} className="fill-on-ink text-[10px] font-mono font-medium uppercase tracking-[0.08em]">
-                BREAK-EVEN · {f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`}
+                {f.index === 0 ? "YOU BREAK EVEN" : "THEY BREAK EVEN"}
               </text>
               <text x={12} y={35} className="tabular fill-on-ink text-[14px] font-semibold">
                 AGE {f.breakEven!.toFixed(1)}
@@ -255,12 +284,12 @@ function Readouts({ f, age, baseline }: { f: Future; age: number; baseline: Para
       <div className="flex items-center justify-between gap-2">
         <p className="flex min-w-0 items-center gap-2 text-caption font-mono font-medium uppercase tracking-[0.08em] text-ink">
           <span className="size-2 shrink-0 rounded-full" style={{ background: PATH_VAR[f.index] }} />
-          {f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`} <span className="truncate font-medium tracking-normal text-muted">{f.label}</span>
+          <span className="truncate normal-case tracking-normal">{f.label}</span> <span className="shrink-0 font-normal normal-case tracking-normal text-muted">({pathRole(f.index).toLowerCase()})</span>
         </p>
         <span className="tabular shrink-0 text-caption font-semibold text-ink-2">At age {Math.floor(age)}</span>
       </div>
       <div className="grid gap-1">
-        <p className="text-caption text-muted">Compared with working from 18</p>
+        <p className="text-caption text-muted">Compared with skipping college and working from 18</p>
         <p className={cn("tabular text-h2 font-semibold tracking-[-0.03em]", ahead ? "text-gain" : "text-ink")}>
           {ahead ? "Ahead by " : "Behind by "}
           <AnimatedNumber value={Math.abs(gap)} format={moneyCompact} />

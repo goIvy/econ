@@ -63,7 +63,7 @@ export function drawPlates(plates: Plate[], serif: string, sans: string): string
     ctx.textBaseline = "alphabetic";
     ctx.font = `500 22px ${sans}`;
     ctx.globalAlpha = 0.7;
-    ctx.fillText(`PATH ${String(i + 1).padStart(2, "0")}`, 56, 70);
+    ctx.fillText("A COLLEGE PATH", 56, 70);
     ctx.globalAlpha = 1;
     let size = 150;
     ctx.font = `400 ${size}px ${serif}`;

@@ -21,6 +21,15 @@ Added in v5.1:
 - **Possible futures**: the PredictiveArcCanvas tile beside the question.
 - **Opening intro**: TextAnimationCollection's `threeui-intro` beat (vendored adapter) assembling "Value Lab" with our mark, once per session, skippable, never under reduced motion.
 
+Added in v5.2 (ease of use):
+
+- **Sections menu** in the top bar (and "On this page" in the phone menu): every homepage section in order, the current one highlighted; choosing one scrolls there and moves focus.
+- **Charts explain themselves**: the payoff chart opens on the whole story (age 40), carries a "How to read this chart" key, axis titles ("Money after costs", "Age"), an "In college" band, plain legend names ("your path", "comparing", "working from 18 instead") and "You break even / They break even" markers. The simulation has a one-line explanation and the same axis titles. "PATH 02"-style labels are gone everywhere.
+- **Scroll traps removed**: scenes that zoom on the wheel (the globe, the landscape) take input only after a click, until the pointer leaves.
+- **Liquid-metal pills** (LiquidMetalButton, pill variant, embedded) for the two big calls to action; the label shows as text until the metal is ready.
+- **Learn page**: JapaneseTowerLandscape (Turkey: an Ottoman mosque built up over time) as the banner for "What your salary can actually buy".
+- **Growth tree** grows faster (speed 2.5) and brighter (1.35).
+
 Not used: OrbGallery, AshenPress and GetStartedButton (not in the published package or the public repo), GalleryHeading (its headline is fixed to another product's copy), Sketchbook, TempleNight, Landscape, WarpField and AnimatedTopDock (off-brand for a light college site, or duplicating the nav).
 
 ## 0b. v4 update: cinematic editorial

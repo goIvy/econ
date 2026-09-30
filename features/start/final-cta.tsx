@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRight } from "@/components/ui/icons";
-import { Button } from "@/components/ui/button";
+import { LiquidCta } from "@/components/ui/liquid-cta";
 import { BlurWords } from "@/components/motion/blur-words";
 import { goTo } from "@/lib/scroll";
 
@@ -16,9 +16,7 @@ export function FinalCta() {
           </h2>
           <p className="max-w-[34rem] text-lede text-ink-2">Pick a college and a major. It takes less than a minute, and nothing is stored anywhere but your browser.</p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-            <Button size="lg" trail className="justify-between pl-6" onClick={() => goTo("starter", "button")}>
-              Start comparing
-            </Button>
+            <LiquidCta text="Start comparing" onClick={() => goTo("starter", "button")} />
             <button type="button" onClick={() => goTo("compare", "h2")} className="group inline-flex min-h-11 items-center gap-2 rounded-full text-body font-medium text-ink-2 transition-colors hover:text-ink">
               Compare colleges
               <ArrowRight className="size-4 transition-transform duration-500 ease-[var(--ease-premium)] group-hover:translate-x-1" aria-hidden />

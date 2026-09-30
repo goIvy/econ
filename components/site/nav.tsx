@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { Bookmark } from "@/components/ui/icons";
+import { Bookmark, Sections as SectionsIcon } from "@/components/ui/icons";
+import { Popover } from "radix-ui";
+import { goTo } from "@/lib/scroll";
 import { ButtonLink } from "@/components/ui/button";
 import { microSpring } from "@/lib/animations";
 import { useSavedCount } from "@/hooks/use-saved";
@@ -31,7 +33,7 @@ const EASE = [0.32, 0.72, 0, 1] as const;
  * phones the two-line menu icon morphs into an X and opens a full-screen
  * glass sheet whose links rise in one after another.
  */
-export function Nav({ overlay = false }: { overlay?: boolean; sections?: SpySection[] }) {
+export function Nav({ overlay = false, sections }: { overlay?: boolean; sections?: SpySection[] }) {
   const pathname = usePathname();
   const reduce = useReducedMotion();
   const [open, setOpen] = useState(false);
@@ -40,6 +42,20 @@ export function Nav({ overlay = false }: { overlay?: boolean; sections?: SpySect
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 200, damping: 40 });
+  const current = useCurrentSection(sections);
+  // On the homepage, "Start comparing" moves focus into the form (not just the scroll position).
+  const toStarter = (e: React.MouseEvent) => {
+    if (pathname !== "/" || !document.getElementById("starter")) return;
+    e.preventDefault();
+    requestAnimationFrame(() => goTo("starter", "button"));
+  };
+  const [jumpOpen, setJumpOpen] = useState(false);
+  const jump = (id: string) => {
+    setJumpOpen(false);
+    setOpen(false);
+    // Let the menu close (and page scroll unlock) before moving.
+    requestAnimationFrame(() => goTo(id, "h2"));
+  };
 
   // Menu open: lock page scroll, close on Escape, move focus into the sheet.
   useEffect(() => {
@@ -79,6 +95,26 @@ export function Nav({ overlay = false }: { overlay?: boolean; sections?: SpySect
             </ul>
           </nav>
           <div className="ml-auto flex items-center gap-1 lg:ml-0">
+            {sections && sections.length > 0 && (
+              <Popover.Root open={jumpOpen} onOpenChange={setJumpOpen}>
+                <Popover.Trigger className="hidden h-10 items-center gap-2 rounded-full px-3 text-small font-medium text-ink-2 transition-colors hover:bg-surface-sunk hover:text-ink data-[state=open]:bg-surface-sunk data-[state=open]:text-ink sm:flex">
+                  <SectionsIcon className="size-[18px]" />
+                  Sections
+                </Popover.Trigger>
+                <Popover.Portal>
+                  <Popover.Content
+                    align="end"
+                    sideOffset={12}
+                    aria-label="Jump to a section"
+                    onCloseAutoFocus={(e) => e.preventDefault()}
+                    className="z-[var(--z-overlay)] w-72 rounded-md bg-surface p-2 shadow-[0_0_0_1px_var(--rule),var(--hairline-inset),var(--shadow-3)]"
+                  >
+                    <p className="px-3 pb-1 pt-2 text-caption font-medium text-muted">Jump to a section</p>
+                    <SectionList sections={sections} current={current} onPick={jump} />
+                  </Popover.Content>
+                </Popover.Portal>
+              </Popover.Root>
+            )}
             <Link href="/saved" title="Saved comparisons" className="relative grid size-11 place-items-center rounded-full text-ink-2 transition-colors hover:bg-surface-sunk hover:text-ink" aria-label={`Saved comparisons${saved ? ` (${saved})` : ""}`}>
               <Bookmark className="size-[19px]" />
               <AnimatePresence>
@@ -89,7 +125,7 @@ export function Nav({ overlay = false }: { overlay?: boolean; sections?: SpySect
                 )}
               </AnimatePresence>
             </Link>
-            <ButtonLink href="/#starter" size="sm" trail className="hidden sm:inline-flex">
+            <ButtonLink href="/#starter" size="sm" trail className="hidden sm:inline-flex" onClick={toStarter}>
               Start comparing
             </ButtonLink>
             <button
@@ -124,7 +160,7 @@ export function Nav({ overlay = false }: { overlay?: boolean; sections?: SpySect
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.25 } }}
             transition={{ duration: 0.4, ease: EASE }}
-            className="fixed inset-0 z-[calc(var(--z-nav)-1)] flex flex-col bg-[var(--glass)] px-6 pb-10 pt-28 backdrop-blur-3xl lg:hidden"
+            className="fixed inset-0 z-[calc(var(--z-nav)-1)] flex flex-col overflow-y-auto bg-[var(--glass)] px-6 pb-10 pt-28 backdrop-blur-3xl lg:hidden"
           >
             <nav aria-label="Main">
               <ul className="grid gap-1">
@@ -144,8 +180,14 @@ export function Nav({ overlay = false }: { overlay?: boolean; sections?: SpySect
                 ))}
               </ul>
             </nav>
+            {sections && sections.length > 0 && (
+              <motion.div className="mt-6 grid gap-1 border-t border-rule pt-4" initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: EASE, delay: 0.3 }}>
+                <p className="text-caption font-medium text-muted">On this page</p>
+                <SectionList sections={sections} current={current} onPick={jump} columns />
+              </motion.div>
+            )}
             <motion.div className="mt-auto" initial={reduce ? false : { opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: EASE, delay: 0.35 }}>
-              <ButtonLink href="/#starter" size="lg" trail onClick={() => setOpen(false)} className="w-full justify-between">
+              <ButtonLink href="/#starter" size="lg" trail onClick={(e) => { setOpen(false); toStarter(e); }} className="w-full justify-between">
                 Start comparing
               </ButtonLink>
             </motion.div>
@@ -155,5 +197,50 @@ export function Nav({ overlay = false }: { overlay?: boolean; sections?: SpySect
       {/* Pages flow below the floating bar; the homepage hero slides underneath it. */}
       {!overlay && <div aria-hidden className="h-[calc(var(--nav-h)+12px)]" />}
     </>
+  );
+}
+
+/** Which homepage section is under the middle of the screen right now. */
+function useCurrentSection(sections?: SpySection[]) {
+  const [current, setCurrent] = useState<string | null>(null);
+  useEffect(() => {
+    if (!sections?.length) return;
+    const els = sections.map((x) => document.getElementById(x.id)).filter((el): el is HTMLElement => !!el);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const hit = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (hit) setCurrent(hit.target.id);
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [sections]);
+  return current;
+}
+
+function SectionList({ sections, current, onPick, columns = false }: { sections: SpySection[]; current: string | null; onPick: (id: string) => void; columns?: boolean }) {
+  return (
+    <ol className={cn("grid", columns ? "grid-cols-2 gap-x-4" : "gap-0.5")}>
+      {sections.map((x, i) => (
+        <li key={x.id}>
+          <a
+            href={`#${x.id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              onPick(x.id);
+            }}
+            aria-current={current === x.id ? "location" : undefined}
+            className={cn(
+              "flex min-h-11 items-center gap-3 rounded-sm px-3 text-small transition-colors",
+              current === x.id ? "bg-surface-sunk font-medium text-ink" : "text-ink-2 hover:bg-surface-sunk hover:text-ink",
+            )}
+          >
+            <span className="tabular w-5 font-mono text-[11px] text-accent-ink">{String(i + 1).padStart(2, "0")}</span>
+            {x.label}
+          </a>
+        </li>
+      ))}
+    </ol>
   );
 }

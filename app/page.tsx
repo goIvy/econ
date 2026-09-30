@@ -27,13 +27,17 @@ import { Pipeline } from "@/features/chapters/pipeline";
 import { lessonInputs } from "@/features/chapters/data";
 
 const SECTIONS: SpySection[] = [
-  { id: "your-path", label: "Your path" },
-  { id: "compare", label: "Compare" },
-  { id: "true-cost", label: "Cost" },
-  { id: "break-even", label: "Payoff" },
+  { id: "build", label: "Pick a college" },
+  { id: "your-path", label: "Your result" },
+  { id: "compare", label: "Compare colleges" },
+  { id: "every-path", label: "Explore all colleges" },
+  { id: "popular", label: "Popular paths" },
+  { id: "true-cost", label: "The real cost" },
+  { id: "break-even", label: "When it pays off" },
+  { id: "growth", label: "Grow your options" },
   { id: "futures", label: "Possible futures" },
-  { id: "learn", label: "Learn" },
-  { id: "data", label: "Data" },
+  { id: "learn", label: "Learn the basics" },
+  { id: "data", label: "Where the data comes from" },
 ];
 
 function Advanced() {

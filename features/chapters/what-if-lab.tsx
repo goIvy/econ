@@ -13,7 +13,7 @@ import { calculateBreakEvenYear, calculateDisposableIncome, cumulativeSeries, im
 import { DUR, EASE, markerSettle } from "@/lib/animations";
 import { money, moneyCompact, pct } from "@/lib/format";
 import { cn } from "@/lib/cn";
-import { PATH_VAR, pathNo, useScenario } from "@/features/scenario/store";
+import { PATH_VAR, useScenario, pathRole } from "@/features/scenario/store";
 import type { PathSel } from "@/features/scenario/types";
 
 const END = 40;
@@ -123,7 +123,7 @@ export function WhatIfLab() {
         <div className="flex items-center justify-between gap-2">
           <p className="flex items-center gap-2 text-caption font-mono font-medium uppercase tracking-[0.08em] text-ink">
             <span className="size-2 rounded-full" style={{ background: PATH_VAR[f.index] }} />
-            PATH {pathNo(f.index)} <span className="font-medium tracking-normal text-muted">{f.label}</span>
+            {pathRole(f.index)} <span className="font-medium tracking-normal text-muted">{f.label}</span>
           </p>
           <Button variant="quiet" size="sm" onClick={reset} className="gap-1.5">
             <RotateCcw className="size-4" aria-hidden /> Reset

@@ -5,7 +5,7 @@ import { ArrowRight } from "@/components/ui/icons";
 import { goTo } from "@/lib/scroll";
 
 // ThreeUI's generative tree (MIT): a painterly tree that grows from sienna to golden tips,
-// sways with the pointer and sheds soft motes. Configured usage, unchanged.
+// sways with the pointer and sheds soft motes. Brighter (1.35) and faster-growing (2.5x) than the defaults.
 const ElementsCollection = dynamic(() => import("@designcodeio/threeui/components/ElementsCollection").then((m) => m.ElementsCollection), {
   ssr: false,
   loading: () => <div aria-hidden className="absolute inset-0 bg-[#0a0a0a]" />,
@@ -29,12 +29,12 @@ export function GrowthSection() {
         <div className="relative min-h-[26rem] overflow-hidden rounded-lg bg-[#0a0a0a] shadow-[0_0_0_1px_var(--rule)] sm:min-h-[34rem] sm:rounded-[36px]">
           <ElementsCollection
             variant="generative-tree"
-            speed={1}
+            speed={2.5}
             size={1}
             particleAmount={1}
             hue={0}
             saturation={1}
-            brightness={1}
+            brightness={1.35}
             opacity={1}
             style={{ position: "absolute", inset: 0 }}
           />

@@ -21,6 +21,7 @@ import {
   Info as PInfo,
   LinkSimple,
   List,
+  ListBullets,
   MagnifyingGlass,
   MagnifyingGlassMinus,
   Pause as PPause,
@@ -62,6 +63,7 @@ export const Info = make(PInfo);
 export const Link2 = make(LinkSimple);
 export const Loader2 = make(CircleNotch);
 export const Menu = make(List);
+export const Sections = make(ListBullets);
 export const Pause = make(PPause, "fill");
 export const Pencil = make(PencilSimple);
 export const Play = make(PPlay, "fill");

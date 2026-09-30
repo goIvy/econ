@@ -11,7 +11,7 @@ import { DUR, EASE } from "@/lib/animations";
 import { money, moneyCompact, pct } from "@/lib/format";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/cn";
-import { PATH_VAR, pathNo, useScenario, type Future } from "@/features/scenario/store";
+import { PATH_VAR, useScenario, type Future, pathRole } from "@/features/scenario/store";
 import { breakEvenYears, residencyShort, yrs } from "@/features/scenario/facts";
 import type { PathSel } from "@/features/scenario/types";
 
@@ -92,7 +92,7 @@ export function Compare() {
                   <div className="flex items-start justify-between gap-2">
                     <p className="flex items-center gap-2 text-[10px] font-mono font-medium uppercase tracking-[0.08em] text-muted">
                       <span className="size-2 rounded-full" style={{ background: PATH_VAR[f.index] }} />
-                      {f.index === 0 ? "YOUR PATH" : `PATH ${pathNo(f.index)}`}
+                      {pathRole(f.index)}
                     </p>
                     {f.index > 0 && (
                       <button type="button" onClick={() => removePath(f.index)} aria-label={`Remove ${f.label}`} className="-my-3 -mr-2 grid size-9 place-items-center rounded-full text-muted hover:bg-surface-sunk hover:text-ink">

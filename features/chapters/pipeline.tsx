@@ -8,7 +8,7 @@ import { DUR, EASE } from "@/lib/animations";
 import { money, moneyCompact, pct } from "@/lib/format";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/cn";
-import { PATH_VAR, pathNo, useScenario, type Future } from "@/features/scenario/store";
+import { PATH_VAR, useScenario, type Future, pathRole } from "@/features/scenario/store";
 
 type NodeId = "tuition" | "living" | "aid" | "net" | "debt" | "employment" | "salary" | "projection" | "breakeven";
 
@@ -100,7 +100,7 @@ export function Pipeline() {
               <div className="flex items-center justify-between gap-3 border-t border-rule pt-3">
                 <span className="flex items-center gap-2 text-caption font-bold tracking-[0.1em] text-muted">
                   <span className="size-2 rounded-full" style={{ background: PATH_VAR[f.index] }} />
-                  PATH {pathNo(f.index)}
+                  {pathRole(f.index)}
                 </span>
                 <span className="tabular text-h3 font-bold text-ink">{node.id === "net" ? <AnimatedNumber value={f.result.net.netPrice} format={money} /> : node.value(f)}</span>
               </div>

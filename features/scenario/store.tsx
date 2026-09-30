@@ -170,6 +170,8 @@ export function useScenario(): Store {
 
 /** Path number label, "01"–"03". */
 export const pathNo = (i: number) => String(i + 1).padStart(2, "0");
+/** Plain-language role of a path: yours, or one you're comparing against. */
+export const pathRole = (i: number) => (i === 0 ? "Your path" : "Comparing");
 /** Trace token per path slot (01 → a, 02 → b, 03 → d; c is reserved for "work"). */
 export const PATH_TRACE = ["a", "b", "d"] as const;
 export const PATH_VAR = ["var(--trace-a)", "var(--trace-b)", "var(--trace-d)"] as const;

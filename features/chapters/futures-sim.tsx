@@ -42,7 +42,7 @@ export function FuturesSim() {
   const [ref, W] = useMeasuredWidth<HTMLDivElement>(900);
   const H = W < 560 ? 280 : 400;
   const HIST = W < 560 ? 48 : 96;
-  const M = { t: 16, r: HIST + 18, b: 28, l: 56 };
+  const M = { t: 22, r: HIST + 18, b: 28, l: 56 };
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const raf = useRef<number | null>(null);
   const [key, setKey] = useState(f.label);
@@ -187,6 +187,10 @@ export function FuturesSim() {
             </span>
           </p>
         </div>
+        <p className="text-small text-ink-2">
+          Real life rarely goes exactly to plan. Each run changes your starting pay, raises, how long college takes and how long the first job search lasts.{" "}
+          <span className="text-ink">Each faint line is one possible future; the shaded band is where most of them end up.</span>
+        </p>
         <div ref={ref} className="relative min-w-0" style={{ height: H }}>
           <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="absolute inset-0 block max-w-full" aria-hidden>
             {ticks(lo, hi, 4).map((t) => (
@@ -197,11 +201,17 @@ export function FuturesSim() {
                 </text>
               </g>
             ))}
-            {[18, 22, 26, 30, 35, 40].map((t) => (
+            {[18, 22, 26, 30, 35].map((t) => (
               <text key={t} x={x(t)} y={H - 6} textAnchor="middle" className="tabular fill-muted text-[11px]">
                 {t}
               </text>
             ))}
+            <text x={W - M.r} y={H - 6} textAnchor="end" className="fill-muted text-[11px]">
+              Age →
+            </text>
+            <text x={M.l} y={10} className="fill-ink-2 text-[11px] font-medium">
+              Money after costs ↑
+            </text>
             {/* idle: the single projected path, muted */}
             <AnimatePresence>
               {stage === "idle" && (
@@ -242,7 +252,7 @@ export function FuturesSim() {
           <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-4 rounded-[2px]" style={{ background: color, opacity: 0.4 }} />Middle 50%</span>
           <span className="flex items-center gap-1.5"><span className="inline-block h-2 w-4 rounded-[2px]" style={{ background: color, opacity: 0.15 }} />Most futures (80%)</span>
           <span className="flex items-center gap-1.5"><span className="inline-block h-0.5 w-4" style={{ background: color }} />Typical</span>
-          <span className="flex items-center gap-1.5"><span className="inline-block w-4 border-t-2 border-dashed border-trace-c" />Work from 18</span>
+          <span className="flex items-center gap-1.5"><span className="inline-block w-4 border-t-2 border-dashed border-trace-c" />Working from 18 instead</span>
           <SampleChip className="ml-auto" />
         </p>
       </div>

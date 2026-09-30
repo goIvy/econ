@@ -5,6 +5,7 @@ import { AverageSalaryLesson, CheaperCanWin, DebtCompoundsLesson, OpportunityCos
 import { LESSONS, lessonData } from "@/features/learn/data";
 import { Lessons } from "@/features/chapters/lessons";
 import { CityExplorer } from "@/features/chapters/city-explorer";
+import { PlaceScene } from "@/features/learn/place-scene";
 import { cityData, lessonInputs } from "@/features/chapters/data";
 
 export const metadata: Metadata = {
@@ -45,6 +46,7 @@ export default function LearnPage() {
           </h2>
           <p className="max-w-[44rem] text-small text-ink-2">$100,000 does not provide the same lifestyle in every city. Pick a salary and where your offer is, then compare cities: see what goes to taxes, housing and basic costs, and how much is left.</p>
         </div>
+        <PlaceScene />
         <CityExplorer {...cityData()} />
       </section>
       <section id="experiments" aria-labelledby="experiments-h" className="scroll-mt-[calc(var(--nav-h)+16px)] border-t border-rule py-14 md:py-20">
