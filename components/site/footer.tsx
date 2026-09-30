@@ -3,7 +3,7 @@ import { Logo } from "./logo";
 
 const COLUMNS: Array<{ title: string; links: Array<[string, string]> }> = [
   { title: "Start", links: [["/#starter", "Build your path"], ["/compare", "Compare colleges"], ["/saved", "Saved comparisons"]] },
-  { title: "Explore", links: [["/explore", "Colleges"], ["/majors", "Majors"], ["/learn", "Learn the economics"]] },
+  { title: "Explore", links: [["/explore", "Colleges"], ["/shelf", "The elite shelf"], ["/majors", "Majors"], ["/learn", "Learn the economics"]] },
   { title: "Data", links: [["/methodology", "How it's calculated"], ["/methodology#limitations", "Limitations"], ["/research", "Research"]] },
 ];
 

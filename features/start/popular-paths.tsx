@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowUpRight } from "@/components/ui/icons";
 import { Segmented } from "@/components/ui/segmented";
@@ -61,6 +62,10 @@ export function PopularPaths() {
             Start from a <em>popular path</em>
           </h2>
           <p className="max-w-[36rem] text-lede text-ink-2">Not sure where to begin? Try one of these and change anything afterwards.</p>
+          <Link href="/shelf" className="group inline-flex min-h-11 items-center gap-1.5 rounded-full text-small font-medium text-ink underline decoration-rule-strong underline-offset-4 hover:decoration-ink">
+            Or take an elite university down from the shelf
+            <ArrowUpRight className="size-3.5" aria-hidden />
+          </Link>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-rule pb-4">
           <p className="text-small text-ink-2">

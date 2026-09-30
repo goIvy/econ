@@ -14,6 +14,7 @@ import { Logo } from "./logo";
 export const NAV_LINKS = [
   { href: "/explore", label: "Explore" },
   { href: "/compare", label: "Compare" },
+  { href: "/shelf", label: "Shelf" },
   { href: "/learn", label: "Learn" },
   { href: "/research", label: "Research" },
 ];

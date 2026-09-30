@@ -11,6 +11,9 @@ import { Statement } from "@/features/start/statement";
 import { PopularPaths } from "@/features/start/popular-paths";
 import { GlobeSection } from "@/features/start/globe-section";
 import { Wordmark } from "@/features/start/wordmark";
+import { GrowthSection } from "@/features/start/growth-section";
+import { PredictiveArcTile } from "@/features/start/predictive-arc-tile";
+import { IntroSplash } from "@/features/start/intro-splash";
 import { Results } from "@/features/results/results";
 import { Compare } from "@/features/results/compare";
 import { StickySummary } from "@/features/results/sticky-summary";
@@ -61,6 +64,7 @@ function AdvancedBlock({ title, text, children }: { title: string; text: string;
 export default function HomePage() {
   return (
     <>
+      <IntroSplash />
       <Nav overlay sections={SECTIONS} />
       <ScenarioProvider seed={scenarioSeed()}>
         <main id="main">
@@ -88,7 +92,9 @@ export default function HomePage() {
             <BreakEvenExplorer />
           </Chapter>
 
-          <Chapter id="futures" index="05" title={<>There isn&apos;t just one <em>possible future.</em></>} lede="We simulate many possible outcomes by changing things like salary, graduation timing, time to find a job and living costs.">
+          <GrowthSection />
+
+          <Chapter id="futures" index="05" aside={<PredictiveArcTile />} title={<>There isn&apos;t just one <em>possible future.</em></>} lede="We simulate many possible outcomes by changing things like salary, graduation timing, time to find a job and living costs.">
             <FuturesSim />
           </Chapter>
 

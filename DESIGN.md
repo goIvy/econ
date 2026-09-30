@@ -14,7 +14,14 @@ The owner found the dark default confusing, so the site is **light only** (no th
 - **"Play my future": LiquidMetalButton** (play variant, 88px) in the payoff chart.
 - **Sign-off: SemanticBloom** drawing "College Value Lab" above the footer.
 
-Not used: OrbGallery, AshenPress and GetStartedButton (not in the published package), GalleryHeading (its headline is fixed to another product's copy), Sketchbook, TempleNight, Landscape, WarpField and AnimatedTopDock (off-brand for a light college site, or duplicating the nav).
+Added in v5.1:
+
+- **The Elite Shelf** (`/shelf`): CompleteShelfLandingPage with its configured typography (Iowan Old Style / Inter, primary #4689c8). The framed page is built from the authored "Working Volumes" source by `scripts/build-college-shelf.mjs`: seven elite universities replace the seven tools, and choosing a volume posts its college id to the parent, which shows that college's figures and links to its full numbers and to Compare.
+- **Growth section**: the generative tree beside three levers (plant for less, keep the roots light, grow faster), each jumping to the part of the page that shows it for your own path.
+- **Possible futures**: the PredictiveArcCanvas tile beside the question.
+- **Opening intro**: TextAnimationCollection's `threeui-intro` beat (vendored adapter) assembling "Value Lab" with our mark, once per session, skippable, never under reduced motion.
+
+Not used: OrbGallery, AshenPress and GetStartedButton (not in the published package or the public repo), GalleryHeading (its headline is fixed to another product's copy), Sketchbook, TempleNight, Landscape, WarpField and AnimatedTopDock (off-brand for a light college site, or duplicating the nav).
 
 ## 0b. v4 update: cinematic editorial
 
